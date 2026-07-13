@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronDown, Check, Upload } from 'lucide-react'
+import { ChevronDown, Check, Upload, Image as ImageIcon } from 'lucide-react'
 import { useLanguage } from '../../context/LanguageContext'
 import {
   avatarUrl,
@@ -25,6 +25,10 @@ interface AvatarPickerProps {
 // (seeds) for that style. The stored value keeps BOTH style and seed
 // ("style:seed") so a chosen "rings"/"identicon" avatar survives reloads.
 // Users can also upload their own photo, cropped to a circle with zoom/pan.
+//
+// Safety: clicking a style only re-arranges the preview grid — it does NOT
+// overwrite the saved value. The value changes only when a concrete seed (or
+// a photo) is picked, so an existing custom photo is never lost by accident.
 const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onSelect, size = 'md', label }) => {
   const { t } = useLanguage()
   const parsed = parseAvatarToken(value)
@@ -44,23 +48,29 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onSelect, size = 'md
 
   const dim = size === 'sm' ? 'w-12 h-12' : 'w-16 h-16'
   const previewSrc = parsed.kind === 'photo' && parsed.photo ? parsed.photo : avatarUrl(seed, style)
+  const hasPhoto = parsed.kind === 'photo'
 
+  // Selecting a concrete seed pins that exact "style:seed" token.
   const chooseSeed = (s: string) => {
-    const token = avatarToken(style, s)
     setSeed(s)
-    onSelect(token)
+    onSelect(avatarToken(style, s))
     setOpen(false)
   }
 
-  const chooseStyle = (st: AvatarStyle) => {
-    setStyle(st)
-    onSelect(avatarToken(st, seed))
-  }
+  // Picking a style only changes which grid is shown — it never overwrites
+  // the saved avatar (so a custom photo is safe).
+  const previewStyle = (st: AvatarStyle) => setStyle(st)
 
   const onFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0]
     if (f) setCropping(f)
     e.target.value = ''
+  }
+
+  // Open the hidden file input so the user can pick a photo (instead of a
+  // geometric avatar). Does not replace anything until they confirm a crop.
+  const openUpload = () => {
+    document.getElementById('avatar-upload-input')?.click()
   }
 
   return (
@@ -95,6 +105,29 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onSelect, size = 'md
               />
             ) : (
               <>
+                {/* Custom photo option (always selectable, never auto-replaced) */}
+                <button
+                  type="button"
+                  onClick={openUpload}
+                  className={`w-full flex items-center gap-3 rounded-xl border-2 p-2.5 mb-3 transition-all ${
+                    hasPhoto ? 'border-ember-500 bg-ember-50 dark:bg-ember-500/15' : 'border-paper-sunken dark:border-[#33465c] hover:border-ember-300'
+                  }`}
+                >
+                  <span className="w-10 h-10 rounded-full overflow-hidden bg-paper-sunken dark:bg-sepia-800 flex items-center justify-center shrink-0">
+                    {hasPhoto && parsed.photo ? (
+                      <img src={parsed.photo} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <ImageIcon className="w-5 h-5 text-ink-muted" />
+                    )}
+                  </span>
+                  <span className="flex-1 text-left">
+                    <span className="block text-sm font-medium text-ink-soft dark:text-sepia-200">{t('auth.avatar.yourphoto')}</span>
+                    <span className="block text-xs text-ink-muted dark:text-sepia-300">{t('auth.avatar.upload')}</span>
+                  </span>
+                  {hasPhoto && <Check className="w-4 h-4 text-ember-500" />}
+                </button>
+                <input id="avatar-upload-input" type="file" accept="image/*" className="hidden" onChange={onFile} />
+
                 <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted dark:text-sepia-300 mb-2">
                   {t('auth.avatar.style')}
                 </p>
@@ -103,9 +136,9 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onSelect, size = 'md
                     <button
                       key={s.id}
                       type="button"
-                      onClick={() => chooseStyle(s.id)}
+                      onClick={() => previewStyle(s.id)}
                       className={`flex flex-col items-center gap-1 rounded-xl border-2 p-2 transition-all ${
-                        style === s.id
+                        style === s.id && !hasPhoto
                           ? 'border-ember-500 bg-ember-50 dark:bg-ember-500/15'
                           : 'border-paper-sunken dark:border-[#33465c] hover:border-ember-300'
                       }`}
@@ -120,7 +153,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onSelect, size = 'md
                   <span>{t('auth.avatar.choose')}</span>
                   <span className="normal-case font-normal text-[11px]">{t('auth.avatar.hint.short')}</span>
                 </p>
-                <div className="grid grid-cols-4 gap-2 max-h-52 overflow-y-auto pr-1 mb-3">
+                <div className="grid grid-cols-4 gap-2 max-h-52 overflow-y-auto pr-1">
                   {AVATAR_SEEDS.map((s) => {
                     const url = avatarUrl(s, style)
                     const isSelected = parsed.kind === 'geometric' && parsed.style === style && s === seed
@@ -143,11 +176,6 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({ value, onSelect, size = 'md
                     )
                   })}
                 </div>
-
-                <label className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl border border-dashed border-paper-sunken dark:border-[#33465c] text-sm font-medium text-ember-600 dark:text-ember-400 hover:bg-ember-50 dark:hover:bg-ember-500/10 transition-colors cursor-pointer">
-                  <Upload className="w-4 h-4" /> {t('auth.avatar.upload')}
-                  <input type="file" accept="image/*" className="hidden" onChange={onFile} />
-                </label>
               </>
             )}
           </motion.div>
