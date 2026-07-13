@@ -113,10 +113,10 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
     <div
       className={cn(
         'absolute inset-0 backface-hidden overflow-hidden rounded-3xl border-2',
-        diff ? diff.ring : 'border-gray-200 dark:border-gray-700',
+        diff ? diff.ring : 'border-stone-200 dark:border-stone-700',
         back
-          ? 'rotate-y-180 bg-gradient-to-br from-indigo-50 to-violet-50 dark:from-indigo-950/40 dark:to-violet-950/40'
-          : 'bg-white dark:bg-gray-800 card-sheen'
+          ? 'rotate-y-180 bg-ember-50 dark:bg-ember-500/10'
+          : 'bg-paper-raised dark:bg-stone-900 card-sheen'
       )}
     >
       {children}
@@ -136,9 +136,9 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
         <FaceWrapper>
           <div className="flex h-full flex-col p-7">
             <div className="mb-3 flex items-start justify-between">
-              <span className="inline-flex items-center gap-2 text-indigo-600">
+              <span className="inline-flex items-center gap-2 text-ember-600 dark:text-ember-400">
                 <HelpCircle className="w-6 h-6" />
-                <span className="text-xs font-semibold uppercase tracking-wide text-indigo-400">
+                <span className="text-xs font-semibold uppercase tracking-wide text-ember-500 dark:text-ember-400">
                   {t('card.question')}
                 </span>
               </span>
@@ -147,23 +147,28 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
                   {t(diff.key as any)}
                 </span>
               ) : (
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-500">
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-stone-100 dark:bg-stone-700 text-ink-muted dark:text-stone-300">
                   {noDifficultyLabel}
                 </span>
               )}
             </div>
             <div className="flex-1 flex items-center">
-              <p className="text-xl font-semibold leading-relaxed text-gray-900 dark:text-gray-50">
+              <p className="font-display text-2xl font-semibold leading-snug text-ink dark:text-stone-50">
                 {flashcard.question}
               </p>
             </div>
-            {flashcard.concept && (
-              <div>
+            <div className="flex items-center justify-between">
+              {flashcard.concept ? (
                 <span className={cn('px-3 py-1 rounded-full text-xs font-medium', conceptClass)}>
                   {flashcard.concept}
                 </span>
-              </div>
-            )}
+              ) : (
+                <span />
+              )}
+              <span className="text-xs text-ink-muted/70 dark:text-stone-500 italic">
+                Toca para ver la respuesta
+              </span>
+            </div>
           </div>
         </FaceWrapper>
 
@@ -171,9 +176,9 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
         <FaceWrapper back>
           <div className="flex h-full flex-col p-7">
             <div className="mb-3 flex items-start justify-between">
-              <span className="inline-flex items-center gap-2 text-emerald-600">
+              <span className="inline-flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
                 <MessageCircle className="w-6 h-6" />
-                <span className="text-xs font-semibold uppercase tracking-wide text-emerald-400">
+                <span className="text-xs font-semibold uppercase tracking-wide text-emerald-500 dark:text-emerald-400">
                   {t('card.answer')}
                 </span>
               </span>
@@ -182,13 +187,13 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
                   {t(diff.key as any)}
                 </span>
               ) : (
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-500">
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-stone-100 dark:bg-stone-700 text-ink-muted dark:text-stone-300">
                   {noDifficultyLabel}
                 </span>
               )}
             </div>
             <div className="flex-1 overflow-y-auto">
-              <p className="text-lg leading-relaxed text-gray-800 dark:text-gray-100">{flashcard.answer}</p>
+              <p className="text-lg leading-relaxed text-ink-soft dark:text-stone-100">{flashcard.answer}</p>
             </div>
             {flashcard.concept && (
               <div>
@@ -208,7 +213,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
             e.stopPropagation()
             handleCopy()
           }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-sm font-medium shadow-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-paper-raised dark:bg-stone-800 text-ink-soft dark:text-stone-300 text-sm font-medium shadow-soft border border-stone-200 dark:border-stone-700 hover:bg-paper-sunken dark:hover:bg-stone-700 transition-colors"
         >
           {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
           {copied ? t('card.copied') : t('card.copy')}
@@ -219,10 +224,10 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
             handleSpeak()
           }}
           className={cn(
-            'inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium shadow-sm border transition-colors',
+            'inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium shadow-soft border transition-colors',
             speaking
-              ? 'bg-indigo-600 text-white border-indigo-600'
-              : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
+              ? 'bg-ember-500 text-ink border-ember-500'
+              : 'bg-paper-raised dark:bg-stone-800 text-ink-soft dark:text-stone-300 border-stone-200 dark:border-stone-700 hover:bg-paper-sunken dark:hover:bg-stone-700'
           )}
         >
           {speaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}

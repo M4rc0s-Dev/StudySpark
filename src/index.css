@@ -9,20 +9,39 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
   line-height: 1.6;
-  color: #333;
-  background: #f8fafc;
+  color: #1c1917;
+  background: #fafaf9;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 .dark body {
-  color: #e5e7eb;
-  background: #030712;
+  color: #e7e5e4;
+  background: #0c0a09;
 }
 
 .app {
   min-height: 100vh;
+}
+
+/* Subtle paper grain so surfaces aren't flat dead color. */
+.paper-grain {
+  background-image: radial-gradient(rgba(28, 25, 23, 0.025) 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+.dark .paper-grain {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+/* Dashed editorial divider / accent rule. */
+.rule-ember {
+  background-image: linear-gradient(to right, #f59e0b 0, #f59e0b 2rem, transparent 2rem);
+  background-size: 2rem 2px;
+  background-repeat: repeat-x;
+  height: 2px;
 }
 
 /* Scrollbar styling */
@@ -31,28 +50,28 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #f5f5f4;
 }
 
 .dark ::-webkit-scrollbar-track {
-  background: #111827;
+  background: #1c1917;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: #d6d3d1;
   border-radius: 4px;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #374151;
+  background: #44403c;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: #a8a29e;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #4b5563;
+  background: #57534e;
 }
 
 /* Animation classes */
@@ -103,11 +122,11 @@ body {
 .animation-delay-2000 { animation-delay: 2s; }
 .animation-delay-4000 { animation-delay: 4s; }
 
-/* Soft sheen used on cards (white highlight only makes sense on light surfaces) */
+/* Soft sheen used on cards (warm highlight on light surfaces) */
 .card-sheen {
-  background-image: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 40%);
+  background-image: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 45%);
 }
 
 .dark .card-sheen {
-  background-image: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 40%);
+  background-image: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 45%);
 }
