@@ -447,61 +447,45 @@ const LibraryPage: React.FC = () => {
   // shows the whole hierarchy (SparkDrive root first, then each folder indented
   // by its depth). `isDisabled` hides invalid destinations (e.g. a folder into
   // itself/its own subtree, or the item's current location).
-  // Build the full folder tree as a NESTED structure so a "Move" submenu
-  // shows the whole hierarchy (SparkDrive root first, then each folder
-  // indented by its real depth). `isDisabled` hides invalid destinations
-  // (e.g. a folder into itself/its own subtree, or the item's current
-  // location). A node's `children` are rendered INLINE (indented one
-  // level deeper) by the ContextMenu — no flyouts — so shallow siblings
-  // such as "1/3" and "1/4" always sit ABOVE and LESS indented than
-  // their deeper cousins "1/2/5", "1/2/6".
+  // Build the "Move" submenu as a FLAT, shallow-first sorted list.
+  // Each item carries `indent` = its path depth (SparkDrive = 0, a top
+  // folder = 1, deeper = 2, ...). The ContextMenu renders the list
+  // in a scrollable flyout, so even a long tree stays on screen and
+  // there is no recursive inline nesting (which caused the old loop bug).
+  // Because the list is sorted shallow-first, siblings such as "1/3" and
+  // "1/4" (indent 1) always appear ABOVE and LESS indented than
+  // their deeper cousins "1/2/5" / "1/2/6" (indent 2).
   const buildMoveTree = (
     onPick: (dest: string) => void,
     opts: { currentLocation: string; isDisabled?: (path: string) => boolean }
   ): ContextMenuItem[] => {
-    // Build a nested tree from all folder paths.
-    const buildNode = (parentPath: string): ContextMenuItem[] => {
-      const prefix = childrenOf(parentPath)
-      const kids = allFolderPaths.filter((p) => {
-        if (p === parentPath) return false
-        if (!p.startsWith(prefix)) return false
-        const rest = p.slice(prefix.length)
-        return !rest.includes(SEP)
-      })
-      return kids
-        .sort((a, b) => folderName(a).localeCompare(folderName(b)))
-        .map((path) => {
-          const disabled = opts.currentLocation === path || (opts.isDisabled?.(path) ?? false)
-          const node: ContextMenuItem = {
-            label: folderName(path),
-            icon: Folder,
-            disabled,
-            onClick: () => onPick(path),
-            children: buildNode(path),
-          }
-          return node
-        })
-    }
-
-    const rootChildren = buildNode('')
     const items: ContextMenuItem[] = []
 
-    // SparkDrive root: selectable only when moving INTO root is valid.
-    const rootSelectable =
-      (opts.currentLocation !== '' || (opts.isDisabled?.('') ?? false) === false) &&
-      !(opts.isDisabled?.('') ?? false)
-    if (rootSelectable) {
-      items.push({
-        label: DRIVE_ROOT_LABEL,
-        icon: Home,
-        indent: 1,
-        onClick: () => onPick(''),
-        children: rootChildren,
-      })
-    } else {
-      // Root is the current location (or disabled) — show its children inline.
-      items.push(...rootChildren.map((c) => ({ ...c, indent: 1 })))
+    // SparkDrive root (only when moving INTO root is allowed).
+    if (opts.currentLocation !== '' && !(opts.isDisabled?.('') ?? false)) {
+      items.push({ label: DRIVE_ROOT_LABEL, icon: Home, indent: 0, onClick: () => onPick('') })
     }
+
+    // Folders, sorted shallow-first (parents before children) so the tree
+    // reads top-down. `indent` = depth, which drives the padding.
+    const sorted = [...allFolderPaths].sort((a, b) => {
+      const da = a.split(SEP).length
+      const db = b.split(SEP).length
+      if (da !== db) return da - db
+      return a.localeCompare(b)
+    })
+    sorted.forEach((path) => {
+      const disabled = opts.currentLocation === path || (opts.isDisabled?.(path) ?? false)
+      if (disabled) return
+      items.push({
+        label: folderName(path),
+        icon: Folder,
+        indent: path.split(SEP).length,
+        disabled,
+        onClick: () => onPick(path),
+      })
+    })
+
     return items.length > 0 ? items : [{ label: '—', onClick: () => {} }]
   }
 

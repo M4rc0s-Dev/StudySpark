@@ -13,6 +13,7 @@ import type { StudySession } from '../types'
 import { AVATAR_SEEDS } from '../lib/avatars'
 import AvatarPicker from '../components/Layout/AvatarPicker'
 import ConfirmDialog from '../components/Layout/ConfirmDialog'
+import PasswordStrength from '../components/Layout/PasswordStrength'
 
 const fade = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0 } }
 
@@ -25,13 +26,15 @@ const defaultModes: { id: StudyMode; icon: typeof Brain; key: string }[] = [
 const SettingsPage: React.FC = () => {
   const navigate = useNavigate()
   const { t, lang, toggle } = useLanguage()
-  const { user, profile, sessions, updateAvatar, updatePassword } = useAuth()
+  const { user, profile, sessions, updateAvatar, updatePassword, reauthenticate } = useAuth()
   const { prefs, setPrefs, resetLocalProgress } = useSettings()
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [avatarSeed, setAvatarSeed] = useState(() => profile?.avatar || AVATAR_SEEDS[0])
   const [showPw, setShowPw] = useState(false)
   const [pwBusy, setPwBusy] = useState(false)
+  const [oldPw, setOldPw] = useState('')
   const [newPw, setNewPw] = useState('')
+  const [confirmPw, setConfirmPw] = useState('')
 
   // Keep the local preview in sync when the profile loads/changes.
   useEffect(() => {
@@ -45,15 +48,27 @@ const SettingsPage: React.FC = () => {
   }
 
   const handleChangePassword = async () => {
+    if (!oldPw) {
+      toast.error(t('settings.password.current') + ' requerida')
+      return
+    }
     if (newPw.length < 6) {
       toast.error('Mínimo 6 caracteres')
       return
     }
+    if (newPw !== confirmPw) {
+      toast.error(t('settings.password.mismatch'))
+      return
+    }
     setPwBusy(true)
     try {
+      // Supabase needs a fresh session to change the password.
+      await reauthenticate(oldPw)
       await updatePassword(newPw)
       toast.success(t('settings.password.saved'))
+      setOldPw('')
       setNewPw('')
+      setConfirmPw('')
       setShowPw(false)
     } catch (err: any) {
       toast.error(err?.message || 'No se pudo cambiar')
@@ -314,11 +329,26 @@ const SettingsPage: React.FC = () => {
               <h3 className="font-display text-lg font-bold text-ink dark:text-sepia-50 flex items-center gap-2">
                 <KeyRound className="w-5 h-5 text-ember-500" /> {t('settings.password.change')}
               </h3>
+
+              {/* Current password */}
               <div className="relative mt-4">
                 <Lock className="w-5 h-5 text-ink-muted absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="password"
                   autoFocus
+                  value={oldPw}
+                  onChange={(e) => setOldPw(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleChangePassword()}
+                  placeholder={t('settings.password.current')}
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 text-sm outline-none focus:ring-2 focus:ring-ember-500"
+                />
+              </div>
+
+              {/* New password + strength meter */}
+              <div className="relative mt-3">
+                <Lock className="w-5 h-5 text-ink-muted absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="password"
                   value={newPw}
                   onChange={(e) => setNewPw(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleChangePassword()}
@@ -326,9 +356,24 @@ const SettingsPage: React.FC = () => {
                   className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 text-sm outline-none focus:ring-2 focus:ring-ember-500"
                 />
               </div>
+              <PasswordStrength value={newPw} confirm={confirmPw} />
+
+              {/* Repeat new password */}
+              <div className="relative mt-3">
+                <Lock className="w-5 h-5 text-ink-muted absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="password"
+                  value={confirmPw}
+                  onChange={(e) => setConfirmPw(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleChangePassword()}
+                  placeholder={t('settings.password.repeat')}
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 text-sm outline-none focus:ring-2 focus:ring-ember-500"
+                />
+              </div>
+
               <div className="mt-5 flex justify-end gap-3">
                 <button
-                  onClick={() => { setShowPw(false); setNewPw('') }}
+                  onClick={() => { setShowPw(false); setOldPw(''); setNewPw(''); setConfirmPw('') }}
                   className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-sepia-600 dark:text-sepia-200 text-sm font-medium hover:bg-slate-100 dark:hover:bg-sepia-800 transition-colors"
                 >
                   {t('config.cancel')}
@@ -339,7 +384,7 @@ const SettingsPage: React.FC = () => {
                   className="px-4 py-2.5 rounded-xl bg-ember-500 text-paper text-sm font-bold shadow-soft hover:shadow-lift transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   {pwBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
-                  {t('settings.password.change')}
+                  {t('settings.password.save')}
                 </button>
               </div>
             </div>

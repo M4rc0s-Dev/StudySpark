@@ -11,13 +11,12 @@ export interface ContextMenuItem {
   danger?: boolean
   // Optional custom node rendered instead of a standard button (e.g. a color row).
   render?: () => React.ReactNode
-  // When present, this item opens a nested submenu on hover instead of acting.
+  // When present, this item opens a nested flyout on hover instead of acting.
+  // The flyout renders a FLAT list; each item's `indent` (tree depth,
+  // 0 = root) drives its left padding so a folder tree reads top-down.
   submenu?: ContextMenuItem[]
-  // Inline children: rendered as an INDENTED TREE under this item (no flyout).
-  // Used by the "Move" menu so the whole folder hierarchy reads top-down.
-  children?: ContextMenuItem[]
   disabled?: boolean
-  // Tree depth (1 = root level). Drives the indentation + guide lines.
+  // Tree depth (0 = root level). Drives the horizontal indentation.
   indent?: number
 }
 
@@ -30,13 +29,11 @@ export interface ContextMenuState {
 const PAD_BASE = 12 // left padding of the root level
 const PAD_STEP = 16 // horizontal step per tree level
 
-// Renders one row (button / separator / custom node) at a given indent level.
-// `depth` is the tree depth (1 = top). Children are rendered inline below.
-const Row: React.FC<{
-  item: ContextMenuItem
-  onClose: () => void
-  depth: number
-}> = ({ item, onClose, depth }) => {
+// Renders ONE row (button / separator / custom node) at its `indent` level.
+const Row: React.FC<{ item: ContextMenuItem; onClose: () => void }> = ({
+  item,
+  onClose,
+}) => {
   if (item.separator) {
     return <div className="my-1 border-t border-gray-100 dark:border-sepia-500" />
   }
@@ -45,71 +42,55 @@ const Row: React.FC<{
   }
 
   const Icon = item.icon
-  const pad = PAD_BASE + (depth - 1) * PAD_STEP
+  const indent = item.indent ?? 0
+  const pad = PAD_BASE + indent * PAD_STEP
   const disabled = item.disabled
-  const hasChildren = Boolean(item.children && item.children.length > 0)
 
   return (
-    <div className={hasChildren ? 'mb-0.5' : ''}>
-      <button
-        disabled={disabled}
-        onClick={() => {
-          if (disabled) return
-          item.onClick?.()
-          onClose()
-        }}
-        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-left transition-colors ${
-          item.danger
-            ? 'text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10'
-            : 'text-gray-700 dark:text-sepia-100 hover:bg-gray-100 dark:hover:bg-sepia-800'
-        } ${disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
-        style={{ paddingLeft: pad }}
-      >
-        {Icon && <Icon className="w-4 h-4 shrink-0" />}
-        <span className="truncate flex-1">{item.label}</span>
-        {hasChildren && <ChevronRight className="w-3.5 h-3.5 shrink-0 text-gray-400" />}
-      </button>
-
-      {/* Inline children form the indented tree (file-explorer style).
-          A subtle divider sits below each folder group. */}
-      {hasChildren && (
-        <div className="ml-3 border-l border-gray-200 dark:border-sepia-600 pl-1">
-          {item.children!.map((child, ci) => (
-            <React.Fragment key={ci}>
-              {ci > 0 && <div className="my-1 border-t border-gray-100 dark:border-sepia-600/60" />}
-              <Row item={child} onClose={onClose} depth={depth + 1} />
-            </React.Fragment>
-          ))}
-        </div>
-      )}
-    </div>
+    <button
+      disabled={disabled}
+      onClick={() => {
+        if (disabled) return
+        item.onClick?.()
+        onClose()
+      }}
+      className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-left transition-colors ${
+        item.danger
+          ? 'text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10'
+          : 'text-gray-700 dark:text-sepia-100 hover:bg-gray-100 dark:hover:bg-sepia-800'
+      } ${disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
+      style={{ paddingLeft: pad }}
+    >
+      {Icon && <Icon className="w-4 h-4 shrink-0" />}
+      <span className="truncate flex-1">{item.label}</span>
+    </button>
   )
 }
 
-// Renders a list of top-level items. Each item's inline `children` are rendered
-// by Row itself (recursively). A subtle divider separates top-level groups so
-// sibling folder clusters read clearly.
-const MenuList: React.FC<{
-  items: ContextMenuItem[]
-  onClose: () => void
-}> = ({ items, onClose }) => {
+// Renders a FLAT list of items. A divider is drawn before each top-level
+// folder (indent === 1) so sibling folder clusters read as separate groups.
+const MenuList: React.FC<{ items: ContextMenuItem[]; onClose: () => void }> = ({
+  items,
+  onClose,
+}) => {
   return (
     <div>
       {items.map((item, i) => (
         <React.Fragment key={i}>
-          {i > 0 && !item.separator && !items[i - 1].separator && (
+          {!item.separator && item.indent === 1 && i > 0 && (
             <div className="my-1 border-t border-gray-100 dark:border-sepia-600/60" />
           )}
-          <Row item={item} onClose={onClose} depth={item.indent ?? 1} />
+          <Row item={item} onClose={onClose} />
         </React.Fragment>
       ))}
     </div>
   )
 }
 
-// A hover-flyout submenu (e.g. the "Style → color" picker). Positioned with
-// a smart flip: opens to the LEFT when there is no room on the right, and is
-// vertically clamped so it never goes off the bottom on mobile.
+// A hover-flyout submenu (e.g. "Estilo → color" or "Mover → folder tree").
+// Positioned with a smart flip: opens to the LEFT when there is no room on the
+// right, and vertically clamped so it never goes off the bottom on mobile.
+// Bounded height (scroll) so even a long folder tree stays on screen.
 const Flyout: React.FC<{
   anchor: HTMLElement | null
   items: ContextMenuItem[]
@@ -123,7 +104,7 @@ const Flyout: React.FC<{
     if (!anchor) return
     const r = anchor.getBoundingClientRect()
     const subW = 240
-    const subH = Math.min(window.innerHeight * 0.8, items.length * 40 + 24)
+    const subH = Math.min(window.innerHeight * 0.7, items.length * 40 + 24)
     // Flip to the left if the right side would overflow.
     const openRight = r.right + subW + 8 <= window.innerWidth
     setSide(openRight ? 'right' : 'left')
@@ -142,7 +123,7 @@ const Flyout: React.FC<{
       ref={ref}
       className={`absolute top-0 ${
         side === 'right' ? 'left-full -ml-1' : 'right-full -mr-1'
-      } w-60 max-h-[80vh] overflow-y-auto bg-white dark:bg-sepia-900 rounded-xl shadow-2xl border border-gray-100 dark:border-sepia-500 p-1.5 z-10`}
+      } w-60 max-h-[70vh] overflow-y-auto bg-white dark:bg-sepia-900 rounded-xl shadow-2xl border border-gray-100 dark:border-sepia-500 p-1.5 z-10`}
       style={{ top }}
     >
       <MenuList items={items} onClose={onClose} />
@@ -150,7 +131,7 @@ const Flyout: React.FC<{
   )
 }
 
-// A single top-level item that owns a hover flyout (distinct from inline children).
+// A single top-level item that owns a hover flyout.
 const FlyoutItem: React.FC<{
   item: ContextMenuItem
   index: number
@@ -173,7 +154,7 @@ const FlyoutItem: React.FC<{
             ? 'bg-gray-100 dark:bg-sepia-700 text-gray-800 dark:text-sepia-50'
             : 'text-gray-700 dark:text-sepia-100 hover:bg-gray-100 dark:hover:bg-sepia-800'
         }`}
-        style={item.indent && item.indent > 1 ? { paddingLeft: PAD_BASE + (item.indent - 1) * PAD_STEP } : undefined}
+        style={item.indent && item.indent > 0 ? { paddingLeft: PAD_BASE + item.indent * PAD_STEP } : undefined}
       >
         {item.icon && <item.icon className="w-4 h-4 shrink-0" />}
         <span className="truncate flex-1">{item.label}</span>
@@ -189,38 +170,30 @@ const FlyoutItem: React.FC<{
   )
 }
 
-// Renders the list of items for a menu. Distinguishes:
-//  - an item with `submenu` → hover flyout (FlyoutItem)
-//  - everything else → routed through MenuList/Row (inline tree, separator,
-//    custom render, plain action) so indentation + dividers stay consistent.
-const MenuItems: React.FC<{
-  items: ContextMenuItem[]
-  onClose: () => void
-}> = ({ items, onClose }) => {
+// Renders the list of items for a menu. A `submenu` item becomes a hover
+// flyout; everything else renders as a flat row (separator / custom render /
+// plain action) with its own indentation.
+const MenuItems: React.FC<{ items: ContextMenuItem[]; onClose: () => void }> = ({
+  items,
+  onClose,
+}) => {
   return (
     <>
       {items.map((item, i) =>
         item.submenu ? (
           <FlyoutItem key={i} item={item} index={i} onClose={onClose} />
         ) : (
-          <MenuListWrapper key={i} item={item} onClose={onClose} />
+          <Row key={i} item={item} onClose={onClose} />
         )
       )}
     </>
   )
 }
 
-// Adapter so a single non-submenu item renders through the same Row path used
-// by MenuList (keeps indentation/dividers consistent).
-const MenuListWrapper: React.FC<{
-  item: ContextMenuItem
-  onClose: () => void
-}> = ({ item, onClose }) => <Row item={item} onClose={onClose} depth={item.indent ?? 1} />
-
-const ContextMenu: React.FC<{
-  menu: ContextMenuState | null
-  onClose: () => void
-}> = ({ menu, onClose }) => {
+const ContextMenu: React.FC<{ menu: ContextMenuState | null; onClose: () => void }> = ({
+  menu,
+  onClose,
+}) => {
   const ref = useRef<HTMLDivElement | null>(null)
   const [pos, setPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
 

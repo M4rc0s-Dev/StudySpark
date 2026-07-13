@@ -5,16 +5,21 @@ import { useLanguage } from '../context/LanguageContext'
 import { useAuth } from '../context/AuthContext'
 import { toast } from 'react-hot-toast'
 import { supabase as supabaseClient } from '../lib/supabase'
-import { Mail, Lock, User, ArrowRight, Loader2, MailCheck, RefreshCw, CheckCircle2, Dices, KeyRound, AlertCircle } from 'lucide-react'
+import { Mail, Lock, User, ArrowRight, Loader2, MailCheck, RefreshCw, CheckCircle2, KeyRound, AlertCircle } from 'lucide-react'
 import { AVATAR_SEEDS } from '../lib/avatars'
-import AvatarPicker from '../components/Layout/AvatarPicker'
+import PasswordStrength from '../components/Layout/PasswordStrength'
 
 const AuthPage: React.FC = () => {
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [avatarSeed, setAvatarSeed] = useState(() => AVATAR_SEEDS[0])
+  const [confirmPw, setConfirmPw] = useState('')
+  // Avatar is random by default at sign-up; the user changes it later
+  // from Settings. Picking one here took too much space on the form.
+  const [avatarSeed, setAvatarSeed] = useState(
+    () => AVATAR_SEEDS[Math.floor(Math.random() * AVATAR_SEEDS.length)]
+  )
   const [busy, setBusy] = useState(false)
   const [confirmEmail, setConfirmEmail] = useState('')
   const [resending, setResending] = useState(false)
@@ -38,6 +43,10 @@ const AuthPage: React.FC = () => {
       }
       if (password.length < 6) {
         toast.error('Mínimo 6 caracteres')
+        return
+      }
+      if (password !== confirmPw) {
+        toast.error(t('auth.password.mismatch'))
         return
       }
     } else if (password.length < 6) {
@@ -230,17 +239,6 @@ const AuthPage: React.FC = () => {
                     />
                   </div>
                 )}
-                {mode === 'register' && (
-                  <div>
-                    <label className="text-sm font-medium text-ink-soft dark:text-sepia-200 flex items-center gap-2 mb-2">
-                      <Dices className="w-4 h-4 text-ember-500" /> {t('auth.avatar')}
-                    </label>
-                    <div className="flex items-center gap-4 rounded-xl border border-paper-sunken dark:border-[#33465c] dark:bg-[#111d2a] p-3">
-                      <AvatarPicker value={avatarSeed} onSelect={setAvatarSeed} size="md" label={t('auth.avatar')} />
-                      <p className="text-xs text-ink-muted dark:text-sepia-300">{t('auth.avatar.hint')}</p>
-                    </div>
-                  </div>
-                )}
                 <div className="relative">
                   <Mail className="w-5 h-5 text-ink-muted absolute left-3 top-3.5" />
                   <input
@@ -263,6 +261,22 @@ const AuthPage: React.FC = () => {
                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 dark:placeholder-sepia-300 focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none"
                   />
                 </div>
+                {mode === 'register' && (
+                  <>
+                    <PasswordStrength value={password} confirm={confirmPw} />
+                    <div className="relative mt-3">
+                      <Lock className="w-5 h-5 text-ink-muted absolute left-3 top-3.5" />
+                      <input
+                        type="password"
+                        value={confirmPw}
+                        onChange={(e) => setConfirmPw(e.target.value)}
+                        placeholder={t('auth.password.repeat')}
+                        required
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 dark:placeholder-sepia-300 focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+                  </>
+                )}
 
                 {mode === 'login' && (
                   <div className="flex justify-end -mt-1">

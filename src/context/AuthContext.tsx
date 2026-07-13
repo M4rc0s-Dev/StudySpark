@@ -18,6 +18,7 @@ interface AuthContextValue {
   signUp: (email: string, password: string, name?: string, avatar?: string) => Promise<{ needsConfirmation: boolean }>
   signIn: (email: string, password: string) => Promise<void>
   signInWithGoogle: () => Promise<void>
+  reauthenticate: (password: string) => Promise<void>
   updatePassword: (newPassword: string) => Promise<void>
   resetPassword: (email: string) => Promise<void>
   signOut: () => Promise<void>
@@ -235,6 +236,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (error) throw error
   }, [])
 
+  // Re-verify the current password before allowing a password change.
+  // Supabase requires a fresh session to update the password.
+  const reauthenticate = useCallback(async (password: string) => {
+    if (!supabase || !user?.email) throw new Error('Auth no disponible')
+    const { error } = await supabase.auth.signInWithPassword({
+      email: user.email,
+      password,
+    })
+    if (error) throw error
+  }, [supabase, user?.email])
+
   const updatePassword = useCallback(async (newPassword: string) => {
     if (!supabase) throw new Error('Auth no disponible')
     const { error } = await supabase.auth.updateUser({ password: newPassword })
@@ -260,7 +272,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   return (
     <AuthContext.Provider
-      value={{ user, profile, sessions, loading, signUp, signIn, signInWithGoogle, updatePassword, resetPassword, signOut, refreshSessions, addXp, updateAvatar }}
+      value={{ user, profile, sessions, loading, signUp, signIn, signInWithGoogle, reauthenticate, updatePassword, resetPassword, signOut, refreshSessions, addXp, updateAvatar }}
     >
       {children}
     </AuthContext.Provider>
