@@ -1,0 +1,13 @@
+{
+  "name": "studyspark",
+  "compatibility_date": "2026-07-09",
+  "main": "./worker.ts",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  },
+  "vars": {
+    "N8N_WEBHOOK_URL": "https://n8n.marcos-valera.pp.ua/webhook/flashcard-api",
+    "CONTACT_TO": "valera08marcos.trabajo@gmail.com"
+  }
+}

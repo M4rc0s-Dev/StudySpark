@@ -1,0 +1,108 @@
+import React, { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import { Loader2, FileText, Brain, PenLine, Sparkles, X } from 'lucide-react'
+import { useLanguage } from '../../context/LanguageContext'
+
+interface LoadingScreenProps {
+  // Elapsed time in ms since the job started; drives which stage is shown.
+  elapsedMs: number
+  // Lets the user bail out of a stuck/errored generation instead of waiting
+  // out the full timeout on a frozen screen.
+  onCancel?: () => void
+  // When set, the screen shows this error instead of the animated stages.
+  error?: string | null
+}
+
+// The staged messages advance purely on elapsed time. Generation timing on the
+// free AI tier is unpredictable, so this is a friendly approximation rather
+// than a real per-step progress bar.
+const STAGES = [
+  { key: 'loading.step.reading', icon: FileText, until: 6000 },
+  { key: 'loading.step.thinking', icon: Brain, until: 25000 },
+  { key: 'loading.step.writing', icon: PenLine, until: 60000 },
+  { key: 'loading.step.almost', icon: Sparkles, until: Infinity },
+] as const
+
+const LoadingScreen: React.FC<LoadingScreenProps> = ({ elapsedMs, onCancel, error }) => {
+  const { t } = useLanguage()
+  const [dots, setDots] = useState('')
+
+  // Animated trailing dots for a lively feel.
+  useEffect(() => {
+    const id = window.setInterval(() =>
+    {
+      setDots((d) => (d.length >= 3 ? '' : d + '.'))
+    }, 450)
+    return () => window.clearInterval(id)
+  }, [])
+
+  const stageIndex = STAGES.findIndex((s) => elapsedMs < s.until)
+  const current = STAGES[stageIndex === -1 ? STAGES.length - 1 : stageIndex]
+  const Icon = current.icon
+
+  return (
+    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-gradient-to-br from-indigo-600/95 via-indigo-700/95 to-violet-700/95 backdrop-blur-sm">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="w-full max-w-md bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 text-center"
+      >
+        <div className="relative w-20 h-20 mx-auto mb-6">
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 opacity-20 animate-ping" />
+          <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white">
+            <Icon className="w-9 h-9" />
+          </div>
+        </div>
+
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('loading.title')}</h2>
+
+        <motion.p
+          key={current.key}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-3 text-gray-600 dark:text-gray-300 font-medium min-h-[1.5rem]"
+        >
+          {t(current.key as any)}
+          {dots}
+        </motion.p>
+
+        {/* Stage progress dots */}
+        <div className="flex items-center justify-center gap-2 mt-5">
+          {STAGES.map((s, i) => {
+            const activeIdx = stageIndex === -1 ? STAGES.length - 1 : stageIndex
+            const active = i <= activeIdx
+            return (
+              <span
+                key={s.key}
+                className={`h-2 rounded-full transition-all duration-500 ${
+                  active ? 'w-8 bg-indigo-500' : 'w-2 bg-gray-200 dark:bg-gray-700'
+                }`}
+              />
+            )
+          })}
+        </div>
+
+
+        {error ? (
+          <div className="mt-6">
+            <p className="text-rose-600 dark:text-rose-400 font-medium">{error}</p>
+            <button
+              onClick={onCancel}
+              className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 dark:text-gray-200 text-sm font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
+              <X className="w-4 h-4" /> Cancelar
+            </button>
+          </div>
+        ) : (
+        <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-400 dark:text-gray-500">
+          <Loader2 className="w-4 h-4 animate-spin" />
+          <span>{t('loading.hint')}</span>
+        </div>
+        )}
+
+      </motion.div>
+    </div>
+  )
+}
+
+export default LoadingScreen

@@ -1,0 +1,206 @@
+import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Brain, Clock, Repeat, X, Shuffle, ArrowDownWideNarrow, ListOrdered, ArrowRightLeft, Sparkles } from 'lucide-react'
+import { useLanguage } from '../../context/LanguageContext'
+import { useSettings } from '../../context/SettingsContext'
+import type { SessionConfig, StudyMode, CardOrder, CardDirection } from '../../context/SettingsContext'
+
+interface SessionConfigModalProps {
+  open: boolean
+  onClose: () => void
+  onStart: (config: SessionConfig) => void
+  deckTitle?: string
+}
+
+const modes: { id: StudyMode; icon: typeof Brain; key: string; descKey: string }[] = [
+  { id: 'basic', icon: Brain, key: 'mode.basic', descKey: 'mode.basic.desc' },
+  { id: 'timed', icon: Clock, key: 'mode.timed', descKey: 'mode.timed.desc' },
+  { id: 'spaced-repetition', icon: Repeat, key: 'mode.spaced', descKey: 'mode.spaced.desc' },
+]
+
+const orders: { id: CardOrder; icon: typeof ListOrdered; key: string }[] = [
+  { id: 'default', icon: ListOrdered, key: 'config.order.default' },
+  { id: 'shuffle', icon: Shuffle, key: 'config.order.shuffle' },
+  { id: 'hard', icon: ArrowDownWideNarrow, key: 'config.order.hard' },
+]
+
+const directions: { id: CardDirection; icon: typeof ArrowRightLeft; key: string }[] = [
+  { id: 'qa', icon: ArrowRightLeft, key: 'config.direction.qa' },
+  { id: 'aq', icon: ArrowRightLeft, key: 'config.direction.aq' },
+]
+
+const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, onStart, deckTitle }) => {
+  const { t } = useLanguage()
+  const { prefs } = useSettings()
+
+  const [mode, setMode] = useState<StudyMode>(prefs.defaultMode)
+  const [order, setOrder] = useState<CardOrder>('default')
+  const [direction, setDirection] = useState<CardDirection>('qa')
+  const [autoplay, setAutoplay] = useState<boolean>(prefs.autoplay)
+
+  const handleStart = () => {
+    onStart({ mode, order, direction, autoplay })
+  }
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          onClick={onClose}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-lg bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden"
+          >
+            {/* Header */}
+            <div className="relative px-6 pt-6 pb-5 bg-gradient-to-br from-indigo-600 to-violet-600 text-white">
+              <button
+                onClick={onClose}
+                className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors"
+                aria-label="Cerrar"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <h2 className="text-xl font-bold">{t('config.title')}</h2>
+              <p className="text-sm text-indigo-100 mt-1">
+                {deckTitle ? <span className="font-medium">{deckTitle}</span> : t('config.subtitle')}
+              </p>
+            </div>
+
+            <div className="px-6 py-5 space-y-6 max-h-[70vh] overflow-y-auto">
+              {/* Mode */}
+              <div>
+                <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">{t('config.mode')}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {modes.map((m) => {
+                    const Icon = m.icon
+                    const active = mode === m.id
+                    return (
+                      <button
+                        key={m.id}
+                        onClick={() => setMode(m.id)}
+                        className={`relative text-left rounded-2xl border-2 p-4 transition-all ${
+                          active
+                            ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/15 shadow-sm'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-indigo-300 hover:bg-indigo-50/40 dark:hover:bg-indigo-500/5'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <span
+                            className={`w-10 h-10 rounded-xl flex items-center justify-center text-white ${
+                              m.id === 'basic'
+                                ? 'bg-blue-500'
+                                : m.id === 'timed'
+                                ? 'bg-orange-500'
+                                : 'bg-emerald-500'
+                            }`}
+                          >
+                            <Icon className="w-5 h-5" />
+                          </span>
+                        </div>
+                        <p className="font-semibold text-gray-900 dark:text-white text-sm">{t(m.key as any)}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-snug">{t(m.descKey as any)}</p>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Order */}
+              <div>
+                <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">{t('config.order')}</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {orders.map((o) => {
+                    const Icon = o.icon
+                    const active = order === o.id
+                    return (
+                      <button
+                        key={o.id}
+                        onClick={() => setOrder(o.id)}
+                        className={`flex flex-col items-center gap-1.5 rounded-xl border-2 p-3 transition-all ${
+                          active
+                            ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/15'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-indigo-300'
+                        }`}
+                      >
+                        <Icon className={`w-5 h-5 ${active ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400'}`} />
+                        <span className="text-xs font-medium text-gray-700 dark:text-gray-200 text-center leading-tight">
+                          {t(o.key as any)}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Direction */}
+              <div>
+                <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">{t('config.direction')}</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {directions.map((d) => {
+                    const Icon = d.icon
+                    const active = direction === d.id
+                    return (
+                      <button
+                        key={d.id}
+                        onClick={() => setDirection(d.id)}
+                        className={`flex items-center justify-center gap-2 rounded-xl border-2 p-3 transition-all ${
+                          active
+                            ? 'border-violet-500 bg-violet-50 dark:bg-violet-500/15'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-violet-300'
+                        }`}
+                      >
+                        <Icon className={`w-4 h-4 ${active ? 'text-violet-600 dark:text-violet-400' : 'text-gray-400'}`} />
+                        <span className="text-xs font-medium text-gray-700 dark:text-gray-200">{t(d.key as any)}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Autoplay */}
+              <label className="flex items-center justify-between gap-3 rounded-xl border border-gray-200 dark:border-gray-700 p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <span className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-indigo-500" />
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('config.autoplay')}</span>
+                </span>
+                <input
+                  type="checkbox"
+                  checked={autoplay}
+                  onChange={(e) => setAutoplay(e.target.checked)}
+                  className="w-5 h-5 accent-indigo-600 cursor-pointer"
+                />
+              </label>
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-800 flex items-center gap-3 bg-gray-50 dark:bg-gray-800/50">
+              <button
+                onClick={onClose}
+                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              >
+                {t('config.cancel')}
+              </button>
+              <button
+                onClick={handleStart}
+                className="flex-1 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+              >
+                {t('config.start')}
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
+
+export default SessionConfigModal

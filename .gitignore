@@ -1,0 +1,22 @@
+node_modules
+dist
+dist-ssr
+*.local
+.env
+.env.*
+!.env.example
+
+# editor / OS
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+
+# cloudflare build cache
+.wrangler/
+
+# local secrets / credentials — NEVER commit these
+Tokens
+config.yaml
+
+# local notes (not part of the project)
+Instrucciones Graphify
