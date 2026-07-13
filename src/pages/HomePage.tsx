@@ -12,7 +12,7 @@ import { useSettings } from '../context/SettingsContext'
 import { saveSessionToSupabase } from '../lib/sessions'
 import { StudySession } from '../types'
 import type { SessionConfig } from '../context/SettingsContext'
-import { FileText, Wand2, Brain, Sparkles, Zap, Layers, Trophy, Quote, ArrowRight } from 'lucide-react'
+import { FileText, Wand2, Brain, Sparkles, Zap, Layers, Trophy, ArrowRight } from 'lucide-react'
 
 const fade = {
   hidden: { opacity: 0, y: 24 },
@@ -202,18 +202,22 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* UPLOAD — centered, serene, with a sample flashcard beside it */}
+      {/* UPLOAD — centered, serene, with a live sample card below it */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="grid lg:grid-cols-[1.4fr_1fr] gap-8 items-center max-w-4xl mx-auto">
-          <motion.div
-            initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
-            transition={{ duration: 0.5 }}
-          >
-            <UploadArea onUpload={handleUpload} isUploading={isUploading} innerRef={uploadRef} />
-          </motion.div>
+        <motion.div
+          initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
+          transition={{ duration: 0.5 }}
+          className="max-w-2xl mx-auto"
+        >
+          <UploadArea onUpload={handleUpload} isUploading={isUploading} innerRef={uploadRef} />
+        </motion.div>
 
-          {/* New: sample flashcard that flips automatically (Pregunta ↔ Respuesta) */}
-          <SampleCardStack cards={sampleCards} />
+        {/* Live demo: the card the user is about to get, flipping on its own */}
+        <div className="mt-16 max-w-xl mx-auto">
+          <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-ink-muted dark:text-sepia-300 mb-6">
+            Así serán tus tarjetas
+          </p>
+          <SampleCardStack cards={sampleCards} centered />
         </div>
       </section>
 
@@ -257,7 +261,7 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* TESTIMONIALS — editorial pull-quotes, no boxes */}
+      {/* TESTIMONIALS — clean cards with avatar */}
       <section className="bg-paper-sunken dark:bg-night-soft border-t border-slate-200 dark:border-sepia-700">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <motion.h2
@@ -266,27 +270,26 @@ const HomePage: React.FC = () => {
           >
             {t('testi.title')}
           </motion.h2>
-          <div className="grid md:grid-cols-3 gap-x-10 gap-y-12">
+          <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((tm, i) => (
               <motion.figure
                 key={tm.name}
                 initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="relative"
+                className="relative bg-paper-raised dark:bg-sepia-900 rounded-3xl p-7 ring-1 ring-slate-200/70 dark:ring-sepia-800 shadow-soft hover:shadow-lift transition-all"
               >
-                <Quote className="w-6 h-6 text-ember-500/50 mb-3" />
-                <blockquote className="text-ink-soft dark:text-sepia-200 text-base leading-relaxed font-display italic">
-                  {tm.text}
-                </blockquote>
-                <figcaption className="mt-5 flex items-center gap-3 border-t border-slate-200 dark:border-sepia-700 pt-4">
-                  <div className="w-10 h-10 rounded-full bg-ember-500/10 dark:bg-ember-500/15 ring-1 ring-ember-500/20 flex items-center justify-center text-ember-700 dark:text-ember-300 font-display font-semibold text-sm">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-11 h-11 rounded-full bg-ember-500/10 dark:bg-ember-500/15 ring-1 ring-ember-500/20 flex items-center justify-center text-ember-700 dark:text-ember-300 font-display font-semibold text-sm">
                     {tm.initial}
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-ink dark:text-sepia-100">{tm.name}</p>
                     <p className="text-xs text-ink-muted dark:text-sepia-300">{tm.role}</p>
                   </div>
-                </figcaption>
+                </div>
+                <blockquote className="text-ink-soft dark:text-sepia-200 text-sm leading-relaxed">
+                  {tm.text}
+                </blockquote>
               </motion.figure>
             ))}
           </div>
@@ -325,7 +328,7 @@ const HomePage: React.FC = () => {
 // Auto-flipping sample flashcard: shows a question, flips to the answer after a
 // beat, advances to the next card, and loops. Keeps the "this is what you get"
 // idea alive without a single static, boxed card.
-const SampleCardStack: React.FC<{ cards: { q: string; a: string }[] }> = ({ cards }) => {
+const SampleCardStack: React.FC<{ cards: { q: string; a: string }[]; centered?: boolean }> = ({ cards, centered }) => {
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
 
@@ -351,7 +354,7 @@ const SampleCardStack: React.FC<{ cards: { q: string; a: string }[] }> = ({ card
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: 0.1, duration: 0.5 }}
-      className="relative hidden lg:block [perspective:1200px]"
+      className={`relative [perspective:1200px] ${centered ? 'block' : 'hidden lg:block'}`}
     >
       <div
         className="relative w-full rounded-3xl transition-transform duration-700 [transform-style:preserve-3d]"
