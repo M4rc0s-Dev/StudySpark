@@ -378,7 +378,7 @@ const HomePage: React.FC = () => {
       {showGuest && (
         <div
           className="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-ink/50 dark:bg-sepia-900/60 backdrop-blur-sm"
-          onClick={() => setShowGuest(false)}
+          onMouseDown={(e) => { if (e.target === e.currentTarget) setShowGuest(false) }}
         >
           <div
             onClick={(e) => e.stopPropagation()}

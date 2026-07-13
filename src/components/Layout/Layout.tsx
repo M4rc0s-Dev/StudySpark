@@ -29,9 +29,12 @@ const Layout: React.FC = () => {
       {/* Top navbar */}
       <header className="sticky top-0 z-50 bg-paper/85 dark:bg-[#0b1220]/85 backdrop-blur-md border-b border-slate-200/70 dark:border-sepia-800/70">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16 gap-2">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 shrink-0">
+          {/* 3-column grid: logo | centered nav | right cluster. Each lives in
+              its own cell so the nav is always perfectly centered and the
+              buttons can never overlap or stack on top of each other. */}
+          <div className="grid grid-cols-[auto_1fr_auto] items-center h-16 gap-2">
+            {/* Logo (left cell) */}
+            <Link to="/" className="flex items-center gap-2 justify-self-start shrink-0">
               <span className="w-9 h-9 rounded-xl bg-ink dark:bg-sepia-100 flex items-center justify-center text-paper dark:text-ink font-display font-bold text-lg shadow-soft">
                 S
               </span>
@@ -40,14 +43,17 @@ const Layout: React.FC = () => {
               </span>
             </Link>
 
-            {/* Desktop nav (inline, never overlaps the logo / right cluster) */}
-            <nav className="hidden md:flex items-center gap-1 shrink-0">
+            {/* Centered desktop nav (middle cell). "Mi biblioteca" requires a
+                session, so without one it points at sign-in (and returns here
+                after logging in). */}
+            <nav className="hidden md:flex items-center justify-center gap-1 min-w-0">
               {navigation.map((item) => {
                 const isActive = location.pathname === item.href
+                const href = item.href === '/library' && !user ? '/auth?next=library' : item.href
                 return (
                   <Link
                     key={item.name}
-                    to={item.href}
+                    to={href}
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                       isActive
                         ? 'text-ember-700 dark:text-ember-400 bg-ember-50 dark:bg-ember-500/10'
@@ -60,9 +66,8 @@ const Layout: React.FC = () => {
               })}
             </nav>
 
-            {/* Right cluster: theme + language + ko-fi + login/profile + mobile button.
-                `flex-nowrap` + `shrink-0` guarantees nothing ever stacks vertically. */}
-            <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 shrink-0 flex-nowrap">
+            {/* Right cluster: theme + language + ko-fi + login/profile + mobile button. */}
+            <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 justify-self-end shrink-0 flex-nowrap min-w-0">
               <button
                 onClick={toggleTheme}
                 className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 dark:border-sepia-700 text-ink-soft dark:text-sepia-300 hover:bg-slate-100 dark:hover:bg-sepia-800 transition-colors shrink-0"
@@ -115,10 +120,11 @@ const Layout: React.FC = () => {
             {navigation.map((item) => {
               const Icon = item.icon
               const isActive = location.pathname === item.href
+              const href = item.href === '/library' && !user ? '/auth?next=library' : item.href
               return (
                 <Link
                   key={item.name}
-                  to={item.href}
+                  to={href}
                   onClick={() => setIsSidebarOpen(false)}
                   className={`flex items-center px-4 py-3 rounded-lg mb-2 transition-colors ${
                     isActive

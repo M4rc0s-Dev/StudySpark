@@ -42,9 +42,9 @@ const SettingsPage: React.FC = () => {
   }, [profile?.avatar])
 
   // This page is account-only. If the session ends (e.g. the user signs out
-  // from right here), bounce them back to the home page immediately.
+  // from right here), send them to sign in instead of the home page.
   useEffect(() => {
-    if (!user) navigate('/', { replace: true })
+    if (!user) navigate('/auth', { replace: true })
   }, [user, navigate])
 
   const handleAvatarChange = async (seed: string) => {
@@ -327,7 +327,7 @@ const SettingsPage: React.FC = () => {
 
         {/* Change password modal */}
         {showPw && (
-          <div className="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-ink/50 dark:bg-sepia-900/60 backdrop-blur-sm" onClick={() => setShowPw(false)}>
+          <div className="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-ink/50 dark:bg-sepia-900/60 backdrop-blur-sm" onMouseDown={(e) => { if (e.target === e.currentTarget) setShowPw(false) }}>
             <div
               onClick={(e) => e.stopPropagation()}
               className="w-full max-w-sm bg-paper-raised dark:bg-sepia-900 rounded-2xl shadow-lift ring-1 ring-slate-200/70 dark:ring-sepia-800 p-6"

@@ -125,10 +125,10 @@ const LibraryPage: React.FC = () => {
   }, [user])
 
   // Library is account-only. Folders/sessions are tied to the signed-in user,
-  // so if the session ends we send the visitor back home instead of showing a
-  // half-broken, empty library.
+  // so if the session ends (or they open it without a session) we send them to
+  // sign in — never to an empty, half-broken library.
   useEffect(() => {
-    if (!user) navigate('/', { replace: true })
+    if (!user) navigate('/auth?next=library', { replace: true })
   }, [user, navigate])
 
   // Merge cloud sessions with local sessions while avoiding duplicates.
@@ -798,7 +798,7 @@ const LibraryPage: React.FC = () => {
           popup so the name field is impossible to miss, replacing the old
           tiny inline inputs. */}
       {folderModal && (
-        <div className="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-ink/50 dark:bg-sepia-900/60 backdrop-blur-sm" onClick={() => setFolderModal(null)}>
+        <div className="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-ink/50 dark:bg-sepia-900/60 backdrop-blur-sm" onMouseDown={(e) => { if (e.target === e.currentTarget) setFolderModal(null) }}>
           <div
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-sm bg-paper-raised dark:bg-sepia-900 rounded-2xl shadow-lift ring-1 ring-slate-200/70 dark:ring-sepia-800 p-6"

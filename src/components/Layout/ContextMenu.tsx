@@ -61,6 +61,7 @@ const Row: React.FC<{ item: ContextMenuItem; onClose: () => void }> = ({
           : 'text-gray-700 dark:text-sepia-100 hover:bg-gray-100 dark:hover:bg-sepia-800'
       } ${disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
       style={{ paddingLeft: PAD_BASE }}
+      title={item.label}
     >
       {item.treePrefix ? (
         // The folder icon rides INSIDE the prefix so it stays glued to the text
@@ -73,7 +74,10 @@ const Row: React.FC<{ item: ContextMenuItem; onClose: () => void }> = ({
       ) : (
         Icon && <Icon className="w-4 h-4 shrink-0" />
       )}
-      <span className="truncate flex-1">{item.label}</span>
+      {/* `min-w-0` lets the label shrink so long folder names truncate with an
+          ellipsis instead of colliding with / overflowing the panel edge.
+          `title` reveals the full name on hover. */}
+      <span className="truncate flex-1 min-w-0">{item.label}</span>
     </button>
   )
 }
@@ -86,7 +90,7 @@ const MenuList: React.FC<{ items: ContextMenuItem[]; onClose: () => void }> = ({
   onClose,
 }) => {
   return (
-    <div className="min-w-max">
+    <div className="w-full">
       {items.map((item, i) => (
         <Row key={i} item={item} onClose={onClose} />
       ))}
@@ -135,7 +139,7 @@ const Flyout: React.FC<{
       exit={{ opacity: 0, x: side === 'right' ? -4 : 4 }}
       transition={{ duration: 0.1 }}
       ref={ref}
-      className={`fixed z-[110] w-60 max-h-[70vh] overflow-auto bg-white dark:bg-sepia-900 rounded-xl shadow-2xl border border-gray-100 dark:border-sepia-500 p-1.5`}
+      className={`fixed z-[110] w-72 max-h-[70vh] overflow-auto bg-white dark:bg-sepia-900 rounded-xl shadow-2xl border border-gray-100 dark:border-sepia-500 p-1.5`}
       style={{ left: pos.x, top: pos.y }}
     >
       <MenuList items={items} onClose={onClose} />
@@ -217,7 +221,13 @@ const ContextMenu: React.FC<{ menu: ContextMenuState | null; onClose: () => void
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
-    const onScroll = () => onClose()
+    // Only close on a PAGE scroll (outside the menu). A scroll that happens
+    // INSIDE the menu — e.g. dragging the horizontal scrollbar of the folder
+    // tree — must NOT close it.
+    const onScroll = (e: Event) => {
+      if (ref.current && ref.current.contains(e.target as Node)) return
+      onClose()
+    }
     window.addEventListener('mousedown', onDown)
     window.addEventListener('keydown', onKey)
     window.addEventListener('scroll', onScroll, true)

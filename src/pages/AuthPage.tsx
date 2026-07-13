@@ -75,6 +75,13 @@ const AuthPage: React.FC = () => {
     }
     setBusy(true)
     try {
+      // Where to land after a successful sign-in. `guest` resumes a deck the
+      // visitor generated before signing up; `library` returns to the library
+      // they were trying to open without a session.
+      const land = () => {
+        if (next === 'guest' && consumeGuestCards(navigate, createSession)) return
+        navigate(next === 'library' ? '/library' : '/')
+      }
       if (mode === 'register') {
         const { needsConfirmation } = await signUp(email, password, name.trim(), avatarSeed)
         if (needsConfirmation) {
@@ -83,15 +90,12 @@ const AuthPage: React.FC = () => {
           if (next === 'guest') toast.success(t('guest.needlogin'))
         } else {
           toast.success('¡Cuenta creada!')
-          if (next === 'guest' && consumeGuestCards(navigate, createSession)) return
-          navigate('/')
+          land()
         }
       } else {
         await signIn(email, password)
         toast.success('¡Sesión iniciada!')
-        // A returning guest lands straight on their freshly generated deck.
-        if (consumeGuestCards(navigate, createSession)) return
-        navigate('/')
+        land()
       }
     } catch (err: any) {
       toast.error(err?.message || 'Algo salió mal')
