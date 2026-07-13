@@ -55,17 +55,24 @@ const Row: React.FC<{ item: ContextMenuItem; onClose: () => void }> = ({
         item.onClick?.()
         onClose()
       }}
-      className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-left transition-colors ${
+      className={`w-full flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm text-left transition-colors ${
         item.danger
           ? 'text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10'
           : 'text-gray-700 dark:text-sepia-100 hover:bg-gray-100 dark:hover:bg-sepia-800'
       } ${disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
       style={{ paddingLeft: PAD_BASE }}
     >
-      {Icon && <Icon className="w-4 h-4 shrink-0" />}
       {item.treePrefix ? (
-        <span className="font-mono text-xs text-slate-400 dark:text-sepia-500 select-none whitespace-pre shrink-0">{item.treePrefix}</span>
-      ) : null}
+        // The folder icon rides INSIDE the prefix so it stays glued to the text
+        // at every level (no detached icon column). The prefix encodes the
+        // indentation + connectors, so a deep item already includes its indent.
+        <span className="font-mono text-xs text-slate-400 dark:text-sepia-500 select-none whitespace-pre shrink-0">
+          {item.treePrefix}
+          {Icon ? <Icon className="w-4 h-4 inline-block -mt-0.5" /> : null}
+        </span>
+      ) : (
+        Icon && <Icon className="w-4 h-4 shrink-0" />
+      )}
       <span className="truncate flex-1">{item.label}</span>
     </button>
   )
@@ -79,7 +86,7 @@ const MenuList: React.FC<{ items: ContextMenuItem[]; onClose: () => void }> = ({
   onClose,
 }) => {
   return (
-    <div>
+    <div className="min-w-max">
       {items.map((item, i) => (
         <Row key={i} item={item} onClose={onClose} />
       ))}
@@ -128,7 +135,7 @@ const Flyout: React.FC<{
       exit={{ opacity: 0, x: side === 'right' ? -4 : 4 }}
       transition={{ duration: 0.1 }}
       ref={ref}
-      className={`fixed z-[110] w-60 max-h-[70vh] overflow-y-auto bg-white dark:bg-sepia-900 rounded-xl shadow-2xl border border-gray-100 dark:border-sepia-500 p-1.5`}
+      className={`fixed z-[110] w-60 max-h-[70vh] overflow-auto bg-white dark:bg-sepia-900 rounded-xl shadow-2xl border border-gray-100 dark:border-sepia-500 p-1.5`}
       style={{ left: pos.x, top: pos.y }}
     >
       <MenuList items={items} onClose={onClose} />

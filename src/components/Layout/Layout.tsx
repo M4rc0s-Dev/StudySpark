@@ -28,27 +28,27 @@ const Layout: React.FC = () => {
     <div className="min-h-screen bg-paper dark:bg-[#0b1220] dark:text-sepia-100 flex flex-col transition-colors">
       {/* Top navbar */}
       <header className="sticky top-0 z-50 bg-paper/85 dark:bg-[#0b1220]/85 backdrop-blur-md border-b border-slate-200/70 dark:border-sepia-800/70">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16 gap-2">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 shrink-0">
               <span className="w-9 h-9 rounded-xl bg-ink dark:bg-sepia-100 flex items-center justify-center text-paper dark:text-ink font-display font-bold text-lg shadow-soft">
                 S
               </span>
-              <span className="text-xl font-display font-bold tracking-tight text-ink dark:text-sepia-50">
+              <span className="text-xl font-display font-bold tracking-tight text-ink dark:text-sepia-50 hidden sm:inline">
                 Study<span className="text-ember-500">Spark</span>
               </span>
             </Link>
 
-            {/* Centered desktop nav */}
-            <nav className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+            {/* Desktop nav (inline, never overlaps the logo / right cluster) */}
+            <nav className="hidden md:flex items-center gap-1 shrink-0">
               {navigation.map((item) => {
                 const isActive = location.pathname === item.href
                 return (
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                       isActive
                         ? 'text-ember-700 dark:text-ember-400 bg-ember-50 dark:bg-ember-500/10'
                         : 'text-ink-soft dark:text-sepia-300 hover:text-ink dark:hover:text-sepia-50 hover:bg-slate-100 dark:hover:bg-sepia-800'
@@ -60,11 +60,12 @@ const Layout: React.FC = () => {
               })}
             </nav>
 
-            {/* Right cluster: theme + language + ko-fi + login/profile + mobile button */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Right cluster: theme + language + ko-fi + login/profile + mobile button.
+                `flex-nowrap` + `shrink-0` guarantees nothing ever stacks vertically. */}
+            <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 shrink-0 flex-nowrap">
               <button
                 onClick={toggleTheme}
-                className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 dark:border-sepia-700 text-ink-soft dark:text-sepia-300 hover:bg-slate-100 dark:hover:bg-sepia-800 transition-colors"
+                className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 dark:border-sepia-700 text-ink-soft dark:text-sepia-300 hover:bg-slate-100 dark:hover:bg-sepia-800 transition-colors shrink-0"
                 title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
                 aria-label="Cambiar tema"
               >
@@ -72,7 +73,7 @@ const Layout: React.FC = () => {
               </button>
               <button
                 onClick={toggle}
-                className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-2 rounded-lg border border-slate-200 dark:border-sepia-700 text-ink-soft dark:text-sepia-300 text-sm font-medium hover:bg-slate-100 dark:hover:bg-sepia-800 transition-colors"
+                className="inline-flex items-center gap-1 px-2 sm:px-3 py-2 rounded-lg border border-slate-200 dark:border-sepia-700 text-ink-soft dark:text-sepia-300 text-sm font-medium hover:bg-slate-100 dark:hover:bg-sepia-800 transition-colors shrink-0"
                 title="Cambiar idioma"
               >
                 <Globe className="w-4 h-4" />
@@ -82,7 +83,7 @@ const Layout: React.FC = () => {
                 href={KOFI_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden sm:inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-ember-500 text-paper font-semibold text-sm shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
+                className="hidden lg:inline-flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg bg-ember-500 text-paper font-semibold text-sm shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all shrink-0"
               >
                 <Coffee className="w-4 h-4" /> {t('support.kofi')}
               </a>
@@ -91,14 +92,14 @@ const Layout: React.FC = () => {
               ) : (
                 <Link
                   to="/auth"
-                  className="inline-flex items-center gap-1 px-3 sm:px-4 py-2 rounded-lg border border-ink text-ink dark:border-sepia-200 dark:text-sepia-100 text-sm font-semibold hover:bg-ink hover:text-paper dark:hover:bg-sepia-100 dark:hover:text-ink transition-colors"
+                  className="inline-flex items-center gap-1 px-3 sm:px-4 py-2 rounded-lg border border-ink text-ink dark:border-sepia-200 dark:text-sepia-100 text-sm font-semibold hover:bg-ink hover:text-paper dark:hover:bg-sepia-100 dark:hover:text-ink transition-colors shrink-0 whitespace-nowrap"
                 >
                   <User className="w-4 h-4" /> {t('nav.login')}
                 </Link>
               )}
               <button
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100"
+                className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 shrink-0"
               >
                 {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>

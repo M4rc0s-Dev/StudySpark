@@ -41,6 +41,12 @@ const SettingsPage: React.FC = () => {
     if (profile?.avatar) setAvatarSeed(profile.avatar)
   }, [profile?.avatar])
 
+  // This page is account-only. If the session ends (e.g. the user signs out
+  // from right here), bounce them back to the home page immediately.
+  useEffect(() => {
+    if (!user) navigate('/', { replace: true })
+  }, [user, navigate])
+
   const handleAvatarChange = async (seed: string) => {
     setAvatarSeed(seed)
     await updateAvatar(seed)

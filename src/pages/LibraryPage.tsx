@@ -124,6 +124,13 @@ const LibraryPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
+  // Library is account-only. Folders/sessions are tied to the signed-in user,
+  // so if the session ends we send the visitor back home instead of showing a
+  // half-broken, empty library.
+  useEffect(() => {
+    if (!user) navigate('/', { replace: true })
+  }, [user, navigate])
+
   // Merge cloud sessions with local sessions while avoiding duplicates.
   useEffect(() => {
     const cloud: StudySession[] = cloudSessions.map((s) => ({

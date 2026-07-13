@@ -235,6 +235,13 @@ export const translations = {
     'reward.finish': 'Terminar sesión',
     'reward.summary': 'Resumen de la sesión',
     'reward.unanswered': 'Sin responder: {count}',
+
+    // Guest (not signed in) flashcard generation flow.
+    'guest.title': '¿Quieres guardar y estudiar estas flashcards?',
+    'guest.desc': 'Puedes generarlas ahora, pero necesitarás una cuenta gratuita para usarlas y guardarlas. Créala en segundos y te las mostramos listas.',
+    'guest.register': 'Crear cuenta gratis',
+    'guest.generate': 'Generar de todos modos',
+    'guest.needlogin': 'Inicia sesión para ver y estudiar tus flashcards.',
     'study.end': 'Terminar',
     'study.review.wrong': 'Repasar falladas',
     'study.unanswered.warn': 'Aún quedan {count} sin responder',
@@ -630,6 +637,13 @@ export const translations = {
     'reward.finish': 'Finish session',
     'reward.summary': 'Session summary',
     'reward.unanswered': 'Unanswered: {count}',
+
+    // Guest (not signed in) flashcard generation flow.
+    'guest.title': 'Want to keep and study these flashcards?',
+    'guest.desc': 'You can generate them now, but you will need a free account to use and save them. Create one in seconds and we will show them ready to study.',
+    'guest.register': 'Create a free account',
+    'guest.generate': 'Generate anyway',
+    'guest.needlogin': 'Sign in to view and study your flashcards.',
     'study.end': 'Finish',
     'study.review.wrong': 'Review missed',
     'study.unanswered.warn': '{count} still unanswered',

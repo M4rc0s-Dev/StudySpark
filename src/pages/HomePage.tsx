@@ -9,10 +9,11 @@ import FlashcardAPI from '../services/apiService'
 import { useLanguage } from '../context/LanguageContext'
 import { useFlashcardStore } from '../context/FlashcardContext'
 import { useSettings } from '../context/SettingsContext'
+import { useAuth } from '../context/AuthContext'
 import { saveSessionToSupabase } from '../lib/sessions'
 import { StudySession } from '../types'
 import type { SessionConfig } from '../context/SettingsContext'
-import { FileText, Wand2, Brain, Sparkles, Zap, Layers, Trophy, ArrowRight, Star, Quote } from 'lucide-react'
+import { FileText, Wand2, Brain, Sparkles, Zap, Layers, Trophy, ArrowRight, Star, Quote, UserPlus, Lock } from 'lucide-react'
 
 const fade = {
   hidden: { opacity: 0, y: 24 },
@@ -29,8 +30,14 @@ const HomePage: React.FC = () => {
   const [configOpen, setConfigOpen] = useState(false)
   const uploadRef = useRef<HTMLDivElement>(null)
   const { t } = useLanguage()
+  const { user } = useAuth()
   const { createSession } = useFlashcardStore()
   const { prefs } = useSettings()
+  // Guest flow: holds the upload args until the user either signs up or
+  // confirms they want to generate anyway (cards are saved and surfaced after
+  // they log in).
+  const [guestArgs, setGuestArgs] = useState<Parameters<typeof handleUpload> | null>(null)
+  const [showGuest, setShowGuest] = useState(false)
 
   const scrollToUpload = () => {
     uploadRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -42,6 +49,17 @@ const HomePage: React.FC = () => {
     try { FlashcardAPI.cancel() } catch {}
     setIsUploading(false)
     setUploadError(null)
+  }
+
+  // Wrapper used by UploadArea: guests get a warning modal before generating,
+  // signed-in users go straight to generation.
+  const onUploadProxy = (file?: File, text?: string, fileName?: string, cardCount?: number) => {
+    if (!user) {
+      setGuestArgs([file, text, fileName, cardCount])
+      setShowGuest(true)
+      return
+    }
+    handleUpload(file, text, fileName, cardCount)
   }
 
   const handleUpload = async (file?: File, text?: string, fileName?: string, cardCount?: number) => {
@@ -80,6 +98,21 @@ const HomePage: React.FC = () => {
 
   const startStudy = (cfg: SessionConfig) => {
     if (!pendingCards) return
+    // Guests: cannot study yet. Stash the generated cards so AuthPage can pick
+    // them up after sign-up/login, then send them to create an account.
+    if (!user) {
+      try {
+        localStorage.setItem(
+          'studyspark.guest.cards',
+          JSON.stringify({ title: pendingCards.title, cards: pendingCards.cards, mode: cfg.mode })
+        )
+      } catch {}
+      setConfigOpen(false)
+      setPendingCards(null)
+      toast(t('guest.needlogin'))
+      navigate('/auth?next=guest', { replace: true })
+      return
+    }
     const id = createSession(pendingCards.title, pendingCards.cards, cfg.mode)
     const session: StudySession = {
       id,
@@ -209,7 +242,7 @@ const HomePage: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="max-w-2xl mx-auto"
         >
-          <UploadArea onUpload={handleUpload} isUploading={isUploading} innerRef={uploadRef} />
+          <UploadArea onUpload={onUploadProxy} isUploading={isUploading} innerRef={uploadRef} />
         </motion.div>
 
         {/* Live demo: the card the user is about to get, flipping on its own */}
@@ -338,6 +371,51 @@ const HomePage: React.FC = () => {
         onStart={startStudy}
         deckTitle={pendingCards?.title}
       />
+
+      {/* Guest warning: shown when a visitor without an account tries to
+          generate flashcards. They can create a free account or proceed and
+          finish signing up right after (cards are stashed for later). */}
+      {showGuest && (
+        <div
+          className="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-ink/50 dark:bg-sepia-900/60 backdrop-blur-sm"
+          onClick={() => setShowGuest(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-sm bg-paper-raised dark:bg-sepia-900 rounded-2xl shadow-lift ring-1 ring-slate-200/70 dark:ring-sepia-800 p-6"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-ember-50 dark:bg-ember-500/15 flex items-center justify-center text-ember-600 dark:text-ember-300 mb-4">
+              <Lock className="w-6 h-6" />
+            </div>
+            <h3 className="font-display text-lg font-bold text-ink dark:text-sepia-50">
+              {t('guest.title')}
+            </h3>
+            <p className="text-sm text-ink-muted dark:text-sepia-300 mt-2 leading-relaxed">
+              {t('guest.desc')}
+            </p>
+            <div className="mt-6 flex flex-col gap-3">
+              <button
+                onClick={() => {
+                  setShowGuest(false)
+                  navigate('/auth?next=guest', { replace: true })
+                }}
+                className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-ember-500 text-paper text-sm font-bold shadow-soft hover:shadow-lift transition-all"
+              >
+                <UserPlus className="w-4 h-4" /> {t('guest.register')}
+              </button>
+              <button
+                onClick={() => {
+                  setShowGuest(false)
+                  if (guestArgs) handleUpload(...guestArgs)
+                }}
+                className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-300 dark:border-sepia-600 dark:text-sepia-200 text-sm font-medium hover:bg-slate-100 dark:hover:bg-sepia-800 transition-colors"
+              >
+                {t('guest.generate')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isUploading && <LoadingScreen elapsedMs={loadingElapsed} error={uploadError} onCancel={cancelUpload} />}
     </div>

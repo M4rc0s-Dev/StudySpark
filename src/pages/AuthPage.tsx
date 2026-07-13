@@ -1,13 +1,30 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useLanguage } from '../context/LanguageContext'
 import { useAuth } from '../context/AuthContext'
+import { useFlashcardStore } from '../context/FlashcardContext'
 import { toast } from 'react-hot-toast'
 import { supabase as supabaseClient } from '../lib/supabase'
 import { Mail, Lock, User, ArrowRight, Loader2, MailCheck, RefreshCw, CheckCircle2, KeyRound, AlertCircle } from 'lucide-react'
 import { AVATAR_SEEDS } from '../lib/avatars'
 import PasswordStrength from '../components/Layout/PasswordStrength'
+
+// Pull any flashcards a guest generated earlier so they can be studied right
+// after the account is created/logged in. Returns true if it took over.
+function consumeGuestCards(navigate: (p: string, s?: any) => void, createSession: (t: string, c: any[], m: any) => string): boolean {
+  try {
+    const raw = localStorage.getItem('studyspark.guest.cards')
+    if (!raw) return false
+    const data = JSON.parse(raw) as { title: string; cards: any[]; mode: string }
+    localStorage.removeItem('studyspark.guest.cards')
+    const id = createSession(data.title, data.cards, data.mode as any)
+    navigate('/study', { state: { config: { mode: data.mode, order: 'original', direction: 'q-a', autoplay: false }, freshId: id } })
+    return true
+  } catch {
+    return false
+  }
+}
 
 const AuthPage: React.FC = () => {
   const [mode, setMode] = useState<'login' | 'register'>('login')
@@ -28,7 +45,10 @@ const AuthPage: React.FC = () => {
   const [forgotSent, setForgotSent] = useState(false)
   const { t } = useLanguage()
   const { signIn, signUp, signInWithGoogle, resetPassword } = useAuth()
+  const { createSession } = useFlashcardStore()
   const navigate = useNavigate()
+  const [params] = useSearchParams()
+  const next = params.get('next')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -58,14 +78,19 @@ const AuthPage: React.FC = () => {
       if (mode === 'register') {
         const { needsConfirmation } = await signUp(email, password, name.trim(), avatarSeed)
         if (needsConfirmation) {
+          // Guest cards stay stashed; they will be picked up on the later login.
           setConfirmEmail(email)
+          if (next === 'guest') toast.success(t('guest.needlogin'))
         } else {
           toast.success('¡Cuenta creada!')
+          if (next === 'guest' && consumeGuestCards(navigate, createSession)) return
           navigate('/')
         }
       } else {
         await signIn(email, password)
         toast.success('¡Sesión iniciada!')
+        // A returning guest lands straight on their freshly generated deck.
+        if (consumeGuestCards(navigate, createSession)) return
         navigate('/')
       }
     } catch (err: any) {

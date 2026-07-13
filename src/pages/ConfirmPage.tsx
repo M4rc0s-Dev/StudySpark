@@ -6,12 +6,30 @@ import { toast } from 'react-hot-toast'
 import { useLanguage } from '../context/LanguageContext'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
+import { useFlashcardStore } from '../context/FlashcardContext'
+
+// Reuse the same "guest generated cards" handoff as AuthPage: if a visitor
+// generated flashcards before signing up, surface them right after they log in.
+function consumeGuestCards(navigate: (p: string, s?: any) => void, createSession: (t: string, c: any[], m: any) => string): boolean {
+  try {
+    const raw = localStorage.getItem('studyspark.guest.cards')
+    if (!raw) return false
+    const data = JSON.parse(raw) as { title: string; cards: any[]; mode: string }
+    localStorage.removeItem('studyspark.guest.cards')
+    const id = createSession(data.title, data.cards, data.mode as any)
+    navigate('/study', { state: { config: { mode: data.mode, order: 'original', direction: 'q-a', autoplay: false }, freshId: id } })
+    return true
+  } catch {
+    return false
+  }
+}
 
 const ConfirmPage: React.FC = () => {
   const [params] = useSearchParams()
   const navigate = useNavigate()
   const { t } = useLanguage()
   const { refreshSessions } = useAuth()
+  const { createSession } = useFlashcardStore()
   const [status, setStatus] = useState<'loading' | 'ok' | 'error' | 'recovery'>('loading')
 
   // New-password form state (only used in the recovery branch).
@@ -62,7 +80,11 @@ const ConfirmPage: React.FC = () => {
     if (code && supabase) {
       supabase.auth
         .exchangeCodeForSession(code)
-        .then(() => navigate('/', { replace: true }))
+        .then(() => {
+          // A guest who just signed up via OAuth gets their stashed deck.
+          if (consumeGuestCards(navigate, createSession)) return
+          navigate('/', { replace: true })
+        })
         .catch(() => navigate('/', { replace: true }))
       return
     }
