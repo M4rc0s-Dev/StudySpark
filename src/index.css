@@ -19,8 +19,8 @@ body {
 }
 
 .dark body {
-  color: #e7e5e4;
-  background: #0c0a09;
+  color: #ece3d4;
+  background: #241d15;
 }
 
 .app {
@@ -54,7 +54,7 @@ body {
 }
 
 .dark ::-webkit-scrollbar-track {
-  background: #1c1917;
+  background: #211a13;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -63,7 +63,7 @@ body {
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #44403c;
+  background: #4d4031;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -71,7 +71,7 @@ body {
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #57534e;
+  background: #5e4f3c;
 }
 
 /* Animation classes */

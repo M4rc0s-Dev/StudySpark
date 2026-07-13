@@ -42,7 +42,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-ink/50 dark:bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-ink/50 dark:bg-sepia-900/60 backdrop-blur-sm"
           onClick={onCancel}
         >
           <motion.div
@@ -53,7 +53,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             onClick={(e) => e.stopPropagation()}
             role="alertdialog"
             aria-modal="true"
-            className="w-full max-w-sm bg-paper-raised dark:bg-[#161210] rounded-2xl shadow-lift border border-paper-sunken dark:border-[#2a2420] p-6"
+            className="w-full max-w-sm bg-paper-raised dark:bg-[#2f261c] rounded-2xl shadow-lift border border-paper-sunken dark:border-[#3d3024] p-6"
           >
             <div className="flex items-start gap-3">
               <div
@@ -67,15 +67,15 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
                 <AlertTriangle className="w-5 h-5" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-display text-lg font-semibold text-ink dark:text-stone-100">{title}</h3>
-                <p className="mt-1 text-sm text-ink-soft dark:text-stone-300 leading-relaxed">{message}</p>
+                <h3 className="font-display text-lg font-semibold text-ink dark:text-sepia-100">{title}</h3>
+                <p className="mt-1 text-sm text-ink-soft dark:text-sepia-300 leading-relaxed">{message}</p>
               </div>
             </div>
 
             <div className="mt-6 flex flex-wrap gap-3 justify-end">
               <button
                 onClick={onCancel}
-                className="px-4 py-2.5 rounded-xl border border-[#d6d3d1] dark:border-[#3a342e] dark:text-stone-200 text-sm font-medium hover:bg-paper-sunken dark:hover:bg-[#1c1917] transition-colors"
+                className="px-4 py-2.5 rounded-xl border border-[#d6d3d1] dark:border-[#4d4031] dark:text-sepia-200 text-sm font-medium hover:bg-paper-sunken dark:hover:bg-[#211a13] transition-colors"
               >
                 {cancelLabel || t('config.cancel')}
               </button>

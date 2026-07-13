@@ -65,13 +65,13 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', stiffness: 260, damping: 22 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg bg-paper-raised dark:bg-[#161210] rounded-3xl shadow-lift overflow-hidden"
+            className="w-full max-w-lg bg-paper-raised dark:bg-[#2f261c] rounded-3xl shadow-lift overflow-hidden"
           >
             {/* Header */}
-            <div className="relative px-6 pt-6 pb-5 bg-paper-sunken dark:bg-[#0f0d0b] text-ink dark:text-stone-100 border-b border-paper-sunken dark:border-[#2a2420]">
+            <div className="relative px-6 pt-6 pb-5 bg-paper-sunken dark:bg-[#2a221a] text-ink dark:text-sepia-100 border-b border-paper-sunken dark:border-[#3d3024]">
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 text-ink-muted dark:text-stone-400 hover:text-ink dark:hover:text-stone-100 transition-colors"
+                className="absolute top-4 right-4 text-ink-muted dark:text-sepia-400 hover:text-ink dark:hover:text-sepia-100 transition-colors"
                 aria-label="Cerrar"
               >
                 <X className="w-5 h-5" />
@@ -85,7 +85,7 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
             <div className="px-6 py-5 space-y-6 max-h-[70vh] overflow-y-auto">
               {/* Mode */}
               <div>
-                <p className="text-sm font-semibold text-ink-soft dark:text-stone-200 mb-3">{t('config.mode')}</p>
+                <p className="text-sm font-semibold text-ink-soft dark:text-sepia-200 mb-3">{t('config.mode')}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {modes.map((m) => {
                     const Icon = m.icon
@@ -97,7 +97,7 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
                         className={`relative text-left rounded-2xl border-2 p-4 transition-all ${
                           active
                             ? 'border-ember-500 bg-ember-50 dark:bg-ember-500/15 shadow-soft'
-                            : 'border-paper-sunken dark:border-[#2a2420] hover:border-ember-300 hover:bg-ember-50/40 dark:hover:bg-ember-500/5'
+                            : 'border-paper-sunken dark:border-[#3d3024] hover:border-ember-300 hover:bg-ember-50/40 dark:hover:bg-ember-500/5'
                         }`}
                       >
                         <span
@@ -105,8 +105,8 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
                         >
                           <Icon className="w-5 h-5" />
                         </span>
-                        <p className="mt-2 font-semibold text-ink dark:text-stone-100 text-sm">{t(m.key as any)}</p>
-                        <p className="text-xs text-ink-muted dark:text-stone-400 mt-1 leading-snug">{t(m.descKey as any)}</p>
+                        <p className="mt-2 font-semibold text-ink dark:text-sepia-100 text-sm">{t(m.key as any)}</p>
+                        <p className="text-xs text-ink-muted dark:text-sepia-400 mt-1 leading-snug">{t(m.descKey as any)}</p>
                       </button>
                     )
                   })}
@@ -115,7 +115,7 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
 
               {/* Order */}
               <div>
-                <p className="text-sm font-semibold text-ink-soft dark:text-stone-200 mb-3">{t('config.order')}</p>
+                <p className="text-sm font-semibold text-ink-soft dark:text-sepia-200 mb-3">{t('config.order')}</p>
                 <div className="grid grid-cols-3 gap-2">
                   {orders.map((o) => {
                     const Icon = o.icon
@@ -127,11 +127,11 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
                         className={`flex flex-col items-center gap-1.5 rounded-xl border-2 p-3 transition-all ${
                           active
                             ? 'border-ember-500 bg-ember-50 dark:bg-ember-500/15'
-                            : 'border-paper-sunken dark:border-[#2a2420] hover:border-ember-300'
+                            : 'border-paper-sunken dark:border-[#3d3024] hover:border-ember-300'
                         }`}
                       >
                         <Icon className={`w-5 h-5 ${active ? 'text-ember-600 dark:text-ember-400' : 'text-ink-muted'}`} />
-                        <span className="text-xs font-medium text-ink-soft dark:text-stone-200 text-center leading-tight">
+                        <span className="text-xs font-medium text-ink-soft dark:text-sepia-200 text-center leading-tight">
                           {t(o.key as any)}
                         </span>
                       </button>
@@ -142,7 +142,7 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
 
               {/* Direction */}
               <div>
-                <p className="text-sm font-semibold text-ink-soft dark:text-stone-200 mb-3">{t('config.direction')}</p>
+                <p className="text-sm font-semibold text-ink-soft dark:text-sepia-200 mb-3">{t('config.direction')}</p>
                 <div className="grid grid-cols-2 gap-2">
                   {directions.map((d) => {
                     const Icon = d.icon
@@ -154,11 +154,11 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
                         className={`flex items-center justify-center gap-2 rounded-xl border-2 p-3 transition-all ${
                           active
                             ? 'border-ember-500 bg-ember-50 dark:bg-ember-500/15'
-                            : 'border-paper-sunken dark:border-[#2a2420] hover:border-ember-300'
+                            : 'border-paper-sunken dark:border-[#3d3024] hover:border-ember-300'
                         }`}
                       >
                         <Icon className={`w-4 h-4 ${active ? 'text-ember-600 dark:text-ember-400' : 'text-ink-muted'}`} />
-                        <span className="text-xs font-medium text-ink-soft dark:text-stone-200">{t(d.key as any)}</span>
+                        <span className="text-xs font-medium text-ink-soft dark:text-sepia-200">{t(d.key as any)}</span>
                       </button>
                     )
                   })}
@@ -166,10 +166,10 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
               </div>
 
               {/* Autoplay */}
-              <label className="flex items-center justify-between gap-3 rounded-xl border border-paper-sunken dark:border-[#2a2420] p-3 cursor-pointer hover:bg-paper-sunken dark:hover:bg-[#1c1917] transition-colors">
+              <label className="flex items-center justify-between gap-3 rounded-xl border border-paper-sunken dark:border-[#3d3024] p-3 cursor-pointer hover:bg-paper-sunken dark:hover:bg-[#211a13] transition-colors">
                 <span className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-ember-500" />
-                  <span className="text-sm font-medium text-ink-soft dark:text-stone-200">{t('config.autoplay')}</span>
+                  <span className="text-sm font-medium text-ink-soft dark:text-sepia-200">{t('config.autoplay')}</span>
                 </span>
                 <input
                   type="checkbox"
@@ -181,10 +181,10 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 border-t border-paper-sunken dark:border-[#2a2420] flex items-center gap-3 bg-paper-sunken dark:bg-[#1c1917]">
+            <div className="px-6 py-4 border-t border-paper-sunken dark:border-[#3d3024] flex items-center gap-3 bg-paper-sunken dark:bg-[#211a13]">
               <button
                 onClick={onClose}
-                className="px-5 py-2.5 rounded-xl border border-[#d6d3d1] dark:border-[#3a342e] dark:text-stone-200 font-medium hover:bg-[#e7e5e4] dark:hover:bg-[#2a2420] transition-colors"
+                className="px-5 py-2.5 rounded-xl border border-[#d6d3d1] dark:border-[#4d4031] dark:text-sepia-200 font-medium hover:bg-[#e7e5e4] dark:hover:bg-[#3d3024] transition-colors"
               >
                 {t('config.cancel')}
               </button>

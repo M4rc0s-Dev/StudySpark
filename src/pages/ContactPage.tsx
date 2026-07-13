@@ -61,7 +61,7 @@ const ContactPage: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          className="bg-paper-raised dark:bg-[#161210] rounded-3xl shadow-lift border border-paper-sunken dark:border-[#2a2420] p-10"
+          className="bg-paper-raised dark:bg-[#2f261c] rounded-3xl shadow-lift border border-paper-sunken dark:border-[#3d3024] p-10"
         >
           <motion.div
             initial={{ scale: 0, rotate: -20 }}
@@ -71,8 +71,8 @@ const ContactPage: React.FC = () => {
           >
             <CheckCircle className="w-10 h-10" />
           </motion.div>
-          <h1 className="mt-6 font-display text-3xl font-semibold text-ink dark:text-stone-100">{t('contact.success.title')}</h1>
-          <p className="mt-2 text-ink-muted dark:text-stone-400">{t('contact.success.desc')}</p>
+          <h1 className="mt-6 font-display text-3xl font-semibold text-ink dark:text-sepia-100">{t('contact.success.title')}</h1>
+          <p className="mt-2 text-ink-muted dark:text-sepia-400">{t('contact.success.desc')}</p>
           <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
             <button
               onClick={() => { setShowSuccess(false); navigate(-1) }}
@@ -82,7 +82,7 @@ const ContactPage: React.FC = () => {
             </button>
             <button
               onClick={() => navigate('/')}
-              className="px-6 py-3 border border-[#d6d3d1] dark:border-[#3a342e] dark:text-stone-200 text-ink-soft dark:text-stone-300 rounded-xl hover:bg-paper-sunken dark:hover:bg-[#1c1917] transition-colors"
+              className="px-6 py-3 border border-[#d6d3d1] dark:border-[#4d4031] dark:text-sepia-200 text-ink-soft dark:text-sepia-300 rounded-xl hover:bg-paper-sunken dark:hover:bg-[#211a13] transition-colors"
             >
               {t('contact.home')}
             </button>
@@ -101,18 +101,18 @@ const ContactPage: React.FC = () => {
         <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-ember-50 dark:bg-ember-500/15 text-ember-600 dark:text-ember-300 text-sm font-medium mb-4">
           <MessageCircle className="w-4 h-4" /> {t('contact.title')}
         </span>
-        <h1 className="font-display text-3xl sm:text-4xl font-semibold text-ink dark:text-stone-100">{t('contact.title')}</h1>
-        <p className="mt-3 text-ink-muted dark:text-stone-400">{t('contact.subtitle')}</p>
+        <h1 className="font-display text-3xl sm:text-4xl font-semibold text-ink dark:text-sepia-100">{t('contact.title')}</h1>
+        <p className="mt-3 text-ink-muted dark:text-sepia-400">{t('contact.subtitle')}</p>
       </motion.div>
 
       <motion.form
         initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
         onSubmit={handleSubmit}
-        className="bg-paper-raised dark:bg-[#161210] rounded-3xl shadow-soft border border-paper-sunken dark:border-[#2a2420] p-8"
+        className="bg-paper-raised dark:bg-[#2f261c] rounded-3xl shadow-soft border border-paper-sunken dark:border-[#3d3024] p-8"
       >
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label htmlFor="name" className="block text-sm font-semibold text-ink-soft dark:text-stone-200 mb-2">
+            <label htmlFor="name" className="block text-sm font-semibold text-ink-soft dark:text-sepia-200 mb-2">
               {t('contact.name')}
             </label>
             <input
@@ -122,12 +122,12 @@ const ContactPage: React.FC = () => {
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 border border-paper-sunken dark:border-[#2a2420] dark:bg-[#1c1917] dark:text-stone-100 dark:placeholder-stone-500 rounded-xl focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none transition"
+              className="w-full px-4 py-3 border border-paper-sunken dark:border-[#3d3024] dark:bg-[#211a13] dark:text-sepia-100 dark:placeholder-sepia-500 rounded-xl focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none transition"
               placeholder="Tu nombre"
             />
           </div>
           <div>
-            <label htmlFor="email" className="block text-sm font-semibold text-ink-soft dark:text-stone-200 mb-2">
+            <label htmlFor="email" className="block text-sm font-semibold text-ink-soft dark:text-sepia-200 mb-2">
               {t('contact.email')}
             </label>
             <input
@@ -137,14 +137,14 @@ const ContactPage: React.FC = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 border border-paper-sunken dark:border-[#2a2420] dark:bg-[#1c1917] dark:text-stone-100 dark:placeholder-stone-500 rounded-xl focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none transition"
+              className="w-full px-4 py-3 border border-paper-sunken dark:border-[#3d3024] dark:bg-[#211a13] dark:text-sepia-100 dark:placeholder-sepia-500 rounded-xl focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none transition"
               placeholder="tu@email.com"
             />
           </div>
         </div>
 
         <div className="mb-6">
-          <label htmlFor="subject" className="block text-sm font-semibold text-ink-soft dark:text-stone-200 mb-2">
+          <label htmlFor="subject" className="block text-sm font-semibold text-ink-soft dark:text-sepia-200 mb-2">
             {t('contact.subject')}
           </label>
           <input
@@ -154,13 +154,13 @@ const ContactPage: React.FC = () => {
             value={formData.subject}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-paper-sunken dark:border-[#2a2420] dark:bg-[#1c1917] dark:text-stone-100 dark:placeholder-stone-500 rounded-xl focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none transition"
+            className="w-full px-4 py-3 border border-paper-sunken dark:border-[#3d3024] dark:bg-[#211a13] dark:text-sepia-100 dark:placeholder-sepia-500 rounded-xl focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none transition"
             placeholder="Asunto del mensaje"
           />
         </div>
 
         <div className="mb-8">
-          <label htmlFor="message" className="block text-sm font-semibold text-ink-soft dark:text-stone-200 mb-2">
+          <label htmlFor="message" className="block text-sm font-semibold text-ink-soft dark:text-sepia-200 mb-2">
             {t('contact.message')}
           </label>
           <textarea
@@ -170,7 +170,7 @@ const ContactPage: React.FC = () => {
             onChange={handleChange}
             required
             rows={5}
-            className="w-full px-4 py-3 border border-paper-sunken dark:border-[#2a2420] dark:bg-[#1c1917] dark:text-stone-100 dark:placeholder-stone-500 rounded-xl focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none transition resize-none"
+            className="w-full px-4 py-3 border border-paper-sunken dark:border-[#3d3024] dark:bg-[#211a13] dark:text-sepia-100 dark:placeholder-sepia-500 rounded-xl focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none transition resize-none"
             placeholder="Escribe tu mensaje aquí..."
           />
         </div>
@@ -191,7 +191,7 @@ const ContactPage: React.FC = () => {
           )}
         </button>
 
-        <p className="mt-4 text-center text-xs text-ink-muted dark:text-stone-500">
+        <p className="mt-4 text-center text-xs text-ink-muted dark:text-sepia-500">
           {t('contact.privacy')}
         </p>
       </motion.form>

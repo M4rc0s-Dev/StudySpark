@@ -31,6 +31,20 @@ export default {
           600: '#d97706',
           700: '#b45309',
         },
+        // Warm sepia dark mode: brown base + off-white text for low-glare
+        // reading/study comfort (Kindle-style). Only used via `dark:sepia-*`.
+        sepia: {
+          50: '#efe6d6', // near-white warm text
+          100: '#ece3d4', // primary text on dark sepia
+          200: '#d8cbb6', // secondary text
+          300: '#b9ab92', // muted text
+          400: '#3d3024', // hairline border
+          500: '#4d4031', // stronger border
+          600: '#211a13', // input / inset surface
+          700: '#2f261c', // card surface
+          800: '#2a221a', // raised surface
+          900: '#241d15', // page background
+        },
       },
       boxShadow: {
         soft: '0 1px 2px rgba(28,25,23,0.04), 0 8px 24px -12px rgba(28,25,23,0.18)',

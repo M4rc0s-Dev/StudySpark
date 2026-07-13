@@ -41,11 +41,11 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ elapsedMs, onCancel, erro
   const Icon = current.icon
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-paper-sunken/95 dark:bg-[#0c0a09]/95 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-paper-sunken/95 dark:bg-[#241d15]/95 backdrop-blur-sm">
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="w-full max-w-md bg-paper-raised dark:bg-[#161210] rounded-3xl shadow-lift p-8 text-center"
+        className="w-full max-w-md bg-paper-raised dark:bg-[#2f261c] rounded-3xl shadow-lift p-8 text-center"
       >
         <div className="relative w-20 h-20 mx-auto mb-6">
           <div className="absolute inset-0 rounded-2xl bg-ember-500 opacity-15 animate-ping" />
@@ -54,13 +54,13 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ elapsedMs, onCancel, erro
           </div>
         </div>
 
-        <h2 className="font-display text-xl font-semibold text-ink dark:text-stone-100">{t('loading.title')}</h2>
+        <h2 className="font-display text-xl font-semibold text-ink dark:text-sepia-100">{t('loading.title')}</h2>
 
         <motion.p
           key={current.key}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-3 text-ink-soft dark:text-stone-300 font-medium min-h-[1.5rem]"
+          className="mt-3 text-ink-soft dark:text-sepia-300 font-medium min-h-[1.5rem]"
         >
           {t(current.key as any)}
           {dots}
@@ -75,7 +75,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ elapsedMs, onCancel, erro
               <span
                 key={s.key}
                 className={`h-2 rounded-full transition-all duration-500 ${
-                  active ? 'w-8 bg-ember-500' : 'w-2 bg-paper-sunken dark:bg-[#2a2420]'
+                  active ? 'w-8 bg-ember-500' : 'w-2 bg-paper-sunken dark:bg-[#3d3024]'
                 }`}
               />
             )
@@ -88,13 +88,13 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ elapsedMs, onCancel, erro
             <p className="text-rose-600 dark:text-rose-400 font-medium">{error}</p>
             <button
               onClick={onCancel}
-              className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#d6d3d1] dark:border-[#3a342e] dark:text-stone-200 text-sm font-semibold hover:bg-paper-sunken dark:hover:bg-[#1c1917] transition-colors"
+              className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#d6d3d1] dark:border-[#4d4031] dark:text-sepia-200 text-sm font-semibold hover:bg-paper-sunken dark:hover:bg-[#211a13] transition-colors"
             >
               <X className="w-4 h-4" /> Cancelar
             </button>
           </div>
         ) : (
-        <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-400 dark:text-gray-500">
+        <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-400 dark:text-sepia-300">
           <Loader2 className="w-4 h-4 animate-spin" />
           <span>{t('loading.hint')}</span>
         </div>

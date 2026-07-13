@@ -53,7 +53,7 @@ const MenuItems: React.FC<{
       {
         if (item.separator)
         {
-          return <div key={i} className="my-1 border-t border-gray-100 dark:border-gray-800" />
+          return <div key={i} className="my-1 border-t border-gray-100 dark:border-sepia-500" />
         }
         if (item.render)
         {
@@ -75,8 +75,8 @@ const MenuItems: React.FC<{
               <button
                 className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-left transition-colors ${
                   openSub === i
-                    ? 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100'
-                    : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    ? 'bg-gray-100 dark:bg-sepia-700 text-gray-800 dark:text-sepia-50'
+                    : 'text-gray-700 dark:text-sepia-100 hover:bg-gray-100 dark:hover:bg-sepia-800'
                 }`}
                 style={{ paddingLeft: 12 + (itemIndent - 1) * 18 }}
               >
@@ -92,7 +92,7 @@ const MenuItems: React.FC<{
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -4 }}
                     transition={{ duration: 0.1 }}
-                    className="absolute top-0 left-full -ml-1 w-60 max-h-[70vh] overflow-y-auto bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-800 p-1.5 z-10"
+                    className="absolute top-0 left-full -ml-1 w-60 max-h-[70vh] overflow-y-auto bg-white dark:bg-sepia-900 rounded-xl shadow-2xl border border-gray-100 dark:border-sepia-500 p-1.5 z-10"
                   >
                     <TreeMenu items={item.submenu} onClose={onClose} />
                   </motion.div>
@@ -114,7 +114,7 @@ const MenuItems: React.FC<{
             className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-left transition-colors ${
               item.danger
                 ? 'text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10'
-                : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+                : 'text-gray-700 dark:text-sepia-100 hover:bg-gray-100 dark:hover:bg-sepia-800'
             }`}
             style={itemIndent > 1 ? { paddingLeft: 12 + (itemIndent - 1) * 18 } : undefined}
           >
@@ -141,7 +141,7 @@ const TreeMenu: React.FC<{
         level <= 1
           ? node
           : (
-            <div key={idx} className="border-l border-gray-200 dark:border-gray-700 pl-3">
+            <div key={idx} className="border-l border-gray-200 dark:border-sepia-500 pl-3">
               {node}
             </div>
           )
@@ -202,7 +202,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ menu, onClose }) =>
   return (
     <div
       ref={ref}
-      className="fixed z-[100] min-w-[14rem] bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-800 p-1.5"
+      className="fixed z-[100] min-w-[14rem] bg-white dark:bg-sepia-900 rounded-xl shadow-2xl border border-gray-100 dark:border-sepia-500 p-1.5"
       style={{ left: pos.x, top: pos.y }}
     >
       <MenuItems items={menu.items} onClose={onClose} />

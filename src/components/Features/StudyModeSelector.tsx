@@ -25,7 +25,7 @@ const StudyModeSelector: React.FC<StudyModeSelectorProps> = ({ mode, onModeChang
   }
 
   return (
-    <div className="flex items-center gap-1 bg-gray-50 dark:bg-gray-800 rounded-xl p-1.5">
+    <div className="flex items-center gap-1 bg-gray-50 dark:bg-sepia-700 rounded-xl p-1.5">
       {modes.map((m) => {
         const Icon = m.icon
         const active = mode === m.id
@@ -37,7 +37,7 @@ const StudyModeSelector: React.FC<StudyModeSelectorProps> = ({ mode, onModeChang
             className={`relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
               active
                 ? `${m.color} text-white shadow-sm`
-                : 'text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700'
+                : 'text-gray-600 dark:text-sepia-200 hover:bg-white dark:hover:bg-sepia-800'
             }`}
           >
             <Icon className="w-4 h-4" />

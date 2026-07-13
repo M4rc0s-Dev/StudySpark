@@ -36,26 +36,26 @@ const SettingsPage: React.FC = () => {
     <div className="max-w-3xl mx-auto px-4 py-12">
       <button
         onClick={() => navigate(-1)}
-        className="inline-flex items-center gap-1 text-sm text-ink-muted dark:text-stone-400 hover:text-ink dark:hover:text-stone-200 mb-6 transition-colors"
+        className="inline-flex items-center gap-1 text-sm text-ink-muted dark:text-sepia-400 hover:text-ink dark:hover:text-sepia-200 mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" /> {t('study.back')}
       </button>
 
       <motion.h1
         initial="hidden" animate="show" variants={fade}
-        className="font-display text-3xl font-semibold text-ink dark:text-stone-100"
+        className="font-display text-3xl font-semibold text-ink dark:text-sepia-100"
       >
         {t('settings.title')}
       </motion.h1>
-      <p className="text-ink-muted dark:text-stone-400 mb-8">{t('settings.subtitle')}</p>
+      <p className="text-ink-muted dark:text-sepia-400 mb-8">{t('settings.subtitle')}</p>
 
       <div className="space-y-6">
         {/* Language */}
         <motion.section
           initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
-          className="bg-paper-raised dark:bg-[#161210] rounded-2xl shadow-soft border border-paper-sunken dark:border-[#2a2420] p-6"
+          className="bg-paper-raised dark:bg-[#2f261c] rounded-2xl shadow-soft border border-paper-sunken dark:border-[#3d3024] p-6"
         >
-          <h2 className="font-semibold text-ink dark:text-stone-100 flex items-center gap-2 mb-4 font-display">
+          <h2 className="font-semibold text-ink dark:text-sepia-100 flex items-center gap-2 mb-4 font-display">
             <Globe className="w-5 h-5 text-ember-500" /> {t('settings.language')}
           </h2>
           <div className="grid grid-cols-2 gap-3">
@@ -66,7 +66,7 @@ const SettingsPage: React.FC = () => {
                 className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 transition-all ${
                   lang === l
                     ? 'border-ember-500 bg-ember-50 dark:bg-ember-500/15 text-ember-700 dark:text-ember-300 font-semibold'
-                    : 'border-paper-sunken dark:border-[#2a2420] text-ink-muted dark:text-stone-300 hover:border-ember-300'
+                    : 'border-paper-sunken dark:border-[#3d3024] text-ink-muted dark:text-sepia-300 hover:border-ember-300'
                 }`}
               >
                 {lang === l && <Check className="w-4 h-4" />}
@@ -79,14 +79,14 @@ const SettingsPage: React.FC = () => {
         {/* Study preferences */}
         <motion.section
           initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
-          className="bg-paper-raised dark:bg-[#161210] rounded-2xl shadow-soft border border-paper-sunken dark:border-[#2a2420] p-6"
+          className="bg-paper-raised dark:bg-[#2f261c] rounded-2xl shadow-soft border border-paper-sunken dark:border-[#3d3024] p-6"
         >
-          <h2 className="font-semibold text-ink dark:text-stone-100 flex items-center gap-2 mb-4 font-display">
+          <h2 className="font-semibold text-ink dark:text-sepia-100 flex items-center gap-2 mb-4 font-display">
             <Sparkles className="w-5 h-5 text-ember-500" /> {t('settings.studyprefs')}
           </h2>
 
           <div className="mb-5">
-            <p className="text-sm font-medium text-ink-soft dark:text-stone-200 mb-2">{t('settings.defaultmode')}</p>
+            <p className="text-sm font-medium text-ink-soft dark:text-sepia-200 mb-2">{t('settings.defaultmode')}</p>
             <div className="grid grid-cols-3 gap-2">
               {defaultModes.map((m) => {
                 const Icon = m.icon
@@ -98,11 +98,11 @@ const SettingsPage: React.FC = () => {
                     className={`flex flex-col items-center gap-1.5 rounded-xl border-2 p-3 transition-all ${
                       active
                         ? 'border-ember-500 bg-ember-50 dark:bg-ember-500/15'
-                        : 'border-paper-sunken dark:border-[#2a2420] hover:border-ember-300'
+                        : 'border-paper-sunken dark:border-[#3d3024] hover:border-ember-300'
                     }`}
                   >
                     <Icon className={`w-5 h-5 ${active ? 'text-ember-600 dark:text-ember-400' : 'text-ink-muted'}`} />
-                    <span className="text-xs font-medium text-ink-soft dark:text-stone-200">{t(m.key as any)}</span>
+                    <span className="text-xs font-medium text-ink-soft dark:text-sepia-200">{t(m.key as any)}</span>
                   </button>
                 )
               })}
@@ -110,14 +110,14 @@ const SettingsPage: React.FC = () => {
           </div>
 
           <div className="mb-5">
-            <p className="text-sm font-medium text-ink-soft dark:text-stone-200 mb-2 flex items-center gap-2">
+            <p className="text-sm font-medium text-ink-soft dark:text-sepia-200 mb-2 flex items-center gap-2">
               <Layers className="w-4 h-4 text-ember-500" /> {t('settings.cardcount')}
             </p>
             <div className="relative">
               <select
                 value={prefs.cardCount}
                 onChange={(e) => setPrefs({ cardCount: Number(e.target.value) })}
-                className="w-full appearance-none px-4 py-3 rounded-xl border border-paper-sunken dark:border-[#2a2420] dark:bg-[#1c1917] dark:text-stone-100 text-sm font-medium text-ink focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none cursor-pointer transition"
+                className="w-full appearance-none px-4 py-3 rounded-xl border border-paper-sunken dark:border-[#3d3024] dark:bg-[#211a13] dark:text-sepia-100 text-sm font-medium text-ink focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none cursor-pointer transition"
               >
                 <option value={CARD_COUNT_AUTO}>{t('upload.cardcount.auto')}</option>
                 {CARD_COUNT_OPTIONS.map((n) => (
@@ -130,12 +130,12 @@ const SettingsPage: React.FC = () => {
             </div>
           </div>
 
-          <label className="flex items-center justify-between gap-3 rounded-xl border border-paper-sunken dark:border-[#2a2420] p-3 cursor-pointer hover:bg-paper-sunken dark:hover:bg-[#1c1917] transition-colors">
+          <label className="flex items-center justify-between gap-3 rounded-xl border border-paper-sunken dark:border-[#3d3024] p-3 cursor-pointer hover:bg-paper-sunken dark:hover:bg-[#211a13] transition-colors">
             <span className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-ember-500" />
               <span>
-                <span className="block text-sm font-medium text-ink-soft dark:text-stone-200">{t('settings.speak')}</span>
-                <span className="block text-xs text-ink-muted dark:text-stone-400">{t('settings.speak.desc')}</span>
+                <span className="block text-sm font-medium text-ink-soft dark:text-sepia-200">{t('settings.speak')}</span>
+                <span className="block text-xs text-ink-muted dark:text-sepia-400">{t('settings.speak.desc')}</span>
               </span>
             </span>
             <input
@@ -150,15 +150,15 @@ const SettingsPage: React.FC = () => {
         {/* Account / support */}
         <motion.section
           initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
-          className="bg-paper-raised dark:bg-[#161210] rounded-2xl shadow-soft border border-paper-sunken dark:border-[#2a2420] p-6"
+          className="bg-paper-raised dark:bg-[#2f261c] rounded-2xl shadow-soft border border-paper-sunken dark:border-[#3d3024] p-6"
         >
-          <h2 className="font-semibold text-ink dark:text-stone-100 flex items-center gap-2 mb-4 font-display">
+          <h2 className="font-semibold text-ink dark:text-sepia-100 flex items-center gap-2 mb-4 font-display">
             <Coffee className="w-5 h-5 text-ember-500" /> {t('settings.account')}
           </h2>
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-xs uppercase tracking-wide text-ink-muted dark:text-stone-400">{t('settings.plan')}</p>
-              <p className="font-semibold text-ink dark:text-stone-100 flex items-center gap-2">
+              <p className="text-xs uppercase tracking-wide text-ink-muted dark:text-sepia-400">{t('settings.plan')}</p>
+              <p className="font-semibold text-ink dark:text-sepia-100 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-ember-500" /> {t('profile.free')}
               </p>
             </div>
@@ -171,21 +171,21 @@ const SettingsPage: React.FC = () => {
           >
             <Coffee className="w-4 h-4" /> {t('support.kofi')}
           </a>
-          <p className="mt-3 text-xs text-ink-muted dark:text-stone-400 text-center">{t('support.thanks')}</p>
+          <p className="mt-3 text-xs text-ink-muted dark:text-sepia-400 text-center">{t('support.thanks')}</p>
         </motion.section>
 
         {/* Data */}
         <motion.section
           initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
-          className="bg-paper-raised dark:bg-[#161210] rounded-2xl shadow-soft border border-paper-sunken dark:border-[#2a2420] p-6"
+          className="bg-paper-raised dark:bg-[#2f261c] rounded-2xl shadow-soft border border-paper-sunken dark:border-[#3d3024] p-6"
         >
-          <h2 className="font-semibold text-ink dark:text-stone-100 flex items-center gap-2 mb-4 font-display">
+          <h2 className="font-semibold text-ink dark:text-sepia-100 flex items-center gap-2 mb-4 font-display">
             <Download className="w-5 h-5 text-ember-600" /> {t('settings.data')}
           </h2>
 
-          <div className="rounded-xl border border-paper-sunken dark:border-[#2a2420] p-3 mb-3">
-            <p className="text-sm font-medium text-ink-soft dark:text-stone-200">{t('settings.export')}</p>
-            <p className="text-xs text-ink-muted dark:text-stone-400 mb-2">{t('settings.export.desc')}</p>
+          <div className="rounded-xl border border-paper-sunken dark:border-[#3d3024] p-3 mb-3">
+            <p className="text-sm font-medium text-ink-soft dark:text-sepia-200">{t('settings.export')}</p>
+            <p className="text-xs text-ink-muted dark:text-sepia-400 mb-2">{t('settings.export.desc')}</p>
             <button
               onClick={() => {
                 const decks: StudySession[] = sessions.map((s) => ({
@@ -224,7 +224,7 @@ const SettingsPage: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setConfirmDelete(false)}
-                  className="px-4 py-2 rounded-xl border border-[#d6d3d1] dark:border-[#3a342e] dark:text-stone-200 text-ink-muted dark:text-stone-300 text-sm font-medium hover:bg-paper-sunken dark:hover:bg-[#1c1917] transition-colors"
+                  className="px-4 py-2 rounded-xl border border-[#d6d3d1] dark:border-[#4d4031] dark:text-sepia-200 text-ink-muted dark:text-sepia-300 text-sm font-medium hover:bg-paper-sunken dark:hover:bg-[#211a13] transition-colors"
                 >
                   {t('config.cancel')}
                 </button>
@@ -233,7 +233,7 @@ const SettingsPage: React.FC = () => {
           )}
 
           {!user && (
-            <p className="mt-3 text-xs text-ink-muted dark:text-stone-500">{t('auth.login.desc')}</p>
+            <p className="mt-3 text-xs text-ink-muted dark:text-sepia-500">{t('auth.login.desc')}</p>
           )}
         </motion.section>
       </div>

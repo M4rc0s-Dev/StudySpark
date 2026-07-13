@@ -46,8 +46,8 @@ const difficultyStyles: Record<string, { ring: string; chip: string; key: string
 
 const conceptStyles: Record<string, string> = {
   Politics: 'bg-ember-50 text-ember-700 dark:bg-ember-500/15 dark:text-ember-300',
-  Economics: 'bg-stone-100 text-stone-700 dark:bg-stone-700/40 dark:text-stone-200',
-  Military: 'bg-stone-100 text-stone-700 dark:bg-stone-700/40 dark:text-stone-200',
+  Economics: 'bg-stone-100 text-stone-700 dark:bg-sepia-700/40 dark:text-sepia-200',
+  Military: 'bg-stone-100 text-stone-700 dark:bg-sepia-700/40 dark:text-sepia-200',
   Science: 'bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-300',
   History: 'bg-orange-100 text-orange-800 dark:bg-orange-500/15 dark:text-orange-300',
   Física: 'bg-ember-50 text-ember-700 dark:bg-ember-500/15 dark:text-ember-300',
@@ -113,10 +113,10 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
     <div
       className={cn(
         'absolute inset-0 backface-hidden overflow-hidden rounded-3xl border-2',
-        diff ? diff.ring : 'border-stone-200 dark:border-stone-700',
+        diff ? diff.ring : 'border-stone-200 dark:border-sepia-700',
         back
           ? 'rotate-y-180 bg-ember-50 dark:bg-ember-500/10'
-          : 'bg-paper-raised dark:bg-stone-900 card-sheen'
+          : 'bg-paper-raised dark:bg-sepia-900 card-sheen'
       )}
     >
       {children}
@@ -147,13 +147,13 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
                   {t(diff.key as any)}
                 </span>
               ) : (
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-stone-100 dark:bg-stone-700 text-ink-muted dark:text-stone-300">
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-stone-100 dark:bg-sepia-700 text-ink-muted dark:text-sepia-300">
                   {noDifficultyLabel}
                 </span>
               )}
             </div>
             <div className="flex-1 flex items-center">
-              <p className="font-display text-2xl font-semibold leading-snug text-ink dark:text-stone-50">
+              <p className="font-display text-2xl font-semibold leading-snug text-ink dark:text-sepia-50">
                 {flashcard.question}
               </p>
             </div>
@@ -165,7 +165,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
               ) : (
                 <span />
               )}
-              <span className="text-xs text-ink-muted/70 dark:text-stone-500 italic">
+              <span className="text-xs text-ink-muted/70 dark:text-sepia-500 italic">
                 Toca para ver la respuesta
               </span>
             </div>
@@ -187,13 +187,13 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
                   {t(diff.key as any)}
                 </span>
               ) : (
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-stone-100 dark:bg-stone-700 text-ink-muted dark:text-stone-300">
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-stone-100 dark:bg-sepia-700 text-ink-muted dark:text-sepia-300">
                   {noDifficultyLabel}
                 </span>
               )}
             </div>
             <div className="flex-1 overflow-y-auto">
-              <p className="text-lg leading-relaxed text-ink-soft dark:text-stone-100">{flashcard.answer}</p>
+              <p className="text-lg leading-relaxed text-ink-soft dark:text-sepia-100">{flashcard.answer}</p>
             </div>
             {flashcard.concept && (
               <div>
@@ -213,7 +213,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
             e.stopPropagation()
             handleCopy()
           }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-paper-raised dark:bg-stone-800 text-ink-soft dark:text-stone-300 text-sm font-medium shadow-soft border border-stone-200 dark:border-stone-700 hover:bg-paper-sunken dark:hover:bg-stone-700 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-paper-raised dark:bg-sepia-800 text-ink-soft dark:text-sepia-300 text-sm font-medium shadow-soft border border-stone-200 dark:border-sepia-700 hover:bg-paper-sunken dark:hover:bg-sepia-700 transition-colors"
         >
           {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
           {copied ? t('card.copied') : t('card.copy')}
@@ -227,7 +227,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
             'inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium shadow-soft border transition-colors',
             speaking
               ? 'bg-ember-500 text-ink border-ember-500'
-              : 'bg-paper-raised dark:bg-stone-800 text-ink-soft dark:text-stone-300 border-stone-200 dark:border-stone-700 hover:bg-paper-sunken dark:hover:bg-stone-700'
+              : 'bg-paper-raised dark:bg-sepia-800 text-ink-soft dark:text-sepia-300 border-stone-200 dark:border-sepia-700 hover:bg-paper-sunken dark:hover:bg-sepia-700'
           )}
         >
           {speaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}

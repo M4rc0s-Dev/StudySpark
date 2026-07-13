@@ -25,17 +25,17 @@ const Layout: React.FC = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-paper dark:bg-[#0c0a09] dark:text-stone-100 flex flex-col transition-colors">
+    <div className="min-h-screen bg-paper dark:bg-[#241d15] dark:text-sepia-100 flex flex-col transition-colors">
       {/* Top navbar */}
-      <header className="sticky top-0 z-50 bg-paper/85 dark:bg-[#0c0a09]/85 backdrop-blur-md border-b border-stone-200/70 dark:border-stone-800/70">
+      <header className="sticky top-0 z-50 bg-paper/85 dark:bg-[#241d15]/85 backdrop-blur-md border-b border-stone-200/70 dark:border-sepia-800/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 shrink-0">
-              <span className="w-9 h-9 rounded-xl bg-ink dark:bg-stone-100 flex items-center justify-center text-paper dark:text-ink font-display font-bold text-lg shadow-soft">
+              <span className="w-9 h-9 rounded-xl bg-ink dark:bg-sepia-100 flex items-center justify-center text-paper dark:text-ink font-display font-bold text-lg shadow-soft">
                 S
               </span>
-              <span className="text-xl font-display font-bold tracking-tight text-ink dark:text-stone-50">
+              <span className="text-xl font-display font-bold tracking-tight text-ink dark:text-sepia-50">
                 Study<span className="text-ember-500">Spark</span>
               </span>
             </Link>
@@ -51,7 +51,7 @@ const Layout: React.FC = () => {
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                       isActive
                         ? 'text-ember-700 dark:text-ember-400 bg-ember-50 dark:bg-ember-500/10'
-                        : 'text-ink-soft dark:text-stone-300 hover:text-ink dark:hover:text-white hover:bg-stone-100 dark:hover:bg-stone-800'
+                        : 'text-ink-soft dark:text-sepia-300 hover:text-ink dark:hover:text-sepia-50 hover:bg-stone-100 dark:hover:bg-sepia-800'
                     }`}
                   >
                     {item.name}
@@ -64,7 +64,7 @@ const Layout: React.FC = () => {
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <button
                 onClick={toggleTheme}
-                className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-stone-200 dark:border-stone-700 text-ink-soft dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+                className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-stone-200 dark:border-sepia-700 text-ink-soft dark:text-sepia-300 hover:bg-stone-100 dark:hover:bg-sepia-800 transition-colors"
                 title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
                 aria-label="Cambiar tema"
               >
@@ -72,7 +72,7 @@ const Layout: React.FC = () => {
               </button>
               <button
                 onClick={toggle}
-                className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 text-ink-soft dark:text-stone-300 text-sm font-medium hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+                className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-2 rounded-lg border border-stone-200 dark:border-sepia-700 text-ink-soft dark:text-sepia-300 text-sm font-medium hover:bg-stone-100 dark:hover:bg-sepia-800 transition-colors"
                 title="Cambiar idioma"
               >
                 <Globe className="w-4 h-4" />
@@ -91,7 +91,7 @@ const Layout: React.FC = () => {
               ) : (
                 <Link
                   to="/auth"
-                  className="inline-flex items-center gap-1 px-3 sm:px-4 py-2 rounded-lg border border-ink text-ink dark:border-stone-200 dark:text-stone-100 text-sm font-semibold hover:bg-ink hover:text-paper dark:hover:bg-stone-100 dark:hover:text-ink transition-colors"
+                  className="inline-flex items-center gap-1 px-3 sm:px-4 py-2 rounded-lg border border-ink text-ink dark:border-sepia-200 dark:text-sepia-100 text-sm font-semibold hover:bg-ink hover:text-paper dark:hover:bg-sepia-100 dark:hover:text-ink transition-colors"
                 >
                   <User className="w-4 h-4" /> {t('nav.login')}
                 </Link>
@@ -109,8 +109,8 @@ const Layout: React.FC = () => {
 
       {/* Mobile menu */}
       {isSidebarOpen && (
-        <div className="md:hidden fixed inset-0 z-40 bg-ink/40 dark:bg-black/50" onClick={() => setIsSidebarOpen(false)}>
-          <div className="absolute right-0 top-16 w-64 h-full bg-paper dark:bg-[#0c0a09] shadow-xl p-4 border-l border-stone-200 dark:border-stone-800" onClick={(e) => e.stopPropagation()}>
+        <div className="md:hidden fixed inset-0 z-40 bg-ink/40 dark:bg-sepia-900/50" onClick={() => setIsSidebarOpen(false)}>
+          <div className="absolute right-0 top-16 w-64 h-full bg-paper dark:bg-[#241d15] shadow-xl p-4 border-l border-stone-200 dark:border-sepia-800" onClick={(e) => e.stopPropagation()}>
             {navigation.map((item) => {
               const Icon = item.icon
               const isActive = location.pathname === item.href
@@ -122,7 +122,7 @@ const Layout: React.FC = () => {
                   className={`flex items-center px-4 py-3 rounded-lg mb-2 transition-colors ${
                     isActive
                       ? 'bg-ember-50 dark:bg-ember-500/10 text-ember-700 dark:text-ember-400 font-semibold'
-                      : 'text-ink-soft dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800'
+                      : 'text-ink-soft dark:text-sepia-300 hover:bg-stone-100 dark:hover:bg-sepia-800'
                   }`}
                 >
                   <Icon className="w-5 h-5 mr-3" />
@@ -142,7 +142,7 @@ const Layout: React.FC = () => {
             {user && (
               <button
                 onClick={() => { signOut(); setIsSidebarOpen(false) }}
-                className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-700 text-ink-soft dark:text-stone-200 font-medium"
+                className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-stone-200 dark:border-sepia-700 text-ink-soft dark:text-sepia-200 font-medium"
               >
                 <LogOut className="w-4 h-4" />
                 {t('profile.logout')}
@@ -150,7 +150,7 @@ const Layout: React.FC = () => {
             )}
             <button
               onClick={toggle}
-              className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-700 text-ink-soft dark:text-stone-200 font-medium"
+              className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-stone-200 dark:border-sepia-700 text-ink-soft dark:text-sepia-200 font-medium"
             >
               <Globe className="w-4 h-4" />
               {lang === 'es' ? 'Español' : 'English'}
@@ -158,7 +158,7 @@ const Layout: React.FC = () => {
             {user && (
               <button
                 onClick={() => { setIsSidebarOpen(false); navigate('/settings') }}
-                className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-700 text-ink-soft dark:text-stone-200 font-medium"
+                className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-stone-200 dark:border-sepia-700 text-ink-soft dark:text-sepia-200 font-medium"
               >
                 <Settings className="w-4 h-4" />
                 {t('profile.settings')}
@@ -177,19 +177,19 @@ const Layout: React.FC = () => {
       <Chatbot />
 
       {/* Footer */}
-      <footer className="bg-paper-sunken dark:bg-[#0c0a09] border-t border-stone-200 dark:border-stone-800 mt-16 transition-colors">
+      <footer className="bg-paper-sunken dark:bg-[#241d15] border-t border-stone-200 dark:border-sepia-800 mt-16 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-ink dark:bg-stone-100 flex items-center justify-center text-paper dark:text-ink font-display font-bold">
+              <span className="w-8 h-8 rounded-lg bg-ink dark:bg-sepia-100 flex items-center justify-center text-paper dark:text-ink font-display font-bold">
                 S
               </span>
-              <span className="font-display font-bold text-ink dark:text-stone-50">StudySpark</span>
+              <span className="font-display font-bold text-ink dark:text-sepia-50">StudySpark</span>
             </div>
-            <p className="text-sm text-ink-muted dark:text-stone-400">
+            <p className="text-sm text-ink-muted dark:text-sepia-400">
               © {new Date().getFullYear()} StudySpark. {t('footer.copy')}
             </p>
-            <div className="flex gap-6 text-sm text-ink-muted dark:text-stone-400">
+            <div className="flex gap-6 text-sm text-ink-muted dark:text-sepia-400">
               <Link to="/contact" className="hover:text-ember-600 dark:hover:text-ember-400 transition-colors">{t('footer.privacy')}</Link>
               <Link to="/contact" className="hover:text-ember-600 dark:hover:text-ember-400 transition-colors">{t('footer.terms')}</Link>
               <Link to="/contact" className="hover:text-ember-600 dark:hover:text-ember-400 transition-colors">{t('footer.contact')}</Link>

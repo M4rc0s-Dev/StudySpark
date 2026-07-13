@@ -123,7 +123,7 @@ const HomePage: React.FC = () => {
   return (
     <div>
       {/* HERO */}
-      <section className="relative overflow-hidden bg-ink dark:bg-[#0c0a09] paper-grain">
+      <section className="relative overflow-hidden bg-ink dark:bg-[#241d15] paper-grain">
         {/* Floating background blobs */}
         <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-ember-400/15 blur-2xl animate-blob" />
         <div className="absolute top-32 -right-16 w-80 h-80 rounded-full bg-amber-300/10 blur-2xl animate-blob animation-delay-2000" />
@@ -166,12 +166,12 @@ const HomePage: React.FC = () => {
               transition={{ delay: 0.25, duration: 0.6 }}
               className="relative hidden lg:block"
             >
-              <div className="bg-paper-raised/90 dark:bg-stone-800/90 rounded-3xl shadow-lift ring-1 ring-stone-200/70 dark:ring-stone-700/60 p-7">
+              <div className="bg-paper-raised/90 dark:bg-sepia-800/90 rounded-3xl shadow-lift ring-1 ring-stone-200/70 dark:ring-sepia-700/60 p-7">
                 <StudyIllustration />
-                <p className="mt-5 font-display text-lg font-semibold text-ink dark:text-stone-50 leading-snug">
+                <p className="mt-5 font-display text-lg font-semibold text-ink dark:text-sepia-50 leading-snug">
                   Tu material, convertido en repaso inteligente.
                 </p>
-                <ul className="mt-4 space-y-2 text-sm text-ink-soft dark:text-stone-300">
+                <ul className="mt-4 space-y-2 text-sm text-ink-soft dark:text-sepia-300">
                   <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-ember-500" /> Sube PDF, Word o texto</li>
                   <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-ember-500" /> La IA crea las tarjetas</li>
                   <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-ember-500" /> Estudia con repetición espaciada</li>
@@ -207,11 +207,11 @@ const HomePage: React.FC = () => {
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <motion.h2
           initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
-          className="font-display text-3xl font-bold text-center text-ink dark:text-stone-50 mb-4"
+          className="font-display text-3xl font-bold text-center text-ink dark:text-sepia-50 mb-4"
         >
           {t('how.title')}
         </motion.h2>
-        <p className="text-center text-ink-muted dark:text-stone-400 mb-12 max-w-xl mx-auto">
+        <p className="text-center text-ink-muted dark:text-sepia-400 mb-12 max-w-xl mx-auto">
           Tres pasos y empiezas a repasar. Sin configuraciones raras.
         </p>
         <div className="grid md:grid-cols-3 gap-6">
@@ -222,16 +222,16 @@ const HomePage: React.FC = () => {
                 key={step.key}
                 initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="relative bg-paper-raised dark:bg-stone-900 rounded-3xl p-7 ring-1 ring-stone-200/70 dark:ring-stone-800 shadow-soft hover:shadow-lift transition-all"
+                className="relative bg-paper-raised dark:bg-sepia-900 rounded-3xl p-7 ring-1 ring-stone-200/70 dark:ring-sepia-800 shadow-soft hover:shadow-lift transition-all"
               >
                 <div className="flex items-center gap-3 mb-5">
                   <span className="w-11 h-11 rounded-2xl bg-ember-500 text-ink flex items-center justify-center font-display font-bold text-lg">
                     {i + 1}
                   </span>
-                  <Icon className="w-6 h-6 text-ink-soft dark:text-stone-300" />
+                  <Icon className="w-6 h-6 text-ink-soft dark:text-sepia-300" />
                 </div>
-                <h3 className="text-lg font-semibold text-ink dark:text-stone-100 mb-2">{t(step.key as any)}</h3>
-                <p className="text-ink-muted dark:text-stone-300 text-sm leading-relaxed">{t(step.descKey as any)}</p>
+                <h3 className="text-lg font-semibold text-ink dark:text-sepia-100 mb-2">{t(step.key as any)}</h3>
+                <p className="text-ink-muted dark:text-sepia-300 text-sm leading-relaxed">{t(step.descKey as any)}</p>
               </motion.div>
             )
           })}
@@ -239,11 +239,11 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* TESTIMONIALS — editorial pull-quotes */}
-      <section className="bg-paper-sunken dark:bg-[#0c0a09] border-t border-stone-200 dark:border-stone-800">
+      <section className="bg-paper-sunken dark:bg-[#241d15] border-t border-stone-200 dark:border-sepia-800">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <motion.h2
             initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
-            className="font-display text-3xl font-bold text-center text-ink dark:text-stone-50 mb-12"
+            className="font-display text-3xl font-bold text-center text-ink dark:text-sepia-50 mb-12"
           >
             {t('testi.title')}
           </motion.h2>
@@ -253,19 +253,19 @@ const HomePage: React.FC = () => {
                 key={tm.name}
                 initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="relative bg-paper-raised dark:bg-stone-900 rounded-3xl p-7 ring-1 ring-stone-200/70 dark:ring-stone-800 shadow-soft hover:shadow-lift transition-all"
+                className="relative bg-paper-raised dark:bg-sepia-900 rounded-3xl p-7 ring-1 ring-stone-200/70 dark:ring-sepia-800 shadow-soft hover:shadow-lift transition-all"
               >
                 <span className="font-display text-5xl text-ember-400/60 leading-none block mb-2 select-none">"</span>
-                <blockquote className="text-ink-soft dark:text-stone-200 text-sm leading-relaxed -mt-4 mb-5">
+                <blockquote className="text-ink-soft dark:text-sepia-200 text-sm leading-relaxed -mt-4 mb-5">
                   {tm.text}
                 </blockquote>
                 <figcaption className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-ink dark:bg-stone-100 flex items-center justify-center text-paper dark:text-ink font-semibold text-sm">
+                  <div className="w-9 h-9 rounded-full bg-ink dark:bg-sepia-100 flex items-center justify-center text-paper dark:text-ink font-semibold text-sm">
                     {tm.initial}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-ink dark:text-stone-100">{tm.name}</p>
-                    <p className="text-xs text-ink-muted dark:text-stone-400">{tm.role}</p>
+                    <p className="text-sm font-semibold text-ink dark:text-sepia-100">{tm.name}</p>
+                    <p className="text-xs text-ink-muted dark:text-sepia-400">{tm.role}</p>
                   </div>
                 </figcaption>
               </motion.figure>
@@ -273,7 +273,7 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </section>
-      <section className="bg-ink dark:bg-[#0c0a09] py-16">
+      <section className="bg-ink dark:bg-[#241d15] py-16">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <motion.h2
             initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
