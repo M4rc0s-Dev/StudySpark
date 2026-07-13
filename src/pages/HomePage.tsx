@@ -122,67 +122,46 @@ const HomePage: React.FC = () => {
 
   return (
     <div>
-      {/* HERO — asymmetric editorial split: pitch left, illustration right */}
-      <section className="relative overflow-hidden bg-paper text-ink dark:bg-gradient-to-br dark:from-[#111f36] dark:via-[#16273f] dark:to-[#1d3350] dark:text-sepia-100 paper-grain">
+      {/* HERO — centered and serene */}
+      <section className="relative overflow-hidden bg-paper text-ink dark:bg-night dark:text-sepia-100 paper-grain">
         {/* Soft floating blobs — scaled down so they never wash out the text */}
-        <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-ember-400/10 dark:bg-ember-400/15 blur-2xl animate-blob" />
-        <div className="absolute top-32 -right-16 w-80 h-80 rounded-full bg-ember-300/10 dark:bg-ember-300/10 blur-2xl animate-blob animation-delay-2000" />
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[28rem] h-72 rounded-full bg-ember-400/10 dark:bg-ember-400/12 blur-3xl animate-blob" />
+        <div className="absolute bottom-0 -left-24 w-72 h-72 rounded-full bg-ember-300/10 blur-3xl animate-blob animation-delay-2000" />
 
-        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-28 grid lg:grid-cols-[1.05fr_0.95fr] gap-12 items-center">
-          <div>
-            <motion.span
-              initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-ember-500/30 bg-ember-500/10 text-ember-700 dark:text-ember-200 text-sm font-medium mb-6"
-            >
-              <Sparkles className="w-4 h-4" /> {t('hero.badge')}
-            </motion.span>
-
-            <motion.h1
-              initial="hidden" animate="show" variants={fade} transition={{ duration: 0.5 }}
-              className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-ink dark:text-sepia-50 leading-[1.05] tracking-tight"
-            >
-              {t('hero.title.1')}{' '}
-              <span className="text-ember-600 dark:text-ember-300">
-                {t('hero.title.2')}
-              </span>{' '}
-              {t('hero.title.3')}
-            </motion.h1>
-
-            <motion.p
-              initial="hidden" animate="show" variants={fade} transition={{ delay: 0.1, duration: 0.5 }}
-              className="mt-5 text-lg text-ink-muted dark:text-sepia-300 max-w-xl"
-            >
-              {t('hero.subtitle')}
-            </motion.p>
-
-            <motion.button
-              initial="hidden" animate="show" variants={fade} transition={{ delay: 0.18, duration: 0.5 }}
-              onClick={scrollToUpload}
-              className="mt-8 inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-ember-500 text-paper text-base font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
-            >
-              <Sparkles className="w-5 h-5" /> {t('cta.create')}
-            </motion.button>
-          </div>
-
-          {/* Editorial illustration panel — visible on large screens */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.25, duration: 0.6 }}
-            className="relative hidden lg:block"
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 text-center">
+          <motion.span
+            initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-ember-500/30 bg-ember-500/10 text-ember-700 dark:text-ember-200 text-sm font-medium mb-7"
           >
-            <div className="bg-paper-raised dark:bg-sepia-800/90 rounded-3xl shadow-lift ring-1 ring-slate-200/70 dark:ring-sepia-700/60 p-7">
-              <StudyIllustration />
-              <p className="mt-5 font-display text-lg font-semibold text-ink dark:text-sepia-50 leading-snug">
-                Tu material, convertido en repaso inteligente.
-              </p>
-              <ul className="mt-4 space-y-2 text-sm text-ink-soft dark:text-sepia-300">
-                <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-ember-500" /> Sube PDF, Word o texto</li>
-                <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-ember-500" /> La IA crea las tarjetas</li>
-                <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-ember-500" /> Estudia con repetición espaciada</li>
-              </ul>
-            </div>
-          </motion.div>
+            <Sparkles className="w-4 h-4" /> {t('hero.badge')}
+          </motion.span>
+
+          <motion.h1
+            initial="hidden" animate="show" variants={fade} transition={{ duration: 0.5 }}
+            className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-ink dark:text-sepia-50 leading-[1.08] tracking-tight"
+          >
+            {t('hero.title.1')}{' '}
+            <span className="text-ember-600 dark:text-ember-300">
+              {t('hero.title.2')}
+            </span>{' '}
+            {t('hero.title.3')}
+          </motion.h1>
+
+          <motion.p
+            initial="hidden" animate="show" variants={fade} transition={{ delay: 0.1, duration: 0.5 }}
+            className="mt-6 text-lg text-ink-muted dark:text-sepia-300 max-w-xl mx-auto"
+          >
+            {t('hero.subtitle')}
+          </motion.p>
+
+          <motion.button
+            initial="hidden" animate="show" variants={fade} transition={{ delay: 0.18, duration: 0.5 }}
+            onClick={scrollToUpload}
+            className="mt-10 inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-ember-500 text-paper text-lg font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
+          >
+            <Sparkles className="w-5 h-5" /> {t('cta.create')}
+          </motion.button>
         </div>
       </section>
 
@@ -207,14 +186,36 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* UPLOAD — its own dedicated, calm section */}
-      <section className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <motion.div
-          initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
-          transition={{ duration: 0.5 }}
-        >
-          <UploadArea onUpload={handleUpload} isUploading={isUploading} innerRef={uploadRef} />
-        </motion.div>
+      {/* UPLOAD — centered, serene, with a sample flashcard beside it */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="grid lg:grid-cols-[1.4fr_1fr] gap-8 items-center max-w-4xl mx-auto">
+          <motion.div
+            initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
+            transition={{ duration: 0.5 }}
+          >
+            <UploadArea onUpload={handleUpload} isUploading={isUploading} innerRef={uploadRef} />
+          </motion.div>
+
+          {/* New: minimal sample flashcard — shows what the user gets */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ delay: 0.1, duration: 0.5 }}
+            className="relative hidden lg:block"
+          >
+            <div className="bg-paper-raised dark:bg-sepia-900 rounded-3xl shadow-lift ring-1 ring-slate-200/70 dark:ring-sepia-800 p-6 rotate-[-2deg]">
+              <span className="text-xs font-semibold uppercase tracking-widest text-ember-600 dark:text-ember-400">Pregunta</span>
+              <p className="mt-2 font-display text-lg font-semibold text-ink dark:text-sepia-100 leading-snug">
+                ¿Cuál es la función de los cloroplastos?
+              </p>
+              <div className="my-4 border-t border-dashed border-slate-200 dark:border-sepia-700" />
+              <span className="text-xs font-semibold uppercase tracking-widest text-ink-muted dark:text-sepia-300">Respuesta</span>
+              <p className="mt-2 text-sm text-ink-soft dark:text-sepia-200 leading-relaxed">
+                Realizan la fotosíntesis: convierten luz, agua y CO₂ en glucosa y oxígeno.
+              </p>
+            </div>
+            <div className="absolute -bottom-5 -left-5 w-20 h-20 rounded-2xl bg-ember-500/10 ring-1 ring-ember-500/20 blur-[1px]" aria-hidden />
+          </motion.div>
+        </div>
       </section>
 
       {/* HOW IT WORKS — symmetric numbered steps */}
@@ -317,46 +318,5 @@ const HomePage: React.FC = () => {
     </div>
   )
 }
-
-// Inline editorial illustration — no external assets, scales cleanly, theme-aware.
-const StudyIllustration: React.FC = () => (
-  <svg viewBox="0 0 320 200" className="w-full h-auto" role="img" aria-label="Ilustración de estudio con tarjetas">
-    <defs>
-      <linearGradient id="ss-book" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#1e2a38" />
-        <stop offset="100%" stopColor="#3a4a5c" />
-      </linearGradient>
-      <linearGradient id="ss-card" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#6a88ab" />
-        <stop offset="100%" stopColor="#3a5670" />
-      </linearGradient>
-    </defs>
-    {/* open book */}
-    <path d="M40 60 C70 40 110 40 150 58 L150 150 C110 132 70 132 40 152 Z" fill="url(#ss-book)" />
-    <path d="M280 60 C250 40 210 40 170 58 L170 150 C210 132 250 132 280 152 Z" fill="url(#ss-book)" />
-    <path d="M150 58 L170 58 L170 150 L150 150 Z" fill="#0a1420" opacity="0.6" />
-    {/* lines on pages */}
-    <g stroke="#f3f5f8" strokeOpacity="0.35" strokeWidth="2">
-      <line x1="60" y1="80" x2="135" y2="72" />
-      <line x1="60" y1="96" x2="135" y2="88" />
-      <line x1="60" y1="112" x2="135" y2="104" />
-      <line x1="185" y1="72" x2="260" y2="80" />
-      <line x1="185" y1="88" x2="260" y2="96" />
-      <line x1="185" y1="104" x2="260" y2="112" />
-    </g>
-    {/* floating flashcards */}
-    <g transform="rotate(-8 250 40)">
-      <rect x="222" y="20" width="64" height="40" rx="8" fill="url(#ss-card)" />
-      <rect x="230" y="30" width="40" height="4" rx="2" fill="#f3f5f8" opacity="0.7" />
-      <rect x="230" y="40" width="30" height="4" rx="2" fill="#f3f5f8" opacity="0.5" />
-    </g>
-    <g transform="rotate(6 70 170)">
-      <rect x="44" y="150" width="56" height="36" rx="8" fill="#f3f5f8" stroke="#cbd5e1" strokeWidth="2" />
-      <circle cx="72" cy="168" r="7" fill="#4a6c86" />
-    </g>
-    {/* spark */}
-    <path d="M155 18 l5 12 l12 5 l-12 5 l-5 12 l-5 -12 l-12 -5 l12 -5 Z" fill="#6a88ab" />
-  </svg>
-)
 
 export default HomePage
