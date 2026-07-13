@@ -117,6 +117,10 @@ export const translations = {
     'auth.avatar.shapes': 'Formas',
     'auth.avatar.rings': 'Anillos',
     'auth.avatar.identicon': 'Mosaico',
+    'auth.avatar.upload': 'Subir mi foto',
+    'auth.avatar.crop': 'Recorta tu foto',
+    'auth.avatar.crop.hint': 'Haz zoom y arrastra para encuadrar',
+    'auth.avatar.crop.save': 'Guardar foto',
     // 404
     'notfound.title': 'Página no encontrada',
     'notfound.desc': 'La página que buscas no existe o se ha movido. Volvamos al camino correcto.',
@@ -484,6 +488,10 @@ export const translations = {
     'auth.avatar.shapes': 'Shapes',
     'auth.avatar.rings': 'Rings',
     'auth.avatar.identicon': 'Mosaic',
+    'auth.avatar.upload': 'Upload my photo',
+    'auth.avatar.crop': 'Crop your photo',
+    'auth.avatar.crop.hint': 'Zoom and drag to frame it',
+    'auth.avatar.crop.save': 'Save photo',
     // 404
     'notfound.title': 'Page not found',
     'notfound.desc': 'The page you are looking for does not exist or has moved. Let us get back on track.',

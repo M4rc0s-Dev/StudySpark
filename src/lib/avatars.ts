@@ -1,7 +1,12 @@
-// Geometric, non-photographic avatars for StudySpark user profiles.
-// Uses DiceBear's geometric styles (shapes, rings, identicon) tinted to the
-// StudySpark palette. Each avatar is deterministic from a seed, so a user
-// keeps the same picture across devices.
+// Geometric, non-photographic avatars for StudySpark user profiles, plus the
+// option to upload a real photo. Uses DiceBear's geometric styles (shapes,
+// rings, identicon) tinted to the StudySpark palette. Each avatar is
+// deterministic from a seed, so a user keeps the same picture across devices.
+//
+// A profile's `avatar` column stores ONE of:
+//   - "style:seed"  e.g. "rings:studyspark-3"  (geometric, style is kept!)
+//   - "photo:<dataURL>"                          (user-uploaded image)
+//   - null / ""                                 (fallback to a derived seed)
 
 // Palette tokens (from tailwind.config.js) as broadcastable hex strings.
 const PALETTE = [
@@ -24,6 +29,9 @@ export const AVATAR_STYLES: { id: AvatarStyle; label: string }[] = [
 
 const BASE = 'https://api.dicebear.com/9.x'
 
+export const AVATAR_SEED_PREFIX = 'studyspark'
+export const PHOTO_PREFIX = 'photo:'
+
 // Build a deterministic geometric avatar URL from a seed + style.
 export function avatarUrl(seed: string, style: AvatarStyle = 'shapes'): string {
   const s = encodeURIComponent(seed || 'StudySpark')
@@ -31,13 +39,41 @@ export function avatarUrl(seed: string, style: AvatarStyle = 'shapes'): string {
 }
 
 // A set of distinct seeds used to present multiple avatar options in the
-// chooser. Selecting one pins that exact seed to the account.
-export const AVATAR_SEEDS = Array.from({ length: 12 }, (_, i) => `studyspark-${i + 1}`)
+// chooser. Selecting one pins that exact "style:seed" to the account.
+export const AVATAR_SEEDS = Array.from({ length: 12 }, (_, i) => `${AVATAR_SEED_PREFIX}-${i + 1}`)
 
-// Resolve the avatar URL for a stored profile: if the profile has no avatar
-// seed, derive a stable one from the user's name/email so existing accounts
-// still get a consistent geometric picture instead of a blank.
+// Compose / parse the stored "style:seed" token.
+export function avatarToken(style: AvatarStyle, seed: string): string {
+  return `${style}:${seed}`
+}
+
+export function parseAvatarToken(value: string | null | undefined): {
+  kind: 'geometric' | 'photo' | 'none'
+  style: AvatarStyle
+  seed: string
+  photo?: string
+} {
+  const v = (value || '').trim()
+  if (!v) return { kind: 'none', style: 'shapes', seed: '' }
+  if (v.startsWith(PHOTO_PREFIX)) return { kind: 'photo', style: 'shapes', seed: '', photo: v.slice(PHOTO_PREFIX.length) }
+  const idx = v.indexOf(':')
+  if (idx > 0) {
+    const style = v.slice(0, idx) as AvatarStyle
+    const seed = v.slice(idx + 1)
+    if ((AVATAR_STYLES as { id: string }[]).some((s) => s.id === style) && seed) {
+      return { kind: 'geometric', style, seed }
+    }
+  }
+  // Legacy value: just a seed with no style -> default to shapes.
+  return { kind: 'geometric', style: 'shapes', seed: v }
+}
+
+// Resolve the avatar URL/string for a stored profile. Returns either a
+// Data URL (photo) or a DiceBear URL whose style comes from the stored token,
+// so a chosen "rings"/"identicon" avatar is always shown correctly.
 export function profileAvatarUrl(avatar: string | null | undefined, fallback: string): string {
-  const seed = (avatar && avatar.trim()) || fallback || 'StudySpark'
-  return avatarUrl(seed, 'shapes')
+  const { kind, style, seed, photo } = parseAvatarToken(avatar)
+  if (kind === 'photo' && photo) return photo
+  const s = seed || fallback || 'StudySpark'
+  return avatarUrl(s, style)
 }
