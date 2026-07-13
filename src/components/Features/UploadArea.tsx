@@ -76,7 +76,7 @@ const UploadArea: React.FC<UploadAreaProps> = ({ onUpload, isUploading, innerRef
   }
 
   return (
-    <div ref={innerRef} className="relative bg-paper-raised dark:bg-sepia-900/95 backdrop-blur-md rounded-3xl shadow-lift ring-1 ring-stone-200/70 dark:ring-sepia-700/60 p-8 overflow-hidden">
+    <div ref={innerRef} className="relative bg-paper-raised dark:bg-sepia-900/95 backdrop-blur-md rounded-3xl shadow-lift ring-1 ring-slate-200/70 dark:ring-sepia-700/60 p-8 overflow-hidden">
       {/* editorial corner accent */}
       <div className="absolute top-0 left-0 w-24 h-1.5 rule-ember" aria-hidden />
       <h2 className="font-display text-2xl font-bold mb-6 text-ink dark:text-sepia-50">{t('upload.title')}</h2>
@@ -90,7 +90,7 @@ const UploadArea: React.FC<UploadAreaProps> = ({ onUpload, isUploading, innerRef
           value={fileName}
           onChange={(e) => setFileName(e.target.value)}
           placeholder={t('filename.placeholder')}
-          className="w-full px-4 py-3 border border-stone-300 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 dark:placeholder-sepia-400 rounded-xl focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none transition"
+          className="w-full px-4 py-3 border border-slate-300 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 dark:placeholder-sepia-400 rounded-xl focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none transition"
         />
       </div>
 
@@ -103,7 +103,7 @@ const UploadArea: React.FC<UploadAreaProps> = ({ onUpload, isUploading, innerRef
           <select
             value={cardCount}
             onChange={(e) => setCardCount(Number(e.target.value))}
-            className="w-full appearance-none px-4 py-3 rounded-xl border border-stone-300 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 text-sm font-medium text-ink dark:text-sepia-100 focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none cursor-pointer transition"
+            className="w-full appearance-none px-4 py-3 rounded-xl border border-slate-300 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 text-sm font-medium text-ink dark:text-sepia-100 focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none cursor-pointer transition"
           >
             <option value={CARD_COUNT_AUTO}>{t('upload.cardcount.auto')}</option>
             {CARD_COUNT_OPTIONS.map((n) => (
@@ -122,11 +122,11 @@ const UploadArea: React.FC<UploadAreaProps> = ({ onUpload, isUploading, innerRef
         className={`border-2 border-dashed rounded-2xl p-10 text-center transition-all cursor-pointer
           ${isDragActive
             ? 'border-ember-500 bg-ember-50 dark:bg-ember-500/10 scale-[1.01]'
-            : 'border-stone-300 dark:border-sepia-600 hover:border-ember-400 hover:bg-ember-50/40 dark:hover:bg-ember-500/5'}
+            : 'border-slate-300 dark:border-sepia-600 hover:border-ember-400 hover:bg-ember-50/40 dark:hover:bg-ember-500/5'}
           ${error ? 'border-red-500 bg-red-50 dark:bg-red-500/10' : ''}`}
       >
         <input {...getInputProps()} />
-        <div className={`mx-auto mb-4 w-16 h-16 rounded-2xl flex items-center justify-center transition-colors ${isDragActive ? 'bg-ember-500 text-ink' : 'bg-ember-100 dark:bg-ember-500/20 text-ember-600 dark:text-ember-300'}`}>
+        <div className={`mx-auto mb-4 w-16 h-16 rounded-2xl flex items-center justify-center transition-colors ${isDragActive ? 'bg-ember-500 text-paper' : 'bg-ember-100 dark:bg-ember-500/20 text-ember-600 dark:text-ember-300'}`}>
           <Upload className="w-8 h-8" />
         </div>
         <p className="text-lg font-semibold text-ink dark:text-sepia-100">
@@ -150,7 +150,7 @@ const UploadArea: React.FC<UploadAreaProps> = ({ onUpload, isUploading, innerRef
       {/* Divider */}
       <div className="relative my-8">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-stone-200 dark:border-sepia-700"></div>
+          <div className="w-full border-t border-slate-200 dark:border-sepia-700"></div>
         </div>
         <div className="relative flex justify-center text-sm">
           <span className="bg-paper-raised dark:bg-sepia-900 px-4 text-ink-muted font-medium">{t('upload.or')}</span>
@@ -166,7 +166,7 @@ const UploadArea: React.FC<UploadAreaProps> = ({ onUpload, isUploading, innerRef
           value={textInput}
           onChange={(e) => setTextInput(e.target.value)}
           placeholder={t('upload.text.placeholder')}
-          className="w-full h-36 p-4 border border-stone-300 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 dark:placeholder-sepia-400 rounded-xl resize-none focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none transition"
+          className="w-full h-36 p-4 border border-slate-300 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 dark:placeholder-sepia-400 rounded-xl resize-none focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none transition"
         />
       </div>
 
@@ -174,7 +174,7 @@ const UploadArea: React.FC<UploadAreaProps> = ({ onUpload, isUploading, innerRef
       <div className="flex flex-col sm:flex-row gap-3 justify-end">
         <button
           onClick={clearSelection}
-          className="px-6 py-3 rounded-xl border border-stone-300 dark:border-sepia-600 dark:text-sepia-200 font-medium hover:bg-stone-100 dark:hover:bg-sepia-800 transition-colors disabled:opacity-50"
+          className="px-6 py-3 rounded-xl border border-slate-300 dark:border-sepia-600 dark:text-sepia-200 font-medium hover:bg-slate-100 dark:hover:bg-sepia-800 transition-colors disabled:opacity-50"
           disabled={isUploading}
         >
           {t('upload.clear')}
@@ -182,7 +182,7 @@ const UploadArea: React.FC<UploadAreaProps> = ({ onUpload, isUploading, innerRef
         <button
           onClick={handleTextSubmit}
           disabled={!textInput.trim() || isUploading}
-          className="px-6 py-3 rounded-xl bg-ember-500 text-ink font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-6 py-3 rounded-xl bg-ember-500 text-paper font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {t('upload.fromtext')}
         </button>
@@ -215,7 +215,7 @@ const SelectedFileCard: React.FC<{
 }> = ({ file, preview, clear, meta }) => {
   const { t } = useLanguage()
   return (
-  <div className="mt-4 bg-paper-sunken dark:bg-sepia-800 p-4 rounded-2xl ring-1 ring-stone-200 dark:ring-sepia-700">
+  <div className="mt-4 bg-paper-sunken dark:bg-sepia-800 p-4 rounded-2xl ring-1 ring-slate-200 dark:ring-sepia-700">
     <div className="flex items-center justify-between mb-3">
       <div className="flex items-center">
         <span className={`w-10 h-10 rounded-xl flex items-center justify-center mr-3 ${meta.tone}`}>

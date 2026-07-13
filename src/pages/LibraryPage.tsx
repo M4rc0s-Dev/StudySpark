@@ -420,8 +420,8 @@ const LibraryPage: React.FC = () => {
       <button
         onClick={() => onPick(null)}
         title={t('library.color.none')}
-        className={`w-6 h-6 rounded-full border border-stone-300 dark:border-sepia-600 flex items-center justify-center ${
-          !current ? 'ring-2 ring-offset-1 ring-stone-400 dark:ring-offset-stone-900' : ''
+        className={`w-6 h-6 rounded-full border border-slate-300 dark:border-sepia-600 flex items-center justify-center ${
+          !current ? 'ring-2 ring-offset-1 ring-slate-400 dark:ring-offset-slate-900' : ''
         }`}
       >
         <X className="w-3 h-3 text-gray-400" />
@@ -571,10 +571,10 @@ const LibraryPage: React.FC = () => {
         <main className="flex-1 min-w-0">
           {/* Breadcrumb bar (Windows Explorer style). Each crumb is a drop target
               so a deck can be moved to any parent folder (or SparkDrive root). */}
-          <div className="flex flex-wrap items-center gap-1 px-3 py-2.5 mb-4 bg-paper-raised dark:bg-sepia-900 rounded-xl shadow-soft ring-1 ring-stone-200/70 dark:ring-sepia-800 text-sm">
+          <div className="flex flex-wrap items-center gap-1 px-3 py-2.5 mb-4 bg-paper-raised dark:bg-sepia-900 rounded-xl shadow-soft ring-1 ring-slate-200/70 dark:ring-sepia-800 text-sm">
             {crumbs.map((c, i) => (
               <React.Fragment key={c.path || 'root'}>
-                {i > 0 && <ChevronRight className="w-4 h-4 text-stone-300 dark:text-sepia-600" />}
+                {i > 0 && <ChevronRight className="w-4 h-4 text-slate-300 dark:text-sepia-600" />}
                 <button
                   onClick={() => setCurrentPath(c.path)}
                   onDragOver={(e) => { e.preventDefault(); setDragOverFolder(c.path) }}
@@ -585,7 +585,7 @@ const LibraryPage: React.FC = () => {
                   } ${
                     i === crumbs.length - 1
                       ? 'font-semibold bg-ember-50 dark:bg-ember-500/15 text-ember-700 dark:text-ember-300'
-                      : 'text-ink-soft dark:text-sepia-300 hover:bg-stone-100 dark:hover:bg-sepia-800'
+                      : 'text-ink-soft dark:text-sepia-300 hover:bg-slate-100 dark:hover:bg-sepia-800'
                   }`}
                 >
                   {i === 0 ? <Home className="w-4 h-4" /> : <Folder className="w-4 h-4 text-ember-500" />}
@@ -603,12 +603,12 @@ const LibraryPage: React.FC = () => {
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
                 placeholder={t('library.filter')}
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-stone-200 dark:border-sepia-700 dark:bg-sepia-800 dark:text-sepia-50 dark:placeholder-sepia-400 focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none"
+                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-sepia-700 dark:bg-sepia-800 dark:text-sepia-50 dark:placeholder-sepia-400 focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none"
               />
             </div>
             <button
               onClick={openCreateFolder}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-ember-500 text-ink text-sm font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all shrink-0"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-ember-500 text-paper text-sm font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all shrink-0"
             >
               <FolderPlus className="w-4 h-4" /> {t('library.newfolder')}
             </button>
@@ -618,9 +618,9 @@ const LibraryPage: React.FC = () => {
           {visibleFolders.length === 0 && visibleSessions.length === 0 ? (
             <div
               onContextMenu={openBackgroundMenu}
-              className="bg-paper-raised dark:bg-sepia-900 rounded-2xl shadow-soft ring-1 ring-stone-200/70 dark:ring-sepia-800 p-12 text-center"
+              className="bg-paper-raised dark:bg-sepia-900 rounded-2xl shadow-soft ring-1 ring-slate-200/70 dark:ring-sepia-800 p-12 text-center"
             >
-              <FolderOpen className="w-12 h-12 mx-auto text-stone-300 dark:text-sepia-600 mb-4" />
+              <FolderOpen className="w-12 h-12 mx-auto text-slate-300 dark:text-sepia-600 mb-4" />
               <p className="text-ink-muted dark:text-sepia-400">{t('library.folder.empty')}</p>
             </div>
           ) : (
@@ -695,13 +695,13 @@ const LibraryPage: React.FC = () => {
                   onDragEnd={() => { setDragSessionId(null); setDragOverFolder(undefined) }}
                   onContextMenu={(e) => openSessionMenu(e, s)}
                   className={`relative group select-none rounded-2xl shadow-soft border p-5 flex flex-col cursor-grab active:cursor-grabbing ${
-                    sc ? `${sc.bg} ${sc.border}` : 'bg-paper-raised dark:bg-sepia-900 border-stone-100 dark:border-sepia-800'
+                    sc ? `${sc.bg} ${sc.border}` : 'bg-paper-raised dark:bg-sepia-900 border-slate-100 dark:border-sepia-800'
                   } ${
                     dragSessionId === s.id ? 'opacity-40' : ''
                   }`}
                 >
                   {sc && <span className={`absolute top-0 left-0 h-full w-1.5 rounded-l-2xl ${sc.swatch}`} />}
-                  <div className="absolute top-3 left-2 text-stone-300 dark:text-sepia-600 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab">
+                  <div className="absolute top-3 left-2 text-slate-300 dark:text-sepia-600 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab">
                     <GripVertical className="w-4 h-4" />
                   </div>
 
@@ -723,7 +723,7 @@ const LibraryPage: React.FC = () => {
                           const r = (e.currentTarget as HTMLElement).getBoundingClientRect()
                           setContextMenu({ x: r.right - 224, y: r.bottom + 4, items: sessionMenuItems(s) })
                         }}
-                        className="p-1.5 text-ink-muted hover:text-ink dark:hover:text-sepia-100 rounded-lg hover:bg-stone-100 dark:hover:bg-sepia-800 transition-colors shrink-0"
+                        className="p-1.5 text-ink-muted hover:text-ink dark:hover:text-sepia-100 rounded-lg hover:bg-slate-100 dark:hover:bg-sepia-800 transition-colors shrink-0"
                       >
                         <MoreVertical className="w-4 h-4" />
                       </button>
@@ -734,7 +734,7 @@ const LibraryPage: React.FC = () => {
 
                   <button
                     onClick={() => openSession(s)}
-                    className="mt-4 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-ember-500 text-ink text-sm font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
+                    className="mt-4 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-ember-500 text-paper text-sm font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
                   >
                     <BookOpen className="w-4 h-4" /> {t('library.study')}
                   </button>
@@ -752,7 +752,7 @@ const LibraryPage: React.FC = () => {
         <div className="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-ink/50 dark:bg-sepia-900/60 backdrop-blur-sm" onClick={() => setFolderModal(null)}>
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-sm bg-paper-raised dark:bg-sepia-900 rounded-2xl shadow-lift ring-1 ring-stone-200/70 dark:ring-sepia-800 p-6"
+            className="w-full max-w-sm bg-paper-raised dark:bg-sepia-900 rounded-2xl shadow-lift ring-1 ring-slate-200/70 dark:ring-sepia-800 p-6"
           >
             <h3 className="font-display text-lg font-bold text-ink dark:text-sepia-50">
               {folderModal.mode === 'create' ? t('library.newfolder') : t('library.rename')}
@@ -771,18 +771,18 @@ const LibraryPage: React.FC = () => {
                 if (e.key === 'Escape') setFolderModal(null)
               }}
               placeholder={t('library.foldername')}
-              className="w-full mt-4 px-3 py-2.5 rounded-xl border border-stone-300 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 text-sm outline-none focus:ring-2 focus:ring-ember-500"
+              className="w-full mt-4 px-3 py-2.5 rounded-xl border border-slate-300 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 text-sm outline-none focus:ring-2 focus:ring-ember-500"
             />
             <div className="mt-5 flex justify-end gap-3">
               <button
                 onClick={() => setFolderModal(null)}
-                className="px-4 py-2.5 rounded-xl border border-stone-300 dark:border-sepia-600 dark:text-sepia-200 text-sm font-medium hover:bg-stone-100 dark:hover:bg-sepia-800 transition-colors"
+                className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-sepia-600 dark:text-sepia-200 text-sm font-medium hover:bg-slate-100 dark:hover:bg-sepia-800 transition-colors"
               >
                 {t('config.cancel')}
               </button>
               <button
                 onClick={applyFolderName}
-                className="px-4 py-2.5 rounded-xl bg-ember-500 text-ink text-sm font-bold shadow-soft hover:shadow-lift transition-all"
+                className="px-4 py-2.5 rounded-xl bg-ember-500 text-paper text-sm font-bold shadow-soft hover:shadow-lift transition-all"
               >
                 {t('library.save')}
               </button>
@@ -794,7 +794,7 @@ const LibraryPage: React.FC = () => {
       {/* Hidden element used as the drag image for sessions. */}
       <div
         ref={dragImageRef}
-        className="fixed -top-40 left-0 px-3 py-1.5 rounded-lg bg-ember-500 text-ink text-sm font-medium shadow-lg pointer-events-none"
+        className="fixed -top-40 left-0 px-3 py-1.5 rounded-lg bg-ember-500 text-paper text-sm font-medium shadow-lg pointer-events-none"
         style={{ opacity: 0 }}
       />
 
@@ -869,7 +869,7 @@ const deckStats = (deck: StudySession) => {
 // deck the user has studied, their accuracy, and when they last reviewed.
 const DeckFeedback: React.FC<{ deck: StudySession; t: (k: any, v?: any) => string }> = ({ deck, t }) => {
   const st = deckStats(deck)
-  const barColor = st.pct >= 100 ? 'bg-emerald-500' : st.pct > 0 ? 'bg-ember-500' : 'bg-stone-300 dark:bg-sepia-600'
+  const barColor = st.pct >= 100 ? 'bg-emerald-500' : st.pct > 0 ? 'bg-ember-500' : 'bg-slate-300 dark:bg-sepia-600'
   const lastLabel = st.last
     ? st.last.toLocaleDateString()
     : t('library.never')
@@ -879,7 +879,7 @@ const DeckFeedback: React.FC<{ deck: StudySession; t: (k: any, v?: any) => strin
         <span>{st.studied}/{st.total} {t('library.cards').toLowerCase()}</span>
         <span className={st.acc >= 70 ? 'text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-ember-600 dark:text-ember-400 font-semibold'}>{st.acc}%</span>
       </div>
-      <div className="h-2 rounded-full bg-stone-100 dark:bg-sepia-800 overflow-hidden">
+      <div className="h-2 rounded-full bg-slate-100 dark:bg-sepia-800 overflow-hidden">
         <div className={`h-full rounded-full ${barColor}`} style={{ width: `${st.pct}%` }} />
       </div>
       <p className="text-xs text-ink-muted/80 dark:text-sepia-500 mt-1.5">{t('library.last')}: {lastLabel}</p>

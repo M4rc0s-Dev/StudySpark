@@ -123,10 +123,10 @@ const HomePage: React.FC = () => {
   return (
     <div>
       {/* HERO */}
-      <section className="relative overflow-hidden bg-ink dark:bg-[#241d15] paper-grain">
+      <section className="relative overflow-hidden bg-ink dark:bg-[#141e29] paper-grain">
         {/* Floating background blobs */}
         <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-ember-400/15 blur-2xl animate-blob" />
-        <div className="absolute top-32 -right-16 w-80 h-80 rounded-full bg-amber-300/10 blur-2xl animate-blob animation-delay-2000" />
+        <div className="absolute top-32 -right-16 w-80 h-80 rounded-full bg-ember-300/10 blur-2xl animate-blob animation-delay-2000" />
         <div className="absolute bottom-0 left-1/3 w-64 h-64 rounded-full bg-ember-200/10 blur-2xl animate-blob animation-delay-4000" />
 
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 text-center">
@@ -143,7 +143,7 @@ const HomePage: React.FC = () => {
             className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-paper leading-[1.05] tracking-tight"
           >
             {t('hero.title.1')}{' '}
-            <span className="text-ember-400">
+            <span className="text-ember-300">
               {t('hero.title.2')}
             </span>{' '}
             {t('hero.title.3')}
@@ -151,7 +151,7 @@ const HomePage: React.FC = () => {
 
           <motion.p
             initial="hidden" animate="show" variants={fade} transition={{ delay: 0.1, duration: 0.5 }}
-            className="mt-5 text-lg text-stone-300 max-w-2xl mx-auto"
+            className="mt-5 text-lg text-slate-300 max-w-2xl mx-auto"
           >
             {t('hero.subtitle')}
           </motion.p>
@@ -166,7 +166,7 @@ const HomePage: React.FC = () => {
               transition={{ delay: 0.25, duration: 0.6 }}
               className="relative hidden lg:block"
             >
-              <div className="bg-paper-raised/90 dark:bg-sepia-800/90 rounded-3xl shadow-lift ring-1 ring-stone-200/70 dark:ring-sepia-700/60 p-7">
+              <div className="bg-paper-raised/90 dark:bg-sepia-800/90 rounded-3xl shadow-lift ring-1 ring-slate-200/70 dark:ring-sepia-700/60 p-7">
                 <StudyIllustration />
                 <p className="mt-5 font-display text-lg font-semibold text-ink dark:text-sepia-50 leading-snug">
                   Tu material, convertido en repaso inteligente.
@@ -193,9 +193,9 @@ const HomePage: React.FC = () => {
                   viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.4 }}
                   className="text-center"
                 >
-                  <Icon className="w-7 h-7 mx-auto mb-2 text-ember-400" />
+                  <Icon className="w-7 h-7 mx-auto mb-2 text-ember-300" />
                   <p className="text-2xl font-display font-bold text-paper">{s.value}</p>
-                  <p className="text-xs text-stone-400">{s.label}</p>
+                  <p className="text-xs text-slate-400">{s.label}</p>
                 </motion.div>
               )
             })}
@@ -222,10 +222,10 @@ const HomePage: React.FC = () => {
                 key={step.key}
                 initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="relative bg-paper-raised dark:bg-sepia-900 rounded-3xl p-7 ring-1 ring-stone-200/70 dark:ring-sepia-800 shadow-soft hover:shadow-lift transition-all"
+                className="relative bg-paper-raised dark:bg-sepia-900 rounded-3xl p-7 ring-1 ring-slate-200/70 dark:ring-sepia-800 shadow-soft hover:shadow-lift transition-all"
               >
                 <div className="flex items-center gap-3 mb-5">
-                  <span className="w-11 h-11 rounded-2xl bg-ember-500 text-ink flex items-center justify-center font-display font-bold text-lg">
+                  <span className="w-11 h-11 rounded-2xl bg-ember-500 text-paper flex items-center justify-center font-display font-bold text-lg">
                     {i + 1}
                   </span>
                   <Icon className="w-6 h-6 text-ink-soft dark:text-sepia-300" />
@@ -239,7 +239,7 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* TESTIMONIALS — editorial pull-quotes */}
-      <section className="bg-paper-sunken dark:bg-[#241d15] border-t border-stone-200 dark:border-sepia-800">
+      <section className="bg-paper-sunken dark:bg-[#141e29] border-t border-slate-200 dark:border-sepia-800">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <motion.h2
             initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
@@ -253,7 +253,7 @@ const HomePage: React.FC = () => {
                 key={tm.name}
                 initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="relative bg-paper-raised dark:bg-sepia-900 rounded-3xl p-7 ring-1 ring-stone-200/70 dark:ring-sepia-800 shadow-soft hover:shadow-lift transition-all"
+                className="relative bg-paper-raised dark:bg-sepia-900 rounded-3xl p-7 ring-1 ring-slate-200/70 dark:ring-sepia-800 shadow-soft hover:shadow-lift transition-all"
               >
                 <span className="font-display text-5xl text-ember-400/60 leading-none block mb-2 select-none">"</span>
                 <blockquote className="text-ink-soft dark:text-sepia-200 text-sm leading-relaxed -mt-4 mb-5">
@@ -273,7 +273,7 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </section>
-      <section className="bg-ink dark:bg-[#241d15] py-16">
+      <section className="bg-ink dark:bg-[#141e29] py-16">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <motion.h2
             initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
@@ -284,7 +284,7 @@ const HomePage: React.FC = () => {
           <motion.button
             initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade} transition={{ delay: 0.1 }}
             onClick={scrollToUpload}
-            className="mt-8 inline-flex items-center gap-2 px-10 py-4 rounded-2xl bg-ember-500 text-ink text-lg font-bold shadow-xl hover:-translate-y-0.5 hover:shadow-lift transition-all"
+            className="mt-8 inline-flex items-center gap-2 px-10 py-4 rounded-2xl bg-ember-500 text-paper text-lg font-bold shadow-xl hover:-translate-y-0.5 hover:shadow-lift transition-all"
           >
             <Sparkles className="w-5 h-5" /> {t('cta.create')}
           </motion.button>
@@ -308,20 +308,20 @@ const StudyIllustration: React.FC = () => (
   <svg viewBox="0 0 320 200" className="w-full h-auto" role="img" aria-label="Ilustración de estudio con tarjetas">
     <defs>
       <linearGradient id="ss-book" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#1c1917" />
-        <stop offset="100%" stopColor="#44403c" />
+        <stop offset="0%" stopColor="#1e2a38" />
+        <stop offset="100%" stopColor="#3a4a5c" />
       </linearGradient>
       <linearGradient id="ss-card" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#fbbf24" />
-        <stop offset="100%" stopColor="#d97706" />
+        <stop offset="0%" stopColor="#6a88ab" />
+        <stop offset="100%" stopColor="#3a5670" />
       </linearGradient>
     </defs>
     {/* open book */}
     <path d="M40 60 C70 40 110 40 150 58 L150 150 C110 132 70 132 40 152 Z" fill="url(#ss-book)" />
     <path d="M280 60 C250 40 210 40 170 58 L170 150 C210 132 250 132 280 152 Z" fill="url(#ss-book)" />
-    <path d="M150 58 L170 58 L170 150 L150 150 Z" fill="#0c0a09" opacity="0.6" />
+    <path d="M150 58 L170 58 L170 150 L150 150 Z" fill="#0a1420" opacity="0.6" />
     {/* lines on pages */}
-    <g stroke="#fafaf9" strokeOpacity="0.35" strokeWidth="2">
+    <g stroke="#f3f5f8" strokeOpacity="0.35" strokeWidth="2">
       <line x1="60" y1="80" x2="135" y2="72" />
       <line x1="60" y1="96" x2="135" y2="88" />
       <line x1="60" y1="112" x2="135" y2="104" />
@@ -332,15 +332,15 @@ const StudyIllustration: React.FC = () => (
     {/* floating flashcards */}
     <g transform="rotate(-8 250 40)">
       <rect x="222" y="20" width="64" height="40" rx="8" fill="url(#ss-card)" />
-      <rect x="230" y="30" width="40" height="4" rx="2" fill="#1c1917" opacity="0.5" />
-      <rect x="230" y="40" width="30" height="4" rx="2" fill="#1c1917" opacity="0.35" />
+      <rect x="230" y="30" width="40" height="4" rx="2" fill="#f3f5f8" opacity="0.7" />
+      <rect x="230" y="40" width="30" height="4" rx="2" fill="#f3f5f8" opacity="0.5" />
     </g>
     <g transform="rotate(6 70 170)">
-      <rect x="44" y="150" width="56" height="36" rx="8" fill="#fafaf9" stroke="#d6d3d1" strokeWidth="2" />
-      <circle cx="72" cy="168" r="7" fill="#fbbf24" />
+      <rect x="44" y="150" width="56" height="36" rx="8" fill="#f3f5f8" stroke="#cbd5e1" strokeWidth="2" />
+      <circle cx="72" cy="168" r="7" fill="#4a6c86" />
     </g>
     {/* spark */}
-    <path d="M155 18 l5 12 l12 5 l-12 5 l-5 12 l-5 -12 l-12 -5 l12 -5 Z" fill="#fbbf24" />
+    <path d="M155 18 l5 12 l12 5 l-12 5 l-5 12 l-5 -12 l-12 -5 l12 -5 Z" fill="#6a88ab" />
   </svg>
 )
 

@@ -8,7 +8,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
   const pct = Math.max(0, Math.min(100, progress))
   return (
     <div>
-      <div className="w-full bg-stone-200 dark:bg-sepia-700/60 rounded-full h-2.5 overflow-hidden">
+      <div className="w-full bg-slate-200 dark:bg-sepia-700/60 rounded-full h-2.5 overflow-hidden">
         <div
           className="h-2.5 rounded-full bg-ember-500 transition-all duration-500 ease-out"
           style={{ width: `${pct}%` }}

@@ -38,7 +38,7 @@ const ConfirmPage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md text-center"
       >
-        <div className="bg-paper-raised dark:bg-[#2f261c] rounded-2xl shadow-lift border border-paper-sunken dark:border-[#3d3024] p-10">
+        <div className="bg-paper-raised dark:bg-[#1c2836] rounded-2xl shadow-lift border border-paper-sunken dark:border-[#33445a] p-10">
           {status === 'loading' && (
             <>
               <Loader2 className="w-12 h-12 mx-auto text-ember-500 animate-spin" />

@@ -42,15 +42,15 @@ function App() {
                 duration: 3500,
                 style: {
                   borderRadius: '14px',
-                  background: '#1e1b4b',
-                  color: '#fff',
+                  background: '#1e2a38',
+                  color: '#f3f5f8',
                   fontSize: '14px',
                   padding: '12px 16px',
-                  boxShadow: '0 10px 40px rgba(79, 70, 229, 0.35)',
+                  boxShadow: '0 10px 40px rgba(30, 42, 56, 0.35)',
                   maxWidth: '360px',
                 },
-                success: { iconTheme: { primary: '#34d399', secondary: '#1e1b4b' } },
-                error: { iconTheme: { primary: '#fb7185', secondary: '#1e1b4b' } },
+                success: { iconTheme: { primary: '#34d399', secondary: '#1e2a38' } },
+                error: { iconTheme: { primary: '#fb7185', secondary: '#1e2a38' } },
               }}
             />
           </Router>

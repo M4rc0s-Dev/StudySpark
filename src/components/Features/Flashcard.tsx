@@ -46,8 +46,8 @@ const difficultyStyles: Record<string, { ring: string; chip: string; key: string
 
 const conceptStyles: Record<string, string> = {
   Politics: 'bg-ember-50 text-ember-700 dark:bg-ember-500/15 dark:text-ember-300',
-  Economics: 'bg-stone-100 text-stone-700 dark:bg-sepia-700/40 dark:text-sepia-200',
-  Military: 'bg-stone-100 text-stone-700 dark:bg-sepia-700/40 dark:text-sepia-200',
+  Economics: 'bg-slate-100 text-slate-700 dark:bg-sepia-700/40 dark:text-sepia-200',
+  Military: 'bg-slate-100 text-slate-700 dark:bg-sepia-700/40 dark:text-sepia-200',
   Science: 'bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-300',
   History: 'bg-orange-100 text-orange-800 dark:bg-orange-500/15 dark:text-orange-300',
   Física: 'bg-ember-50 text-ember-700 dark:bg-ember-500/15 dark:text-ember-300',
@@ -113,7 +113,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
     <div
       className={cn(
         'absolute inset-0 backface-hidden overflow-hidden rounded-3xl border-2',
-        diff ? diff.ring : 'border-stone-200 dark:border-sepia-700',
+        diff ? diff.ring : 'border-slate-200 dark:border-sepia-700',
         back
           ? 'rotate-y-180 bg-ember-50 dark:bg-ember-500/10'
           : 'bg-paper-raised dark:bg-sepia-900 card-sheen'
@@ -147,7 +147,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
                   {t(diff.key as any)}
                 </span>
               ) : (
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-stone-100 dark:bg-sepia-700 text-ink-muted dark:text-sepia-300">
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-sepia-700 text-ink-muted dark:text-sepia-300">
                   {noDifficultyLabel}
                 </span>
               )}
@@ -187,7 +187,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
                   {t(diff.key as any)}
                 </span>
               ) : (
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-stone-100 dark:bg-sepia-700 text-ink-muted dark:text-sepia-300">
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-sepia-700 text-ink-muted dark:text-sepia-300">
                   {noDifficultyLabel}
                 </span>
               )}
@@ -213,7 +213,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
             e.stopPropagation()
             handleCopy()
           }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-paper-raised dark:bg-sepia-800 text-ink-soft dark:text-sepia-300 text-sm font-medium shadow-soft border border-stone-200 dark:border-sepia-700 hover:bg-paper-sunken dark:hover:bg-sepia-700 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-paper-raised dark:bg-sepia-800 text-ink-soft dark:text-sepia-300 text-sm font-medium shadow-soft border border-slate-200 dark:border-sepia-700 hover:bg-paper-sunken dark:hover:bg-sepia-700 transition-colors"
         >
           {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
           {copied ? t('card.copied') : t('card.copy')}
@@ -226,8 +226,8 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
           className={cn(
             'inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium shadow-soft border transition-colors',
             speaking
-              ? 'bg-ember-500 text-ink border-ember-500'
-              : 'bg-paper-raised dark:bg-sepia-800 text-ink-soft dark:text-sepia-300 border-stone-200 dark:border-sepia-700 hover:bg-paper-sunken dark:hover:bg-sepia-700'
+              ? 'bg-ember-500 text-paper border-ember-500'
+              : 'bg-paper-raised dark:bg-sepia-800 text-ink-soft dark:text-sepia-300 border-slate-200 dark:border-sepia-700 hover:bg-paper-sunken dark:hover:bg-sepia-700'
           )}
         >
           {speaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}

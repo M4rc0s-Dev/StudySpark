@@ -18,11 +18,12 @@ const modes: { id: StudyMode; icon: typeof Brain; key: string; descKey: string }
   { id: 'spaced-repetition', icon: Repeat, key: 'mode.spaced', descKey: 'mode.spaced.desc' },
 ]
 
-// Per-mode accent kept within the warm palette (ember + stone) for coherence.
+// Per-mode accent kept within the calm slate-blue palette for coherence,
+// with a single warm "timed" accent to signal urgency.
 const modeAccent: Record<StudyMode, string> = {
   basic: 'bg-ember-500',
-  timed: 'bg-orange-500',
-  'spaced-repetition': 'bg-stone-700',
+  timed: 'bg-amber-500',
+  'spaced-repetition': 'bg-slate-600',
 }
 
 const orders: { id: CardOrder; icon: typeof ListOrdered; key: string }[] = [
@@ -65,10 +66,10 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', stiffness: 260, damping: 22 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg bg-paper-raised dark:bg-[#2f261c] rounded-3xl shadow-lift overflow-hidden"
+            className="w-full max-w-lg bg-paper-raised dark:bg-[#1c2836] rounded-3xl shadow-lift overflow-hidden"
           >
             {/* Header */}
-            <div className="relative px-6 pt-6 pb-5 bg-paper-sunken dark:bg-[#2a221a] text-ink dark:text-sepia-100 border-b border-paper-sunken dark:border-[#3d3024]">
+            <div className="relative px-6 pt-6 pb-5 bg-paper-sunken dark:bg-[#1a2531] text-ink dark:text-sepia-100 border-b border-paper-sunken dark:border-[#33445a]">
               <button
                 onClick={onClose}
                 className="absolute top-4 right-4 text-ink-muted dark:text-sepia-400 hover:text-ink dark:hover:text-sepia-100 transition-colors"
@@ -97,7 +98,7 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
                         className={`relative text-left rounded-2xl border-2 p-4 transition-all ${
                           active
                             ? 'border-ember-500 bg-ember-50 dark:bg-ember-500/15 shadow-soft'
-                            : 'border-paper-sunken dark:border-[#3d3024] hover:border-ember-300 hover:bg-ember-50/40 dark:hover:bg-ember-500/5'
+                            : 'border-paper-sunken dark:border-[#33445a] hover:border-ember-300 hover:bg-ember-50/40 dark:hover:bg-ember-500/5'
                         }`}
                       >
                         <span
@@ -127,7 +128,7 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
                         className={`flex flex-col items-center gap-1.5 rounded-xl border-2 p-3 transition-all ${
                           active
                             ? 'border-ember-500 bg-ember-50 dark:bg-ember-500/15'
-                            : 'border-paper-sunken dark:border-[#3d3024] hover:border-ember-300'
+                            : 'border-paper-sunken dark:border-[#33445a] hover:border-ember-300'
                         }`}
                       >
                         <Icon className={`w-5 h-5 ${active ? 'text-ember-600 dark:text-ember-400' : 'text-ink-muted'}`} />
@@ -154,7 +155,7 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
                         className={`flex items-center justify-center gap-2 rounded-xl border-2 p-3 transition-all ${
                           active
                             ? 'border-ember-500 bg-ember-50 dark:bg-ember-500/15'
-                            : 'border-paper-sunken dark:border-[#3d3024] hover:border-ember-300'
+                            : 'border-paper-sunken dark:border-[#33445a] hover:border-ember-300'
                         }`}
                       >
                         <Icon className={`w-4 h-4 ${active ? 'text-ember-600 dark:text-ember-400' : 'text-ink-muted'}`} />
@@ -166,7 +167,7 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
               </div>
 
               {/* Autoplay */}
-              <label className="flex items-center justify-between gap-3 rounded-xl border border-paper-sunken dark:border-[#3d3024] p-3 cursor-pointer hover:bg-paper-sunken dark:hover:bg-[#211a13] transition-colors">
+              <label className="flex items-center justify-between gap-3 rounded-xl border border-paper-sunken dark:border-[#33445a] p-3 cursor-pointer hover:bg-paper-sunken dark:hover:bg-[#16202e] transition-colors">
                 <span className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-ember-500" />
                   <span className="text-sm font-medium text-ink-soft dark:text-sepia-200">{t('config.autoplay')}</span>
@@ -181,16 +182,16 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 border-t border-paper-sunken dark:border-[#3d3024] flex items-center gap-3 bg-paper-sunken dark:bg-[#211a13]">
+            <div className="px-6 py-4 border-t border-paper-sunken dark:border-[#33445a] flex items-center gap-3 bg-paper-sunken dark:bg-[#16202e]">
               <button
                 onClick={onClose}
-                className="px-5 py-2.5 rounded-xl border border-[#d6d3d1] dark:border-[#4d4031] dark:text-sepia-200 font-medium hover:bg-[#e7e5e4] dark:hover:bg-[#3d3024] transition-colors"
+                className="px-5 py-2.5 rounded-xl border border-[#cbd5e1] dark:border-[#3f5169] dark:text-sepia-200 font-medium hover:bg-[#e2e8f0] dark:hover:bg-[#33445a] transition-colors"
               >
                 {t('config.cancel')}
               </button>
               <button
                 onClick={handleStart}
-                className="flex-1 px-5 py-2.5 rounded-xl bg-ember-500 text-ink font-semibold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
+                className="flex-1 px-5 py-2.5 rounded-xl bg-ember-500 text-paper font-semibold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
               >
                 {t('config.start')}
               </button>

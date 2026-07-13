@@ -53,7 +53,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             onClick={(e) => e.stopPropagation()}
             role="alertdialog"
             aria-modal="true"
-            className="w-full max-w-sm bg-paper-raised dark:bg-[#2f261c] rounded-2xl shadow-lift border border-paper-sunken dark:border-[#3d3024] p-6"
+            className="w-full max-w-sm bg-paper-raised dark:bg-[#1c2836] rounded-2xl shadow-lift border border-paper-sunken dark:border-[#33445a] p-6"
           >
             <div className="flex items-start gap-3">
               <div
@@ -75,7 +75,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             <div className="mt-6 flex flex-wrap gap-3 justify-end">
               <button
                 onClick={onCancel}
-                className="px-4 py-2.5 rounded-xl border border-[#d6d3d1] dark:border-[#4d4031] dark:text-sepia-200 text-sm font-medium hover:bg-paper-sunken dark:hover:bg-[#211a13] transition-colors"
+                className="px-4 py-2.5 rounded-xl border border-[#cbd5e1] dark:border-[#3f5169] dark:text-sepia-200 text-sm font-medium hover:bg-paper-sunken dark:hover:bg-[#16202e] transition-colors"
               >
                 {cancelLabel || t('config.cancel')}
               </button>

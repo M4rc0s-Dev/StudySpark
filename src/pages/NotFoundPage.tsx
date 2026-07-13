@@ -20,7 +20,7 @@ const NotFoundPage: React.FC = () => {
         <p className="mt-2 text-ink-muted dark:text-sepia-400 max-w-md">{t('notfound.desc')}</p>
         <Link
           to="/"
-          className="mt-8 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-ember-500 text-ink font-semibold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
+          className="mt-8 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-ember-500 text-paper font-semibold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
         >
           <Home className="w-5 h-5" /> {t('notfound.home')}
         </Link>

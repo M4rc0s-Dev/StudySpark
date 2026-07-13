@@ -75,12 +75,12 @@ const AuthPage: React.FC = () => {
           transition={{ duration: 0.4 }}
           className="w-full max-w-md"
         >
-          <div className="bg-paper-raised dark:bg-sepia-900 rounded-2xl shadow-lift ring-1 ring-stone-200/70 dark:ring-sepia-800 p-8 text-center">
+          <div className="bg-paper-raised dark:bg-sepia-900 rounded-2xl shadow-lift ring-1 ring-slate-200/70 dark:ring-sepia-800 p-8 text-center">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
-              className="w-16 h-16 mx-auto rounded-2xl bg-ember-500 flex items-center justify-center text-ink mb-5 shadow-md"
+              className="w-16 h-16 mx-auto rounded-2xl bg-ember-500 flex items-center justify-center text-paper mb-5 shadow-md"
             >
               <MailCheck className="w-8 h-8" />
             </motion.div>
@@ -93,7 +93,7 @@ const AuthPage: React.FC = () => {
               href={`https://${confirmEmail.split('@')[1]}`}
               target="_blank"
               rel="noreferrer"
-              className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-ember-500 text-ink font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
+              className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-ember-500 text-paper font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
             >
               <Mail className="w-5 h-5" /> {t('auth.checkmail.open')}
             </a>
@@ -122,9 +122,9 @@ const AuthPage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
-        <div className="bg-paper-raised dark:bg-sepia-900 rounded-2xl shadow-lift ring-1 ring-stone-200/70 dark:ring-sepia-800 p-8">
+        <div className="bg-paper-raised dark:bg-sepia-900 rounded-2xl shadow-lift ring-1 ring-slate-200/70 dark:ring-sepia-800 p-8">
           <div className="text-center mb-8">
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-ember-500 flex items-center justify-center text-ink mb-4 shadow-md">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-ember-500 flex items-center justify-center text-paper mb-4 shadow-md">
               <User className="w-7 h-7" />
             </div>
             <h1 className="font-display text-2xl font-bold text-ink dark:text-sepia-50">
@@ -144,7 +144,7 @@ const AuthPage: React.FC = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={t('auth.name')}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-stone-200 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 dark:placeholder-sepia-400 focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 dark:placeholder-sepia-400 focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none"
                 />
               </div>
             )}
@@ -156,7 +156,7 @@ const AuthPage: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t('auth.email')}
                 required
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-stone-200 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 dark:placeholder-sepia-400 focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 dark:placeholder-sepia-400 focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none"
               />
             </div>
             <div className="relative">
@@ -167,13 +167,13 @@ const AuthPage: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t('auth.password')}
                 required
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-stone-200 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 dark:placeholder-sepia-400 focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 dark:placeholder-sepia-400 focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none"
               />
             </div>
             <button
               type="submit"
               disabled={busy}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-ember-500 text-ink font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-ember-500 text-paper font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {busy ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
