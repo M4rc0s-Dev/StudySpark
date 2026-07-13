@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import UploadArea from '../components/Features/UploadArea'
@@ -12,7 +12,7 @@ import { useSettings } from '../context/SettingsContext'
 import { saveSessionToSupabase } from '../lib/sessions'
 import { StudySession } from '../types'
 import type { SessionConfig } from '../context/SettingsContext'
-import { FileText, Wand2, Brain, Sparkles, Zap, Layers, Trophy, Quote } from 'lucide-react'
+import { FileText, Wand2, Brain, Sparkles, Zap, Layers, Trophy, Quote, ArrowRight } from 'lucide-react'
 
 const fade = {
   hidden: { opacity: 0, y: 24 },
@@ -108,6 +108,22 @@ const HomePage: React.FC = () => {
     { icon: Brain, key: 'how.step3', descKey: 'how.step3.desc' },
   ]
 
+  // A few sample cards that flip automatically so the upload feels alive.
+  const sampleCards = [
+    {
+      q: '¿Cuál es la función de los cloroplastos?',
+      a: 'Realizan la fotosíntesis: convierten luz, agua y CO₂ en glucosa y oxígeno.',
+    },
+    {
+      q: '¿Qué es la repetición espaciada?',
+      a: 'Un método que repasa cada tarjeta justo antes de olvidarla, para recordar más con menos tiempo.',
+    },
+    {
+      q: '¿Qué es la mitosis?',
+      a: 'División celular que genera dos células idénticas a la original, con el mismo ADN.',
+    },
+  ]
+
   const testimonials = [
     { name: 'Lucía M.', role: 'Medicina', text: 'Hice 200 tarjetas de anatomía en una tarde. Aprobé.', initial: 'L' },
     { name: 'Carlos R.', role: 'Ingeniería', text: 'La repetición espaciada me salvó la carrera. Clarísimo.', initial: 'C' },
@@ -196,87 +212,74 @@ const HomePage: React.FC = () => {
             <UploadArea onUpload={handleUpload} isUploading={isUploading} innerRef={uploadRef} />
           </motion.div>
 
-          {/* New: minimal sample flashcard — shows what the user gets */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ delay: 0.1, duration: 0.5 }}
-            className="relative hidden lg:block"
-          >
-            <div className="bg-paper-raised dark:bg-sepia-900 rounded-3xl shadow-lift ring-1 ring-slate-200/70 dark:ring-sepia-800 p-6 rotate-[-2deg]">
-              <span className="text-xs font-semibold uppercase tracking-widest text-ember-600 dark:text-ember-400">Pregunta</span>
-              <p className="mt-2 font-display text-lg font-semibold text-ink dark:text-sepia-100 leading-snug">
-                ¿Cuál es la función de los cloroplastos?
-              </p>
-              <div className="my-4 border-t border-dashed border-slate-200 dark:border-sepia-700" />
-              <span className="text-xs font-semibold uppercase tracking-widest text-ink-muted dark:text-sepia-300">Respuesta</span>
-              <p className="mt-2 text-sm text-ink-soft dark:text-sepia-200 leading-relaxed">
-                Realizan la fotosíntesis: convierten luz, agua y CO₂ en glucosa y oxígeno.
-              </p>
-            </div>
-            <div className="absolute -bottom-5 -left-5 w-20 h-20 rounded-2xl bg-ember-500/10 ring-1 ring-ember-500/20 blur-[1px]" aria-hidden />
-          </motion.div>
+          {/* New: sample flashcard that flips automatically (Pregunta ↔ Respuesta) */}
+          <SampleCardStack cards={sampleCards} />
         </div>
       </section>
 
-      {/* HOW IT WORKS — symmetric numbered steps */}
+      {/* HOW IT WORKS — minimal horizontal timeline with connectors */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <motion.h2
           initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
-          className="font-display text-3xl font-bold text-center text-ink dark:text-sepia-50 mb-4"
+          className="font-display text-3xl font-bold text-center text-ink dark:text-sepia-50 mb-3"
         >
           {t('how.title')}
         </motion.h2>
-        <p className="text-center text-ink-muted dark:text-sepia-300 mb-12 max-w-xl mx-auto">
+        <p className="text-center text-ink-muted dark:text-sepia-300 mb-16 max-w-xl mx-auto">
           Tres pasos y empiezas a repasar. Sin configuraciones raras.
         </p>
-        <div className="grid md:grid-cols-3 gap-6">
+
+        <div className="relative grid md:grid-cols-3 gap-y-12 md:gap-y-0 md:gap-x-8">
+          {/* connecting line behind the nodes */}
+          <div className="hidden md:block absolute top-6 left-0 right-0 h-px bg-gradient-to-r from-transparent via-ember-500/40 to-transparent" aria-hidden />
           {steps.map((step, i) => {
             const Icon = step.icon
             return (
               <motion.div
                 key={step.key}
                 initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="relative bg-paper-raised dark:bg-sepia-900 rounded-3xl p-7 ring-1 ring-slate-200/70 dark:ring-sepia-800 shadow-soft hover:shadow-lift transition-all"
+                transition={{ delay: i * 0.12, duration: 0.5 }}
+                className="relative text-center md:px-4"
               >
-                <div className="flex items-center gap-3 mb-5">
-                  <span className="w-11 h-11 rounded-2xl bg-ember-500 text-paper flex items-center justify-center font-display font-bold text-lg">
-                    {i + 1}
-                  </span>
-                  <Icon className="w-6 h-6 text-ink-soft dark:text-sepia-300" />
+                <div className="mx-auto w-12 h-12 rounded-full bg-paper-raised dark:bg-sepia-900 ring-2 ring-ember-500/40 shadow-soft flex items-center justify-center mb-5 relative z-10">
+                  <Icon className="w-5 h-5 text-ember-600 dark:text-ember-300" />
                 </div>
-                <h3 className="text-lg font-semibold text-ink dark:text-sepia-100 mb-2">{t(step.key as any)}</h3>
-                <p className="text-ink-muted dark:text-sepia-300 text-sm leading-relaxed">{t(step.descKey as any)}</p>
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-ember-600 dark:text-ember-400">
+                  0{i + 1}
+                </span>
+                <h3 className="mt-2 text-lg font-semibold text-ink dark:text-sepia-100 mb-2">{t(step.key as any)}</h3>
+                <p className="text-ink-muted dark:text-sepia-300 text-sm leading-relaxed max-w-xs mx-auto">
+                  {t(step.descKey as any)}
+                </p>
               </motion.div>
             )
           })}
         </div>
       </section>
 
-      {/* TESTIMONIALS — editorial pull-quotes */}
+      {/* TESTIMONIALS — editorial pull-quotes, no boxes */}
       <section className="bg-paper-sunken dark:bg-night-soft border-t border-slate-200 dark:border-sepia-700">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <motion.h2
             initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
-            className="font-display text-3xl font-bold text-center text-ink dark:text-sepia-50 mb-12 flex items-center justify-center gap-3"
+            className="font-display text-3xl font-bold text-center text-ink dark:text-sepia-50 mb-12"
           >
-            <Quote className="w-7 h-7 text-ember-600 dark:text-ember-400" />
             {t('testi.title')}
           </motion.h2>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-x-10 gap-y-12">
             {testimonials.map((tm, i) => (
               <motion.figure
                 key={tm.name}
                 initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="relative bg-paper-raised dark:bg-sepia-900 rounded-3xl p-7 ring-1 ring-slate-200/70 dark:ring-sepia-800 shadow-soft hover:shadow-lift transition-all"
+                className="relative"
               >
-                <span className="font-display text-5xl text-ember-400/60 leading-none block mb-2 select-none">"</span>
-                <blockquote className="text-ink-soft dark:text-sepia-200 text-sm leading-relaxed -mt-4 mb-5">
+                <Quote className="w-6 h-6 text-ember-500/50 mb-3" />
+                <blockquote className="text-ink-soft dark:text-sepia-200 text-base leading-relaxed font-display italic">
                   {tm.text}
                 </blockquote>
-                <figcaption className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-ink dark:bg-sepia-100 flex items-center justify-center text-paper dark:text-ink font-semibold text-sm">
+                <figcaption className="mt-5 flex items-center gap-3 border-t border-slate-200 dark:border-sepia-700 pt-4">
+                  <div className="w-10 h-10 rounded-full bg-ember-500/10 dark:bg-ember-500/15 ring-1 ring-ember-500/20 flex items-center justify-center text-ember-700 dark:text-ember-300 font-display font-semibold text-sm">
                     {tm.initial}
                   </div>
                   <div>
@@ -316,6 +319,69 @@ const HomePage: React.FC = () => {
 
       {isUploading && <LoadingScreen elapsedMs={loadingElapsed} error={uploadError} onCancel={cancelUpload} />}
     </div>
+  )
+}
+
+// Auto-flipping sample flashcard: shows a question, flips to the answer after a
+// beat, advances to the next card, and loops. Keeps the "this is what you get"
+// idea alive without a single static, boxed card.
+const SampleCardStack: React.FC<{ cards: { q: string; a: string }[] }> = ({ cards }) => {
+  const [index, setIndex] = useState(0)
+  const [flipped, setFlipped] = useState(false)
+
+  useEffect(() => {
+    if (cards.length === 0) return
+    const flip = setTimeout(() => setFlipped(true), 2200)
+    const next = setTimeout(() => {
+      setFlipped(false)
+      setIndex((i) => (i + 1) % cards.length)
+    }, 4200)
+    return () => {
+      clearTimeout(flip)
+      clearTimeout(next)
+    }
+  }, [index, cards.length])
+
+  const card = cards[index]
+  if (!card) return null
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: 0.1, duration: 0.5 }}
+      className="relative hidden lg:block [perspective:1200px]"
+    >
+      <div
+        className="relative w-full rounded-3xl transition-transform duration-700 [transform-style:preserve-3d]"
+        style={{ transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
+      >
+        {/* Front — question */}
+        <div className="bg-paper-raised dark:bg-sepia-900 rounded-3xl shadow-lift ring-1 ring-slate-200/70 dark:ring-sepia-800 p-7 backface-hidden">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs font-semibold uppercase tracking-widest text-ember-600 dark:text-ember-400">Pregunta</span>
+            <span className="text-xs text-ink-muted dark:text-sepia-300">{index + 1} / {cards.length}</span>
+          </div>
+          <p className="font-display text-xl font-semibold text-ink dark:text-sepia-100 leading-snug min-h-[3.5rem]">
+            {card.q}
+          </p>
+          <p className="mt-6 text-xs text-ink-muted dark:text-sepia-300 flex items-center gap-1.5">
+            <ArrowRight className="w-3.5 h-3.5" /> Pasa a la respuesta…
+          </p>
+        </div>
+
+        {/* Back — answer */}
+        <div
+          className="absolute inset-0 bg-ember-500 rounded-3xl shadow-lift p-7 backface-hidden flex flex-col justify-center"
+          style={{ transform: 'rotateY(180deg)' }}
+        >
+          <span className="text-xs font-semibold uppercase tracking-widest text-paper/80 mb-3">Respuesta</span>
+          <p className="text-paper text-base leading-relaxed font-medium">{card.a}</p>
+        </div>
+      </div>
+      <div className="absolute -bottom-5 -left-5 w-20 h-20 rounded-2xl bg-ember-500/10 ring-1 ring-ember-500/20 blur-[1px]" aria-hidden />
+    </motion.div>
   )
 }
 
