@@ -18,6 +18,13 @@ const modes: { id: StudyMode; icon: typeof Brain; key: string; descKey: string }
   { id: 'spaced-repetition', icon: Repeat, key: 'mode.spaced', descKey: 'mode.spaced.desc' },
 ]
 
+// Per-mode accent kept within the warm palette (ember + stone) for coherence.
+const modeAccent: Record<StudyMode, string> = {
+  basic: 'bg-ember-500',
+  timed: 'bg-orange-500',
+  'spaced-repetition': 'bg-stone-700',
+}
+
 const orders: { id: CardOrder; icon: typeof ListOrdered; key: string }[] = [
   { id: 'default', icon: ListOrdered, key: 'config.order.default' },
   { id: 'shuffle', icon: Shuffle, key: 'config.order.shuffle' },
@@ -58,10 +65,10 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', stiffness: 260, damping: 22 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden"
+            className="w-full max-w-lg bg-paper-raised dark:bg-[#161210] rounded-3xl shadow-lift overflow-hidden"
           >
             {/* Header */}
-            <div className="relative px-6 pt-6 pb-5 bg-gradient-to-br from-indigo-600 to-violet-600 text-white">
+            <div className="relative px-6 pt-6 pb-5 bg-gradient-to-br from-ember-500 to-ember-600 text-white">
               <button
                 onClick={onClose}
                 className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors"
@@ -69,8 +76,8 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
               >
                 <X className="w-5 h-5" />
               </button>
-              <h2 className="text-xl font-bold">{t('config.title')}</h2>
-              <p className="text-sm text-indigo-100 mt-1">
+              <h2 className="font-display text-xl font-semibold">{t('config.title')}</h2>
+              <p className="text-sm text-ember-50 mt-1">
                 {deckTitle ? <span className="font-medium">{deckTitle}</span> : t('config.subtitle')}
               </p>
             </div>
@@ -78,7 +85,7 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
             <div className="px-6 py-5 space-y-6 max-h-[70vh] overflow-y-auto">
               {/* Mode */}
               <div>
-                <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">{t('config.mode')}</p>
+                <p className="text-sm font-semibold text-ink-soft dark:text-stone-200 mb-3">{t('config.mode')}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {modes.map((m) => {
                     const Icon = m.icon
@@ -89,25 +96,17 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
                         onClick={() => setMode(m.id)}
                         className={`relative text-left rounded-2xl border-2 p-4 transition-all ${
                           active
-                            ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/15 shadow-sm'
-                            : 'border-gray-200 dark:border-gray-700 hover:border-indigo-300 hover:bg-indigo-50/40 dark:hover:bg-indigo-500/5'
+                            ? 'border-ember-500 bg-ember-50 dark:bg-ember-500/15 shadow-soft'
+                            : 'border-paper-sunken dark:border-[#2a2420] hover:border-ember-300 hover:bg-ember-50/40 dark:hover:bg-ember-500/5'
                         }`}
                       >
-                        <div className="flex items-center justify-between mb-2">
-                          <span
-                            className={`w-10 h-10 rounded-xl flex items-center justify-center text-white ${
-                              m.id === 'basic'
-                                ? 'bg-blue-500'
-                                : m.id === 'timed'
-                                ? 'bg-orange-500'
-                                : 'bg-emerald-500'
-                            }`}
-                          >
-                            <Icon className="w-5 h-5" />
-                          </span>
-                        </div>
-                        <p className="font-semibold text-gray-900 dark:text-white text-sm">{t(m.key as any)}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-snug">{t(m.descKey as any)}</p>
+                        <span
+                          className={`w-10 h-10 rounded-xl flex items-center justify-center text-white ${modeAccent[m.id]}`}
+                        >
+                          <Icon className="w-5 h-5" />
+                        </span>
+                        <p className="mt-2 font-semibold text-ink dark:text-stone-100 text-sm">{t(m.key as any)}</p>
+                        <p className="text-xs text-ink-muted dark:text-stone-400 mt-1 leading-snug">{t(m.descKey as any)}</p>
                       </button>
                     )
                   })}
@@ -116,7 +115,7 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
 
               {/* Order */}
               <div>
-                <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">{t('config.order')}</p>
+                <p className="text-sm font-semibold text-ink-soft dark:text-stone-200 mb-3">{t('config.order')}</p>
                 <div className="grid grid-cols-3 gap-2">
                   {orders.map((o) => {
                     const Icon = o.icon
@@ -127,12 +126,12 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
                         onClick={() => setOrder(o.id)}
                         className={`flex flex-col items-center gap-1.5 rounded-xl border-2 p-3 transition-all ${
                           active
-                            ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/15'
-                            : 'border-gray-200 dark:border-gray-700 hover:border-indigo-300'
+                            ? 'border-ember-500 bg-ember-50 dark:bg-ember-500/15'
+                            : 'border-paper-sunken dark:border-[#2a2420] hover:border-ember-300'
                         }`}
                       >
-                        <Icon className={`w-5 h-5 ${active ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400'}`} />
-                        <span className="text-xs font-medium text-gray-700 dark:text-gray-200 text-center leading-tight">
+                        <Icon className={`w-5 h-5 ${active ? 'text-ember-600 dark:text-ember-400' : 'text-ink-muted'}`} />
+                        <span className="text-xs font-medium text-ink-soft dark:text-stone-200 text-center leading-tight">
                           {t(o.key as any)}
                         </span>
                       </button>
@@ -143,7 +142,7 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
 
               {/* Direction */}
               <div>
-                <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">{t('config.direction')}</p>
+                <p className="text-sm font-semibold text-ink-soft dark:text-stone-200 mb-3">{t('config.direction')}</p>
                 <div className="grid grid-cols-2 gap-2">
                   {directions.map((d) => {
                     const Icon = d.icon
@@ -154,12 +153,12 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
                         onClick={() => setDirection(d.id)}
                         className={`flex items-center justify-center gap-2 rounded-xl border-2 p-3 transition-all ${
                           active
-                            ? 'border-violet-500 bg-violet-50 dark:bg-violet-500/15'
-                            : 'border-gray-200 dark:border-gray-700 hover:border-violet-300'
+                            ? 'border-ember-500 bg-ember-50 dark:bg-ember-500/15'
+                            : 'border-paper-sunken dark:border-[#2a2420] hover:border-ember-300'
                         }`}
                       >
-                        <Icon className={`w-4 h-4 ${active ? 'text-violet-600 dark:text-violet-400' : 'text-gray-400'}`} />
-                        <span className="text-xs font-medium text-gray-700 dark:text-gray-200">{t(d.key as any)}</span>
+                        <Icon className={`w-4 h-4 ${active ? 'text-ember-600 dark:text-ember-400' : 'text-ink-muted'}`} />
+                        <span className="text-xs font-medium text-ink-soft dark:text-stone-200">{t(d.key as any)}</span>
                       </button>
                     )
                   })}
@@ -167,31 +166,31 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
               </div>
 
               {/* Autoplay */}
-              <label className="flex items-center justify-between gap-3 rounded-xl border border-gray-200 dark:border-gray-700 p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              <label className="flex items-center justify-between gap-3 rounded-xl border border-paper-sunken dark:border-[#2a2420] p-3 cursor-pointer hover:bg-paper-sunken dark:hover:bg-[#1c1917] transition-colors">
                 <span className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-indigo-500" />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('config.autoplay')}</span>
+                  <Sparkles className="w-4 h-4 text-ember-500" />
+                  <span className="text-sm font-medium text-ink-soft dark:text-stone-200">{t('config.autoplay')}</span>
                 </span>
                 <input
                   type="checkbox"
                   checked={autoplay}
                   onChange={(e) => setAutoplay(e.target.checked)}
-                  className="w-5 h-5 accent-indigo-600 cursor-pointer"
+                  className="w-5 h-5 accent-ember-600 cursor-pointer"
                 />
               </label>
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-800 flex items-center gap-3 bg-gray-50 dark:bg-gray-800/50">
+            <div className="px-6 py-4 border-t border-paper-sunken dark:border-[#2a2420] flex items-center gap-3 bg-paper-sunken dark:bg-[#1c1917]">
               <button
                 onClick={onClose}
-                className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 dark:text-gray-200 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="px-5 py-2.5 rounded-xl border border-[#d6d3d1] dark:border-[#3a342e] dark:text-stone-200 font-medium hover:bg-[#e7e5e4] dark:hover:bg-[#2a2420] transition-colors"
               >
                 {t('config.cancel')}
               </button>
               <button
                 onClick={handleStart}
-                className="flex-1 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+                className="flex-1 px-5 py-2.5 rounded-xl bg-gradient-to-r from-ember-500 to-ember-600 text-white font-semibold shadow-soft hover:shadow-lift hover:scale-[1.02] transition-all"
               >
                 {t('config.start')}
               </button>

@@ -45,15 +45,15 @@ const difficultyStyles: Record<string, { ring: string; chip: string; key: string
 }
 
 const conceptStyles: Record<string, string> = {
-  Politics: 'bg-blue-100 text-blue-800',
-  Economics: 'bg-emerald-100 text-emerald-800',
-  Military: 'bg-slate-100 text-slate-800',
-  Science: 'bg-purple-100 text-purple-800',
-  History: 'bg-orange-100 text-orange-800',
-  Física: 'bg-sky-100 text-sky-800',
-  Biología: 'bg-green-100 text-green-800',
-  Ciencia: 'bg-purple-100 text-purple-800',
-  Historia: 'bg-orange-100 text-orange-800',
+  Politics: 'bg-ember-50 text-ember-700 dark:bg-ember-500/15 dark:text-ember-300',
+  Economics: 'bg-stone-100 text-stone-700 dark:bg-stone-700/40 dark:text-stone-200',
+  Military: 'bg-stone-100 text-stone-700 dark:bg-stone-700/40 dark:text-stone-200',
+  Science: 'bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-300',
+  History: 'bg-orange-100 text-orange-800 dark:bg-orange-500/15 dark:text-orange-300',
+  Física: 'bg-ember-50 text-ember-700 dark:bg-ember-500/15 dark:text-ember-300',
+  Biología: 'bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-300',
+  Ciencia: 'bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-300',
+  Historia: 'bg-orange-100 text-orange-800 dark:bg-orange-500/15 dark:text-orange-300',
 }
 
 const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAnswer, autoplay }) => {
@@ -63,7 +63,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ flashcard, showAnswer, onToggleAn
 
   const diff = flashcard.difficulty ? difficultyStyles[flashcard.difficulty] : null
   const conceptClass =
-    (flashcard.concept && conceptStyles[flashcard.concept]) || 'bg-indigo-100 text-indigo-800'
+    (flashcard.concept && conceptStyles[flashcard.concept]) || 'bg-ember-50 text-ember-700 dark:bg-ember-500/15 dark:text-ember-300'
   const noDifficultyLabel = t('card.no.difficulty')
 
   const handleCopy = async () => {

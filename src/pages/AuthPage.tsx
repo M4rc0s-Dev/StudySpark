@@ -75,35 +75,35 @@ const AuthPage: React.FC = () => {
           transition={{ duration: 0.4 }}
           className="w-full max-w-md"
         >
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-8 text-center">
+          <div className="bg-paper-raised dark:bg-stone-900 rounded-2xl shadow-lift ring-1 ring-stone-200/70 dark:ring-stone-800 p-8 text-center">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
-              className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white mb-5 shadow-md"
+              className="w-16 h-16 mx-auto rounded-2xl bg-ember-500 flex items-center justify-center text-ink mb-5 shadow-md"
             >
               <MailCheck className="w-8 h-8" />
             </motion.div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('auth.checkmail')}</h1>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
-              {t('auth.checkmail.desc')} <span className="font-semibold text-gray-700 dark:text-gray-200">{confirmEmail}</span>
+            <h1 className="font-display text-2xl font-bold text-ink dark:text-stone-50">{t('auth.checkmail')}</h1>
+            <p className="text-ink-muted dark:text-stone-400 text-sm mt-2">
+              {t('auth.checkmail.desc')} <span className="font-semibold text-ink-soft dark:text-stone-200">{confirmEmail}</span>
             </p>
 
             <a
               href={`https://${confirmEmail.split('@')[1]}`}
               target="_blank"
               rel="noreferrer"
-              className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all"
+              className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-ember-500 text-ink font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
             >
               <Mail className="w-5 h-5" /> {t('auth.checkmail.open')}
             </a>
 
-            <p className="text-xs text-gray-400 dark:text-gray-500 mt-5">{t('auth.checkmail.note')}</p>
+            <p className="text-xs text-ink-muted dark:text-stone-500 mt-5">{t('auth.checkmail.note')}</p>
 
             <button
               onClick={handleResend}
               disabled={resending}
-              className="mt-4 inline-flex items-center gap-2 text-sm text-indigo-600 dark:text-indigo-400 font-semibold hover:underline disabled:opacity-60"
+              className="mt-4 inline-flex items-center gap-2 text-sm text-ember-600 dark:text-ember-400 font-semibold hover:underline disabled:opacity-60"
             >
               <RefreshCw className={`w-4 h-4 ${resending ? 'animate-spin' : ''}`} />
               {resending ? t('auth.checkmail.resending') : t('auth.checkmail.resend')}
@@ -122,15 +122,15 @@ const AuthPage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
-        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-8">
+        <div className="bg-paper-raised dark:bg-stone-900 rounded-2xl shadow-lift ring-1 ring-stone-200/70 dark:ring-stone-800 p-8">
           <div className="text-center mb-8">
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white mb-4 shadow-md">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-ember-500 flex items-center justify-center text-ink mb-4 shadow-md">
               <User className="w-7 h-7" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className="font-display text-2xl font-bold text-ink dark:text-stone-50">
               {mode === 'login' ? t('auth.login') : t('auth.register')}
             </h1>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+            <p className="text-ink-muted dark:text-stone-400 text-sm mt-1">
               {mode === 'login' ? t('auth.login.desc') : t('auth.register.desc')}
             </p>
           </div>
@@ -138,42 +138,42 @@ const AuthPage: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'register' && (
               <div className="relative">
-                <User className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
+                <User className="w-5 h-5 text-ink-muted absolute left-3 top-3.5" />
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={t('auth.name')}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-stone-200 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-50 dark:placeholder-stone-400 focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none"
                 />
               </div>
             )}
             <div className="relative">
-              <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
+              <Mail className="w-5 h-5 text-ink-muted absolute left-3 top-3.5" />
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t('auth.email')}
                 required
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-stone-200 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-50 dark:placeholder-stone-400 focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none"
               />
             </div>
             <div className="relative">
-              <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
+              <Lock className="w-5 h-5 text-ink-muted absolute left-3 top-3.5" />
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t('auth.password')}
                 required
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-stone-200 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-50 dark:placeholder-stone-400 focus:ring-2 focus:ring-ember-500 focus:border-transparent outline-none"
               />
             </div>
             <button
               type="submit"
               disabled={busy}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-ember-500 text-ink font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {busy ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -185,11 +185,11 @@ const AuthPage: React.FC = () => {
             </button>
           </form>
 
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
+          <p className="text-center text-sm text-ink-muted dark:text-stone-400 mt-6">
             {mode === 'login' ? t('auth.noaccount') : t('auth.hasaccount')}{' '}
             <button
               onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-              className="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline"
+              className="text-ember-600 dark:text-ember-400 font-semibold hover:underline"
             >
               {mode === 'login' ? t('auth.toregister') : t('auth.tologin')}
             </button>

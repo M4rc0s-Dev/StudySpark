@@ -38,11 +38,11 @@ const ConfirmPage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md text-center"
       >
-        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-10">
+        <div className="bg-paper-raised dark:bg-[#161210] rounded-2xl shadow-lift border border-paper-sunken dark:border-[#2a2420] p-10">
           {status === 'loading' && (
             <>
-              <Loader2 className="w-12 h-12 mx-auto text-indigo-500 animate-spin" />
-              <p className="mt-4 text-gray-600 dark:text-gray-300">{t('auth.checkmail')}…</p>
+              <Loader2 className="w-12 h-12 mx-auto text-ember-500 animate-spin" />
+              <p className="mt-4 text-ink-soft dark:text-stone-300">{t('auth.checkmail')}…</p>
             </>
           )}
           {status === 'ok' && (
@@ -51,12 +51,12 @@ const ConfirmPage: React.FC = () => {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                className="w-16 h-16 mx-auto rounded-full bg-emerald-100 dark:bg-emerald-500/15 flex items-center justify-center text-emerald-600 dark:text-emerald-400"
+                className="w-16 h-16 mx-auto rounded-full bg-ember-50 dark:bg-ember-500/15 flex items-center justify-center text-ember-600 dark:text-ember-400"
               >
                 <CheckCircle2 className="w-9 h-9" />
               </motion.div>
-              <h1 className="mt-4 text-xl font-bold text-gray-900 dark:text-white">{t('auth.confirmed')}</h1>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{t('auth.confirmed.desc')}</p>
+              <h1 className="mt-4 font-display text-xl font-semibold text-ink dark:text-stone-100">{t('auth.confirmed')}</h1>
+              <p className="mt-1 text-sm text-ink-muted dark:text-stone-400">{t('auth.confirmed.desc')}</p>
             </>
           )}
           {status === 'error' && (
@@ -64,10 +64,10 @@ const ConfirmPage: React.FC = () => {
               <div className="w-16 h-16 mx-auto rounded-full bg-rose-100 dark:bg-rose-500/15 flex items-center justify-center text-rose-600 dark:text-rose-400">
                 <XCircle className="w-9 h-9" />
               </div>
-              <h1 className="mt-4 text-xl font-bold text-gray-900 dark:text-white">{t('auth.confirm.error')}</h1>
+              <h1 className="mt-4 font-display text-xl font-semibold text-ink dark:text-stone-100">{t('auth.confirm.error')}</h1>
               <button
                 onClick={() => navigate('/auth', { replace: true })}
-                className="mt-5 inline-flex items-center px-5 py-2.5 rounded-xl border border-indigo-600 text-indigo-600 dark:text-indigo-400 font-semibold hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors"
+                className="mt-5 inline-flex items-center px-5 py-2.5 rounded-xl border border-ember-600 text-ember-600 dark:text-ember-400 font-semibold hover:bg-ember-50 dark:hover:bg-ember-500/10 transition-colors"
               >
                 {t('auth.backto.login')}
               </button>

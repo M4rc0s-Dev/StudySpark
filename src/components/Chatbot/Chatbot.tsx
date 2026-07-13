@@ -306,8 +306,8 @@ const Chatbot: React.FC = () => {
         className={cn(
           'fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-xl transition-all',
           isOpen
-            ? 'bg-gray-800 rotate-45'
-            : 'bg-gradient-to-br from-indigo-600 to-violet-600 hover:scale-105'
+            ? 'bg-ink rotate-45'
+            : 'bg-gradient-to-br from-ember-500 to-ember-600 hover:scale-105'
         )}
         aria-label={isOpen ? t('chatbot.title') + ' - cerrar' : t('chatbot.title') + ' - abrir'}
       >
@@ -326,19 +326,19 @@ const Chatbot: React.FC = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="fixed bottom-24 right-6 z-50 w-full max-w-sm md:max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col"
+            className="fixed bottom-24 right-6 z-50 w-full max-w-sm md:max-w-md bg-paper-raised dark:bg-[#161210] rounded-2xl shadow-lift border border-paper-sunken dark:border-[#2a2420] overflow-hidden flex flex-col"
             role="dialog"
             aria-label={t('chatbot.title')}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-t-2xl">
+            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-ember-500 to-ember-600 text-white rounded-t-2xl">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
                   <Bot className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="font-semibold">{t('chatbot.title')}</p>
-                  <p className="text-xs text-indigo-100 flex items-center gap-1">
+                  <p className="font-semibold font-display">{t('chatbot.title')}</p>
+                  <p className="text-xs text-ember-50 flex items-center gap-1">
                     <span className="w-2 h-2 rounded-full bg-green-400 inline-block" />
                     {t('chatbot.help')}
                   </p>
@@ -354,7 +354,7 @@ const Chatbot: React.FC = () => {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 max-h-[380px] bg-gray-50 dark:bg-gray-950">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 max-h-[380px] bg-paper-sunken dark:bg-[#0c0a09]">
               <AnimatePresence initial={false} mode="popLayout">
                 {messages.map((msg, i) => (
                   <motion.div
@@ -369,7 +369,7 @@ const Chatbot: React.FC = () => {
                     )}
                   >
                     {msg.role === 'bot' && (
-                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-ember-500 to-ember-600 flex items-center justify-center flex-shrink-0">
                         <Bot className="w-4 h-4 text-white" />
                       </div>
                     )}
@@ -377,14 +377,14 @@ const Chatbot: React.FC = () => {
                       className={cn(
                         'rounded-2xl px-4 py-2.5 text-sm leading-relaxed',
                         msg.role === 'user'
-                          ? 'bg-indigo-600 text-white rounded-br-md'
-                          : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-bl-md shadow-sm'
+                          ? 'bg-ember-600 text-white rounded-br-md'
+                          : 'bg-paper-raised dark:bg-[#1c1917] text-ink dark:text-stone-100 rounded-bl-md shadow-sm'
                       )}
                     >
                       {msg.content}
                     </div>
                     {msg.role === 'user' && (
-                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-ember-500 to-ember-600 flex items-center justify-center flex-shrink-0">
                         <Sparkles className="w-4 h-4 text-white" />
                       </div>
                     )}
@@ -397,11 +397,11 @@ const Chatbot: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   className="flex gap-3 max-w-[85%]"
                 >
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-ember-500 to-ember-600 flex items-center justify-center flex-shrink-0">
                     <Bot className="w-4 h-4 text-white" />
                   </div>
-                  <div className="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-2xl px-4 py-2.5 text-sm shadow-sm">
-                    <Loader2 className="w-5 h-5 text-indigo-600 animate-spin mx-auto" />
+                  <div className="bg-paper-raised dark:bg-[#1c1917] text-ink dark:text-stone-100 rounded-2xl px-4 py-2.5 text-sm shadow-sm">
+                    <Loader2 className="w-5 h-5 text-ember-600 animate-spin mx-auto" />
                   </div>
                 </motion.div>
               )}
@@ -410,13 +410,13 @@ const Chatbot: React.FC = () => {
 
             {/* Conversation chips */}
             {!isTyping && (
-              <div className="p-4 pt-3 flex flex-wrap gap-2 border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900">
+              <div className="p-4 pt-3 flex flex-wrap gap-2 border-t border-paper-sunken dark:border-[#2a2420] bg-paper-raised dark:bg-[#161210]">
                 {showRootChips ? (
                   topics.map((topic, i) => (
                     <button
                       key={topic.label}
                       onClick={() => selectTopic(i)}
-                      className="text-xs px-3 py-1.5 rounded-full transition-colors bg-indigo-50 dark:bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-500/25"
+                      className="text-xs px-3 py-1.5 rounded-full transition-colors bg-ember-50 dark:bg-ember-500/15 text-ember-700 dark:text-ember-300 hover:bg-ember-100 dark:hover:bg-ember-500/25"
                     >
                       {topic.label}
                     </button>
@@ -427,14 +427,14 @@ const Chatbot: React.FC = () => {
                       <button
                         key={followup.label}
                         onClick={() => selectFollowup(openTopic!, i)}
-                        className="text-xs px-3 py-1.5 rounded-full transition-colors bg-white dark:bg-gray-800 border border-indigo-200 dark:border-indigo-500/30 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-500/15 flex items-center gap-1"
+                        className="text-xs px-3 py-1.5 rounded-full transition-colors bg-paper-raised dark:bg-[#1c1917] border border-ember-200 dark:border-ember-500/30 text-ember-700 dark:text-ember-300 hover:bg-ember-50 dark:hover:bg-ember-500/15 flex items-center gap-1"
                       >
                         <CornerDownLeft className="w-3 h-3" /> {followup.label}
                       </button>
                     ))}
                     <button
                       onClick={goBack}
-                      className="text-xs px-3 py-1.5 rounded-full transition-colors bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center gap-1"
+                      className="text-xs px-3 py-1.5 rounded-full transition-colors bg-paper-sunken dark:bg-[#1c1917] text-ink-muted dark:text-stone-300 hover:bg-[#e7e5e4] dark:hover:bg-[#2a2420] flex items-center gap-1"
                     >
                       <ArrowLeft className="w-3 h-3" /> {t('chatbot.back')}
                     </button>
