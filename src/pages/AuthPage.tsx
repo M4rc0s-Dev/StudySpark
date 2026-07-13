@@ -5,16 +5,16 @@ import { useLanguage } from '../context/LanguageContext'
 import { useAuth } from '../context/AuthContext'
 import { toast } from 'react-hot-toast'
 import { supabase as supabaseClient } from '../lib/supabase'
-import { Mail, Lock, User, ArrowRight, Loader2, MailCheck, RefreshCw, CheckCircle2, Dices, Shuffle } from 'lucide-react'
-import { avatarUrl, randomAvatarSeed, AVATAR_STYLES, type AvatarStyle } from '../lib/avatars'
+import { Mail, Lock, User, ArrowRight, Loader2, MailCheck, RefreshCw, CheckCircle2, Dices } from 'lucide-react'
+import { AVATAR_SEEDS } from '../lib/avatars'
+import AvatarPicker from '../components/Layout/AvatarPicker'
 
 const AuthPage: React.FC = () => {
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [avatarSeed, setAvatarSeed] = useState(() => randomAvatarSeed())
-  const [avatarStyle, setAvatarStyle] = useState<AvatarStyle>('shapes')
+  const [avatarSeed, setAvatarSeed] = useState(() => AVATAR_SEEDS[0])
   const [busy, setBusy] = useState(false)
   const [confirmEmail, setConfirmEmail] = useState('')
   const [resending, setResending] = useState(false)
@@ -153,42 +153,13 @@ const AuthPage: React.FC = () => {
             )}
             {mode === 'register' && (
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium text-ink-soft dark:text-sepia-200 flex items-center gap-2">
-                    <Dices className="w-4 h-4 text-ember-500" /> {t('auth.avatar')}
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => setAvatarSeed(randomAvatarSeed())}
-                    title={t('auth.avatar.random')}
-                    className="inline-flex items-center gap-1 text-xs text-ember-600 dark:text-ember-400 font-semibold hover:underline"
-                  >
-                    <Shuffle className="w-3.5 h-3.5" /> {t('auth.avatar.random')}
-                  </button>
-                </div>
+                <label className="text-sm font-medium text-ink-soft dark:text-sepia-200 flex items-center gap-2 mb-2">
+                  <Dices className="w-4 h-4 text-ember-500" /> {t('auth.avatar')}
+                </label>
                 <div className="flex items-center gap-4 rounded-xl border border-paper-sunken dark:border-[#33465c] dark:bg-[#111d2a] p-3">
-                  <img
-                    src={avatarUrl(avatarSeed, avatarStyle)}
-                    alt="avatar"
-                    className="w-14 h-14 rounded-full ring-2 ring-ember-500/40 bg-paper-sunken dark:bg-sepia-800 shrink-0"
-                  />
-                  <div className="flex flex-wrap gap-2">
-                    {AVATAR_STYLES.map((style) => (
-                      <button
-                        key={style}
-                        type="button"
-                        onClick={() => setAvatarStyle(style)}
-                        title={t(`auth.avatar.${style}` as any)}
-                        className={`w-10 h-10 rounded-full overflow-hidden ring-2 transition-all ${
-                          avatarStyle === style ? 'ring-ember-500 scale-105' : 'ring-transparent hover:ring-ember-300'
-                        }`}
-                      >
-                        <img src={avatarUrl(avatarSeed, style)} alt={style} className="w-full h-full bg-paper-sunken dark:bg-sepia-800" />
-                      </button>
-                    ))}
-                  </div>
+                  <AvatarPicker value={avatarSeed} onSelect={setAvatarSeed} size="md" label={t('auth.avatar')} />
+                  <p className="text-xs text-ink-muted dark:text-sepia-300">{t('auth.avatar.hint')}</p>
                 </div>
-                <p className="text-xs text-ink-muted dark:text-sepia-300 mt-2">{t('auth.avatar.hint')}</p>
               </div>
             )}
             <div className="relative">

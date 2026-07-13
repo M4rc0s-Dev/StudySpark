@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
-import { Globe, Coffee, Sparkles, Download, Trash2, Brain, Clock, Repeat, ArrowLeft, Check, Layers, ChevronDown, Dices, Shuffle } from 'lucide-react'
+import { Globe, Coffee, Sparkles, Download, Trash2, Brain, Clock, Repeat, ArrowLeft, Check, Layers, ChevronDown, Dices } from 'lucide-react'
 import { useLanguage } from '../context/LanguageContext'
 import { useAuth } from '../context/AuthContext'
 import { useSettings } from '../context/SettingsContext'
@@ -10,7 +10,8 @@ import { exportSessions } from '../lib/export'
 import { CARD_COUNT_OPTIONS, CARD_COUNT_AUTO, MAX_CARDS } from '../context/SettingsContext'
 import type { StudyMode } from '../context/SettingsContext'
 import type { StudySession } from '../types'
-import { avatarUrl, randomAvatarSeed, AVATAR_STYLES, type AvatarStyle } from '../lib/avatars'
+import { AVATAR_SEEDS } from '../lib/avatars'
+import AvatarPicker from '../components/Layout/AvatarPicker'
 
 const fade = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0 } }
 
@@ -26,24 +27,14 @@ const SettingsPage: React.FC = () => {
   const { user, profile, sessions, updateAvatar } = useAuth()
   const { prefs, setPrefs, resetLocalProgress } = useSettings()
   const [confirmDelete, setConfirmDelete] = useState(false)
-  const [avatarStyle, setAvatarStyle] = useState<AvatarStyle>('shapes')
-  const [avatarSeed, setAvatarSeed] = useState(() => profile?.avatar || randomAvatarSeed())
+  const [avatarSeed, setAvatarSeed] = useState(() => profile?.avatar || AVATAR_SEEDS[0])
 
   // Keep the local preview in sync when the profile loads/changes.
   useEffect(() => {
     if (profile?.avatar) setAvatarSeed(profile.avatar)
   }, [profile?.avatar])
 
-  const handleAvatarChange = async (style: AvatarStyle) => {
-    const seed = profile?.avatar || avatarSeed
-    setAvatarStyle(style)
-    await updateAvatar(seed)
-    setAvatarSeed(seed)
-    toast.success(t('settings.avatar.saved'))
-  }
-
-  const handleAvatarRandom = async () => {
-    const seed = randomAvatarSeed()
+  const handleAvatarChange = async (seed: string) => {
     setAvatarSeed(seed)
     await updateAvatar(seed)
     toast.success(t('settings.avatar.saved'))
@@ -178,41 +169,12 @@ const SettingsPage: React.FC = () => {
           <h2 className="font-semibold text-ink dark:text-sepia-100 flex items-center gap-2 mb-4 font-display">
             <Dices className="w-5 h-5 text-ember-500" /> {t('settings.avatar')}
           </h2>
-          <div className="flex items-center gap-4 mb-4">
-            <img
-              src={avatarUrl(avatarSeed, avatarStyle)}
-              alt="avatar"
-              className="w-16 h-16 rounded-full ring-2 ring-ember-500/40 bg-paper-sunken dark:bg-sepia-800 shrink-0"
-            />
+          <div className="flex items-center gap-4">
+            <AvatarPicker value={avatarSeed} onSelect={handleAvatarChange} size="md" label={t('settings.avatar')} />
             <div className="min-w-0">
               <p className="text-sm font-medium text-ink-soft dark:text-sepia-200 truncate">{profile?.name || user?.name}</p>
               <p className="text-xs text-ink-muted dark:text-sepia-300">{t('settings.avatar.desc')}</p>
             </div>
-            <button
-              type="button"
-              onClick={handleAvatarRandom}
-              className="ml-auto inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-paper-sunken dark:border-[#33465c] text-sm font-medium text-ember-600 dark:text-ember-400 hover:bg-ember-50 dark:hover:bg-ember-500/10 transition-colors shrink-0"
-            >
-              <Shuffle className="w-4 h-4" /> {t('auth.avatar.random')}
-            </button>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            {AVATAR_STYLES.map((style) => (
-              <button
-                key={style}
-                type="button"
-                onClick={() => handleAvatarChange(style)}
-                title={t(`auth.avatar.${style}` as any)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-xl border-2 transition-all ${
-                  avatarStyle === style
-                    ? 'border-ember-500 bg-ember-50 dark:bg-ember-500/15'
-                    : 'border-paper-sunken dark:border-[#33465c] hover:border-ember-300'
-                }`}
-              >
-                <img src={avatarUrl(avatarSeed, style)} alt={style} className="w-9 h-9 rounded-full bg-paper-sunken dark:bg-sepia-800" />
-                <span className="text-sm font-medium text-ink-soft dark:text-sepia-200">{t(`auth.avatar.${style}` as any)}</span>
-              </button>
-            ))}
           </div>
         </motion.section>
 

@@ -127,8 +127,8 @@ const HomePage: React.FC = () => {
 
   const testimonials = [
     { name: 'Lucía M.', role: 'Medicina', text: 'Hice 200 tarjetas de anatomía en una tarde. Aprobé.', initial: 'L', avatar: avatarUrl('Lucia-M', 'shapes'), rating: 5 },
-    { name: 'Carlos R.', role: 'Ingeniería', text: 'La repetición espaciada me salvó la carrera. Clarísimo.', initial: 'C', avatar: avatarUrl('Carlos-R', 'ring'), rating: 5 },
-    { name: 'Marta G.', role: 'Oposiciones', text: 'Subí mis temas y salieron flashcards perfectas.', initial: 'M', avatar: avatarUrl('Marta-G', 'bauhaus'), rating: 4 },
+    { name: 'Carlos R.', role: 'Ingeniería', text: 'La repetición espaciada me salvó la carrera. Clarísimo.', initial: 'C', avatar: avatarUrl('Carlos-R', 'rings'), rating: 5 },
+    { name: 'Marta G.', role: 'Oposiciones', text: 'Subí mis temas y salieron flashcards perfectas.', initial: 'M', avatar: avatarUrl('Marta-G', 'identicon'), rating: 4 },
   ]
 
   const stats = [

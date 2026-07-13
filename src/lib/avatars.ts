@@ -1,5 +1,5 @@
 // Geometric, non-photographic avatars for StudySpark user profiles.
-// Uses DiceBear's `shapes` style (abstract geometric) tinted to the
+// Uses DiceBear's geometric styles (shapes, rings, identicon) tinted to the
 // StudySpark palette. Each avatar is deterministic from a seed, so a user
 // keeps the same picture across devices.
 
@@ -13,8 +13,14 @@ const PALETTE = [
   '2f4858', // deep slate
 ].join(',')
 
-const STYLES = ['shapes', 'ring', 'bauhaus'] as const
-export type AvatarStyle = (typeof STYLES)[number]
+export type AvatarStyle = 'shapes' | 'rings' | 'identicon'
+
+// The geometric styles a user can pick from.
+export const AVATAR_STYLES: { id: AvatarStyle; label: string }[] = [
+  { id: 'shapes', label: 'auth.avatar.shapes' },
+  { id: 'rings', label: 'auth.avatar.rings' },
+  { id: 'identicon', label: 'auth.avatar.identicon' },
+]
 
 const BASE = 'https://api.dicebear.com/9.x'
 
@@ -24,13 +30,9 @@ export function avatarUrl(seed: string, style: AvatarStyle = 'shapes'): string {
   return `${BASE}/${style}/svg?seed=${s}&radius=50&backgroundType=gradientLinear&palette=${PALETTE}`
 }
 
-// The list of styles a user can pick from in the avatar chooser.
-export const AVATAR_STYLES = STYLES
-
-// Pick a stable seed for a brand-new account (one is always assigned).
-export function randomAvatarSeed(): string {
-  return Math.random().toString(36).slice(2, 10)
-}
+// A set of distinct seeds used to present multiple avatar options in the
+// chooser. Selecting one pins that exact seed to the account.
+export const AVATAR_SEEDS = Array.from({ length: 12 }, (_, i) => `studyspark-${i + 1}`)
 
 // Resolve the avatar URL for a stored profile: if the profile has no avatar
 // seed, derive a stable one from the user's name/email so existing accounts

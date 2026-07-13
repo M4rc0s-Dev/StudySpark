@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import { User } from '@supabase/supabase-js'
 import { supabase, Profile } from '../lib/supabase'
 import { SessionRow } from '../lib/supabase'
-import { randomAvatarSeed } from '../lib/avatars'
+import { AVATAR_SEEDS } from '../lib/avatars'
 
 interface AuthUser {
   id: string
@@ -45,7 +45,7 @@ function toAuthUser(user: User, profile: Profile | null): AuthUser {
 async function ensureProfile(user: User, avatar?: string): Promise<Profile | null> {
   if (!supabase) return null
   const meta = (user.user_metadata || {}) as { name?: string }
-  const seed = avatar || (user.user_metadata?.avatar as string) || randomAvatarSeed()
+  const seed = avatar || (user.user_metadata?.avatar as string) || AVATAR_SEEDS[0]
   const { data, error } = await supabase
     .from('profiles')
     .upsert(
@@ -144,7 +144,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signUp = useCallback(
     async (email: string, password: string, name?: string, avatar?: string) => {
       if (!supabase) throw new Error('Auth no disponible')
-      const seed = avatar || randomAvatarSeed()
+      const seed = avatar || AVATAR_SEEDS[0]
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
