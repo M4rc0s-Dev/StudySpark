@@ -474,7 +474,7 @@ const LibraryPage: React.FC = () => {
       ...it,
       // `onClick` is a no-op placeholder in the shared builder; bind it here.
       onClick: () => {
-        const chosen = it.treePrefix === '' && it.label === DRIVE_ROOT_LABEL ? '' : it.label
+        const chosen = it.treePrefix === '' && it.label === DRIVE_ROOT_LABEL ? '' : (it.label ?? '')
         onPick(chosen)
       },
     }))
