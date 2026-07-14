@@ -557,16 +557,17 @@ const LibraryPage: React.FC = () => {
       rootLabel: DRIVE_ROOT_LABEL,
       homeIcon: Home,
       folderIcon: Folder,
-    }).map((it) => ({
-      ...it,
-      // `onClick` is a no-op placeholder in the shared builder; bind it here.
-      onClick: () => {
-        const chosen = it.treePrefix === '' && it.label === DRIVE_ROOT_LABEL ? '' : (it.label ?? '')
-        onPick(chosen)
-      },
-      // Apply disabled state from isDisabled so items appear but are unclickable.
-      disabled: opts.isDisabled ? opts.isDisabled(chosen) : false,
-    }))
+    }).map((it) => {
+      // Resolve the destination path once (shared by onClick + disabled state).
+      const chosen = it.treePrefix === '' && it.label === DRIVE_ROOT_LABEL ? '' : (it.label ?? '')
+      return {
+        ...it,
+        // `onClick` is a no-op placeholder in the shared builder; bind it here.
+        onClick: () => onPick(chosen),
+        // Apply disabled state from isDisabled so items appear but are unclickable.
+        disabled: opts.isDisabled ? opts.isDisabled(chosen) : false,
+      }
+    })
 
   // Items shared by the session right-click menu and the "⋮" button menu.
   const sessionMenuItems = (s: StudySession): ContextMenuItem[] => [

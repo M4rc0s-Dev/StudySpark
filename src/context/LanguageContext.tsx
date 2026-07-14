@@ -386,8 +386,6 @@ export const translations = {
     'settings.email.saved': 'Te hemos enviado un enlace de confirmación al nuevo correo',
     'auth.email.change.success': '¡Correo actualizado!',
     'auth.email.change.success.desc': 'Tu nuevo correo ha sido confirmado. Ya puedes iniciar sesión con él.',
-    'auth.email.change.success': '¡Correo actualizado!',
-    'auth.email.change.success.desc': 'Tu nuevo correo ha sido confirmado. Ya puedes iniciar sesión con él.',
     'settings.account.title': 'Mi cuenta',
     // FAQ
     'faq.search': 'Buscar en las preguntas...',
