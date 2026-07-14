@@ -651,7 +651,7 @@ const StudyPage: React.FC = () => {
               href="https://ko-fi.com/mvalera_dev"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-ember-500 text-paper font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#ff5e5b] hover:bg-[#ff4a47] text-white font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
             >
               <Coffee className="w-5 h-5" /> {t('support.kofi')}
             </a>

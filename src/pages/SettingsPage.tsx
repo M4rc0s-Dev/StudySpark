@@ -231,14 +231,6 @@ const SettingsPage: React.FC = () => {
           <h2 className="font-semibold text-ink dark:text-sepia-100 flex items-center gap-2 mb-4 font-display">
             <Coffee className="w-5 h-5 text-ember-500" /> {t('settings.account')}
           </h2>
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-xs uppercase tracking-wide text-ink-muted dark:text-sepia-300">{t('settings.plan')}</p>
-              <p className="font-semibold text-ink dark:text-sepia-100 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-ember-500" /> {t('profile.free')}
-              </p>
-            </div>
-          </div>
           <div className="mt-4 pt-4 border-t border-paper-sunken dark:border-[#33465c] flex items-center justify-between gap-4">
             <div className="min-w-0">
               <p className="text-sm font-medium text-ink-soft dark:text-sepia-200 flex items-center gap-2">
@@ -257,7 +249,7 @@ const SettingsPage: React.FC = () => {
             href="https://ko-fi.com/mvalera_dev"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-ember-500 text-paper text-sm font-semibold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
+            className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#ff5e5b] hover:bg-[#ff4a47] text-white text-sm font-semibold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
           >
             <Coffee className="w-4 h-4" /> {t('support.kofi')}
           </a>

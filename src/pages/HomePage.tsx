@@ -32,12 +32,8 @@ const HomePage: React.FC = () => {
   const uploadRef = useRef<HTMLDivElement>(null)
   const { t } = useLanguage()
   const { user } = useAuth()
-  const { state, createSession } = useFlashcardStore()
+  const { createSession } = useFlashcardStore()
   const { prefs } = useSettings()
-  // When the user generates a new deck while a study session is still open
-  // (not yet saved/discarded), warn that generating will discard the current
-  // one. We stash the pending upload args until they confirm.
-  const [pendingGenArgs, setPendingGenArgs] = useState<Parameters<typeof handleUpload> | null>(null)
   // Guest flow: holds the upload args until the user either signs up or
   // confirms they want to generate anyway (cards are saved and surfaced after
   // they log in).
@@ -63,11 +59,6 @@ const HomePage: React.FC = () => {
     if (!user) {
       setGuestArgs([file, text, fileName, cardCount])
       setShowGuest(true)
-      return
-    }
-    const hasOpenSession = state.currentSession && state.currentSession.id !== 'demo'
-    if (hasOpenSession) {
-      setPendingGenArgs([file, text, fileName, cardCount])
       return
     }
     handleUpload(file, text, fileName, cardCount)
@@ -429,20 +420,6 @@ const HomePage: React.FC = () => {
       )}
 
       {isUploading && <LoadingScreen elapsedMs={loadingElapsed} error={uploadError} onCancel={cancelUpload} />}
-
-      <ConfirmDialog
-        open={pendingGenArgs !== null}
-        title={t('home.discard.title')}
-        message={t('home.discard.desc')}
-        confirmLabel={t('home.discard.confirm')}
-        destructive
-        onConfirm={() => {
-          const args = pendingGenArgs
-          setPendingGenArgs(null)
-          if (args) handleUpload(...args)
-        }}
-        onCancel={() => setPendingGenArgs(null)}
-      />
     </div>
   )
 }

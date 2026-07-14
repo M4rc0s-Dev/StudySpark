@@ -103,7 +103,7 @@ const Layout: React.FC = () => {
                 href={KOFI_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden lg:inline-flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg bg-ember-500 text-paper font-semibold text-sm shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all shrink-0"
+                className="hidden lg:inline-flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg bg-[#ff5e5b] hover:bg-[#ff4a47] text-white font-semibold text-sm shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all shrink-0"
               >
                 <Coffee className="w-4 h-4" /> {t('support.kofi')}
               </a>
@@ -157,7 +157,7 @@ const Layout: React.FC = () => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setIsSidebarOpen(false)}
-              className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-ember-500 text-paper font-semibold"
+              className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-[#ff5e5b] text-white font-semibold"
             >
               <Coffee className="w-4 h-4" /> {t('support.kofi')}
             </a>

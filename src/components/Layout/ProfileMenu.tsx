@@ -161,7 +161,7 @@ const ProfileMenu: React.FC = () => {
                     <Layers className="w-4 h-4 text-ember-500" />
                   </span>
                   <span className="text-sm font-medium text-ink-soft dark:text-sepia-200 flex-1">{t('profile.recentsessions')}</span>
-                  <span className="text-xs text-ink-muted bg-paper-sunken dark:bg-[#111d2a] rounded-full px-2 py-0.5">{sessions.length}</span>
+                  <span className="text-xs text-ink-muted bg-paper-sunken dark:bg-[#111d2a] rounded-full px-2 py-0.5">{recentSessions.length}</span>
                 </button>
                 <button
                   onClick={() => { setOpen(false); navigate('/library') }}

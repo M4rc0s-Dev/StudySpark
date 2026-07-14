@@ -215,7 +215,22 @@ const LibraryPage: React.FC = () => {
   // All folder paths that exist (from sessions + locally-created empty ones).
   const allFolderPaths = useMemo(() => {
     const fromSessions = sessions.map((s) => s.folder || '')
-    const set = new Set<string>([...emptyFolders, ...fromSessions].filter(Boolean))
+    // Include every folder path PLUS all of its ancestors, so the Move tree
+    // shows the whole hierarchy — not just folders that happen to hold a
+    // session directly. This makes nested empty folders valid move targets.
+    const all = new Set<string>(emptyFolders)
+    const addWithAncestors = (p: string) => {
+      if (!p) return
+      let rest = p
+      all.add(rest)
+      while (rest.includes(SEP)) {
+        rest = parentPath(rest)
+        all.add(rest)
+      }
+    }
+    fromSessions.forEach(addWithAncestors)
+    emptyFolders.forEach(addWithAncestors)
+    const set = new Set<string>([...all].filter(Boolean))
     // Sort shallow-first (parents before children) so the Move tree reads top-down.
     return Array.from(set).sort((a, b) => {
       const da = a.split(SEP).length
