@@ -24,6 +24,10 @@ export interface BuildMoveTreeOpts {
   homeIcon?: ContextMenuItem['icon']
   // id of the folder icon used for entries (optional).
   folderIcon?: ContextMenuItem['icon']
+  // When true, the root (SparkDrive) is ALWAYS offered as a destination, even
+  // when currentLocation is '' (used by the "save to folder" picker, where the
+  // root is the valid default destination for a brand-new deck).
+  allowRoot?: boolean
 }
 
 // Build a folder tree as a list of ContextMenuItems with box-drawing
@@ -39,7 +43,11 @@ export function buildMoveTree(
   const Folder = opts.folderIcon
   const items: ContextMenuItem[] = []
 
-  const rootDisabled = opts.currentLocation === '' || (opts.isDisabled?.('') ?? false)
+  // In "save" mode (allowRoot) the root is always a valid destination, even
+  // when there is no current location yet; otherwise we skip it only when the
+  // item is already at the root (nothing to move there).
+  const rootDisabled =
+    (!opts.allowRoot && opts.currentLocation === '') || (opts.isDisabled?.('') ?? false)
   if (!rootDisabled) {
     items.push({ label: rootLabel, icon: Home, treePrefix: '', onClick: () => {} })
   }

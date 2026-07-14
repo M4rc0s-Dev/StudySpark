@@ -52,6 +52,9 @@ const FolderTreePicker: React.FC<FolderTreePickerProps> = ({
       rootLabel,
       homeIcon: Home,
       folderIcon: Folder,
+      // The root is a valid destination when saving a fresh deck (the default
+      // "SparkDrive" location), so always offer it even with no current folder.
+      allowRoot: true,
     }).map((it) => ({
       ...it,
       // Wire each tree entry to actually pick that folder. The root entry has an

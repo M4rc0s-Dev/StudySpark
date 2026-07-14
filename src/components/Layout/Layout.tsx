@@ -55,8 +55,11 @@ const Layout: React.FC = () => {
 
             {/* Centered desktop nav: absolutely positioned at the horizontal
                 center of the header so the buttons stay perfectly centered
-                regardless of how wide the logo / right cluster are. */}
-            <nav className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center justify-center gap-1">
+                regardless of how wide the logo / right cluster are. pointer-events
+                are disabled on the wrapper so the (absolutely centered) nav never
+                traps clicks meant for the right cluster when they overlap; only
+                the actual links re-enable them, sitting below the cluster (z-0). */}
+            <nav className="pointer-events-none absolute left-1/2 -translate-x-1/2 z-0 hidden md:flex max-w-[60%] items-center justify-center gap-1 px-2">
               {navigation.map((item) => {
                 const isActive = location.pathname === item.href
                 const href = item.href === '/library' && !user ? '/auth?next=library' : item.href
@@ -64,7 +67,7 @@ const Layout: React.FC = () => {
                   <Link
                     key={item.name}
                     to={href}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                    className={`pointer-events-auto px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                       isActive
                         ? 'text-ember-700 dark:text-ember-400 bg-ember-50 dark:bg-ember-500/10'
                         : 'text-ink-soft dark:text-sepia-300 hover:text-ink dark:hover:text-sepia-50 hover:bg-slate-100 dark:hover:bg-sepia-800'
@@ -76,8 +79,10 @@ const Layout: React.FC = () => {
               })}
             </nav>
 
-            {/* Right cluster: theme + language + ko-fi + login/profile + mobile button. */}
-            <div className="ml-auto flex items-center gap-1.5 sm:gap-2 lg:gap-3 shrink-0 flex-nowrap min-w-0">
+            {/* Right cluster: theme + language + ko-fi + login/profile + mobile button.
+                relative + z-20 keeps it ABOVE the absolutely-centered nav so the
+                theme/avatar buttons never get covered by the "Contacto" link. */}
+            <div className="relative z-20 ml-auto flex items-center gap-1.5 sm:gap-2 lg:gap-3 shrink-0 flex-nowrap min-w-0">
               <button
                 onClick={toggleTheme}
                 className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 dark:border-sepia-700 text-ink-soft dark:text-sepia-300 hover:bg-slate-100 dark:hover:bg-sepia-800 transition-colors shrink-0"

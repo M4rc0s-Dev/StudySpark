@@ -17,6 +17,7 @@ import {
   GripVertical,
   Home,
   Search,
+  ListX,
   Download,
   FolderInput,
   Palette,
@@ -30,7 +31,7 @@ import ContextMenu, { type ContextMenuState, type ContextMenuItem } from '../com
 import { buildMoveTree as buildFolderTree } from '../lib/folderTree'
 import { COLOR_TOKENS, colorClasses } from '../lib/colors'
 import { exportSession } from '../lib/export'
-import type { StudySession } from '../types'
+import type { StudySession, Flashcard as FlashcardType } from '../types'
 
 const FOLDERS_KEY = 'studyspark.folders.v1'
 const FOLDER_COLORS_KEY = 'studyspark.folder.colors.v1'
@@ -133,9 +134,19 @@ const LibraryPage: React.FC = () => {
   }, [user])
 
   // Library is account-only. Wait for auth to finish loading so a still-
-  // resolving session on refresh isn't mistaken for "logged out".
+  // resolving session on refresh isn't mistaken for "logged out". Use a short
+  // grace delay: on a normal navigation while already signed in, `user` may lag
+  // one render behind `loading=false`, which would otherwise bounce the user to
+  // /auth (the "stuck on blue background, must press F5" bug). We only redirect
+  // once we're confident the session truly isn't coming back.
   useEffect(() => {
-    if (!loading && !user) navigate('/auth?next=library', { replace: true })
+    if (user) return
+    if (loading) return
+    const t = window.setTimeout(() => {
+      // Re-check at fire time: by now AuthContext has settled.
+      if (!user) navigate('/auth?next=library', { replace: true })
+    }, 400)
+    return () => window.clearTimeout(t)
   }, [loading, user, navigate])
 
   // Merge cloud sessions with local sessions while avoiding duplicates.
@@ -362,6 +373,17 @@ const LibraryPage: React.FC = () => {
     navigate(`/study/${s.id}`)
   }
 
+  // Open a deck studying ONLY its unanswered (pending) cards. Passed through
+  // navigation state so StudyPage can filter on load (point 8).
+  const openPendingSession = (s: StudySession) => {
+    setCurrentSession(s)
+    navigate(`/study/${s.id}`, { state: { filter: 'pending' } })
+  }
+
+  // Count of cards in a session the user never answered.
+  const pendingCountFor = (s: StudySession) =>
+    (s.flashcards as FlashcardType[] | undefined)?.filter((f) => f.studied !== true).length ?? 0
+
   const renameSession = (s: StudySession) => {
     const name = sessionRenameValue.trim()
     if (!name) {
@@ -482,6 +504,9 @@ const LibraryPage: React.FC = () => {
   // Items shared by the session right-click menu and the "⋮" button menu.
   const sessionMenuItems = (s: StudySession): ContextMenuItem[] => [
     { label: t('library.study'), icon: BookOpen, onClick: () => openSession(s) },
+    ...(pendingCountFor(s) > 0
+      ? [{ label: t('reward.study.pending'), icon: ListX, onClick: () => openPendingSession(s) } as ContextMenuItem]
+      : []),
     { label: t('library.export.csv'), icon: Download, onClick: () => exportSession(s, 'csv') },
     { separator: true },
     {
@@ -736,12 +761,24 @@ const LibraryPage: React.FC = () => {
 
                   <DeckFeedback deck={s} t={t} />
 
-                  <button
-                    onClick={() => openSession(s)}
-                    className="mt-4 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-ember-500 text-paper text-sm font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
-                  >
-                    <BookOpen className="w-4 h-4" /> {t('library.study')}
-                  </button>
+                  <div className="mt-4 flex items-center gap-2">
+                    <button
+                      onClick={() => openSession(s)}
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-ember-500 text-paper text-sm font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
+                    >
+                      <BookOpen className="w-4 h-4" /> {t('library.study')}
+                    </button>
+                    {pendingCountFor(s) > 0 && (
+                      <button
+                        onClick={() => openPendingSession(s)}
+                        title={t('reward.study.pending')}
+                        className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-amber-500 text-white text-sm font-semibold shadow-soft hover:bg-amber-600 transition-colors"
+                      >
+                        <ListX className="w-4 h-4" /> {t('reward.study.pending')}
+                        <span className="ml-0.5 rounded-full bg-white/25 px-1.5 text-xs">{pendingCountFor(s)}</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
                 )
               })}

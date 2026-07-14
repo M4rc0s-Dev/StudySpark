@@ -17,7 +17,7 @@ interface AuthContextValue {
   loading: boolean
   signUp: (email: string, password: string, name?: string, avatar?: string) => Promise<{ needsConfirmation: boolean }>
   signIn: (email: string, password: string) => Promise<void>
-  signInWithGoogle: () => Promise<void>
+  signInWithGoogle: (next?: string) => Promise<void>
   reauthenticate: (password: string) => Promise<void>
   updatePassword: (newPassword: string) => Promise<void>
   resetPassword: (email: string) => Promise<void>
@@ -227,11 +227,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Keep the profile in sync after a Google (or other OAuth) sign-in where
   // the name lives only in the auth user_metadata.
-  const signInWithGoogle = useCallback(async () => {
+  // `next` (optional) is the destination the visitor was heading to (e.g.
+  // "guest" when they generated cards before signing up, or "library"). It is
+  // forwarded through the OAuth redirect so the confirm page can land them in
+  // the right place and — for guests — resume their stashed deck.
+  const signInWithGoogle = useCallback(async (next?: string) => {
     if (!supabase) throw new Error('Auth no disponible')
+    const redirectTo = next
+      ? `${window.location.origin}/auth/confirm?next=${encodeURIComponent(next)}`
+      : `${window.location.origin}/auth/confirm`
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/auth/confirm` },
+      options: { redirectTo },
     })
     if (error) throw error
   }, [])

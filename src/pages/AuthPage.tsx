@@ -106,7 +106,7 @@ const AuthPage: React.FC = () => {
 
   const handleGoogle = async () => {
     try {
-      await signInWithGoogle()
+      await signInWithGoogle(next ?? undefined)
     } catch (err: any) {
       toast.error(err?.message || 'No se pudo iniciar con Google')
     }

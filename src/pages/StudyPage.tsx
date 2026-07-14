@@ -57,7 +57,7 @@ const StudyPage: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { t } = useLanguage()
-  const { user, profile, addXp } = useAuth()
+  const { user, profile, addXp, sessions: cloudSessions } = useAuth()
   const { prefs } = useSettings()
 
   // Session from store (needed early for persistence effects).
@@ -210,12 +210,19 @@ const StudyPage: React.FC = () => {
   const elapsedRef = useRef(0)
 
   // Load a saved session from Supabase when opened by id and not in local store.
+  // When the library passed `filter: 'pending'`, trim the deck to only the
+  // cards the user never answered before studying (point 8).
+  const navFilter = (location.state as { filter?: string } | null)?.filter
   useEffect(() => {
     let active = true
     if (sessionId && !currentSession) {
       loadSessionFromSupabase(sessionId).then((s) => {
         if (active && s) {
-          setCurrentSession(s)
+          const trimmed =
+            navFilter === 'pending'
+              ? { ...s, flashcards: (s.flashcards as FlashcardType[]).filter((f) => f.studied !== true) }
+              : s
+          setCurrentSession(trimmed)
           setLoadedFromCloud(true)
         }
       })
@@ -223,7 +230,7 @@ const StudyPage: React.FC = () => {
     return () => {
       active = false
     }
-  }, [sessionId, currentSession, setCurrentSession])
+  }, [sessionId, currentSession, setCurrentSession, navFilter])
 
   // The deck after applying the chosen order. Direction is applied per-card at render.
   const baseFlashcards = useMemo(
@@ -447,6 +454,32 @@ const StudyPage: React.FC = () => {
     setStartTime(Date.now())
   }
 
+  // Study only the cards the user NEVER answered (pending). A card is pending
+  // when it has not been marked as studied yet (studied !== true).
+  const retryPending = () => {
+    const pending = (currentSession?.flashcards ?? []).filter((f) => f.studied !== true)
+    if (!currentSession || pending.length === 0) return
+    setCurrentSession({
+      ...currentSession,
+      flashcards: pending.map((f) => ({ ...f, studied: false, correct: undefined })),
+    })
+    setCurrentCardIndex(0)
+    setShowAnswer(false)
+    setAnswered(false)
+    setIsCorrect(null)
+    setCompleted(false)
+    setAwardedXp(0)
+    setShowWrongList(false)
+    setElapsedTime(0)
+    elapsedRef.current = 0
+    setTimedLeft(TIMED_SECONDS_PER_CARD)
+    setCardTimers({})
+    setStartTime(Date.now())
+  }
+
+  // True when there are cards the user never answered (pending review).
+  const pendingCount = (currentSession?.flashcards ?? []).filter((f) => f.studied !== true).length
+
   const handleStartFromConfig = (cfg: SessionConfig) => {
     setConfig(cfg)
     setConfigOpen(false)
@@ -488,10 +521,14 @@ const StudyPage: React.FC = () => {
   }
 
   // Available folders for the "save to folder" picker on the completion screen:
-  // folders that already contain sessions + locally-created empty folders.
+  // folders that already contain sessions (cloud + in-memory) plus locally
+  // created empty folders. Reading the cloud sessions too guarantees the picker
+  // shows the user's real folders even right after an OAuth login, when the
+  // in-memory store may still be empty.
   const availableFolders = useMemo(() => {
     const set = new Set<string>()
     state.sessions.forEach((s) => { if (s.folder) set.add(s.folder) })
+    cloudSessions.forEach((s) => { if (s.folder) set.add(s.folder) })
     try {
       const raw = localStorage.getItem('studyspark.folders.v1')
       if (raw) (JSON.parse(raw) as string[]).forEach((p) => p && set.add(p))
@@ -499,7 +536,7 @@ const StudyPage: React.FC = () => {
       /* ignore */
     }
     return Array.from(set).sort((a, b) => a.localeCompare(b))
-  }, [state.sessions])
+  }, [state.sessions, cloudSessions])
 
   // Save the finished deck into the chosen folder (persists to the cloud).
   const handleSaveToFolder = useCallback(() => {
@@ -813,6 +850,14 @@ const StudyPage: React.FC = () => {
                 <RotateCcw className="w-4 h-4" /> {t('reward.retry.wrong')}
               </button>
             )}
+            {pendingCount > 0 && (
+              <button
+                onClick={retryPending}
+                className="px-6 py-3 bg-amber-500 text-white rounded-xl font-semibold hover:bg-amber-600 transition-colors flex items-center justify-center gap-2"
+              >
+                <ListX className="w-4 h-4" /> {t('reward.study.pending')} ({pendingCount})
+              </button>
+            )}
             <button
               onClick={() => resetStudy()}
               className="px-6 py-3 bg-ember-500 text-paper rounded-xl font-bold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
@@ -826,7 +871,7 @@ const StudyPage: React.FC = () => {
               {t('export.single')}
             </button>
             <button
-              onClick={() => setConfirmDiscard(true)}
+              onClick={() => navigate('/')}
               className="px-6 py-3 border border-slate-300 dark:border-sepia-600 dark:text-sepia-200 rounded-xl hover:bg-slate-100 dark:hover:bg-sepia-800 transition-colors flex items-center justify-center gap-2"
             >
               <Upload className="w-4 h-4" /> {t('reward.upload.another')}

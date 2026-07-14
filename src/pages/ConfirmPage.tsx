@@ -38,6 +38,7 @@ const ConfirmPage: React.FC = () => {
   const [done, setDone] = useState(false)
 
   const type = params.get('type')
+  const next = params.get('next')
 
   useEffect(() => {
     const token_hash = params.get('token_hash')
@@ -73,17 +74,25 @@ const ConfirmPage: React.FC = () => {
       return
     }
 
-    // OAuth providers (e.g. Google) use the PKCE flow and return `?code=...`
-    // instead of a token_hash. The Supabase client exchanges it for a session.
-    // If it has not been consumed automatically yet, do it explicitly; either
-    // way we land on the home page (the session is now active).
+    // OAuth providers (e.g. Google) and the password-reset email BOTH use the
+    // PKCE flow and return `?code=...` instead of a token_hash.
+    //  - Recovery: after exchanging the code the session is active but the user
+    //    still MUST choose a new password, so we show the recovery form (we do
+    //    NOT bounce them straight to home, which would silently log them in).
+    //  - OAuth (Google): a guest who just signed up gets their stashed deck
+    //    restored; otherwise we honor any `next` we forwarded or go home.
     if (code && supabase) {
+      const isRecovery = type === 'recovery'
       supabase.auth
         .exchangeCodeForSession(code)
         .then(() => {
-          // A guest who just signed up via OAuth gets their stashed deck.
+          if (isRecovery) {
+            setStatus('recovery')
+            return
+          }
           if (consumeGuestCards(navigate, createSession)) return
-          navigate('/', { replace: true })
+          const dest = next === 'library' ? '/library' : '/'
+          navigate(dest, { replace: true })
         })
         .catch(() => navigate('/', { replace: true }))
       return
