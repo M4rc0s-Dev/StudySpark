@@ -72,6 +72,23 @@ const HomePage: React.FC = () => {
       // cardCount may be -1 (let the AI decide); only fall back to the default
       // when nothing was provided at all.
       const finalCount = cardCount === undefined ? prefs.cardCount : cardCount
+
+      // Generate smart default deck name
+      let title = fileName?.trim()
+      if (!title && file) {
+        // Strip extension from filename
+        title = file.name.replace(/\.(pdf|txt|docx)$/i, '')
+      }
+      if (!title && text) {
+        // Generate from first meaningful words of text content
+        const words = text.trim().split(/\s+/).filter(w => w.length > 1).slice(0, 6)
+        title = words.join(' ')
+        if (title.length > 50) title = title.slice(0, 47) + '...'
+      }
+      if (!title) {
+        title = 'Mis flashcards'
+      }
+
       // Async flow: the Worker returns a jobId immediately and we poll Supabase
       // until the AI finishes, driving the staged loading screen with onTick.
       const response = await FlashcardAPI.generateFlashcards(
@@ -86,7 +103,6 @@ const HomePage: React.FC = () => {
         toast.error('La IA no devolvió tarjetas. Prueba con más texto.')
         return
       }
-      const title = fileName?.trim() || 'Mis flashcards'
       setPendingCards({ title, cards })
       setConfigOpen(true)
     } catch (error) {

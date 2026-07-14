@@ -126,8 +126,10 @@ async function handleGenerate(request: Request, env: Env): Promise<Response> {
     const autoCount = form.get('cardCount') === 'auto' || rawCount === -1
     const clampedCount: number | 'auto' = autoCount ? 'auto' : Math.max(1, Math.min(25, Math.floor(rawCount || 10)))
 
+    // Generate deckName: strip extension from filename if provided
     const resolvedName =
       fileName || (file instanceof File ? file.name : '') || 'studyspark'
+    const deckName = resolvedName.replace(/\.(pdf|txt|docx)$/i, '')
 
     let fileBase64: string | null = null
     let fileType = ''
@@ -140,7 +142,7 @@ async function handleGenerate(request: Request, env: Env): Promise<Response> {
     const upstreamBody = JSON.stringify({
       jobId,
       fileName: resolvedName,
-      deckName: resolvedName,
+      deckName,
       cardCount: clampedCount,
       fileBase64,
       fileType,
@@ -183,11 +185,21 @@ async function handleGenerate(request: Request, env: Env): Promise<Response> {
     })
   }
 
+  // Generate deckName: from fileName if provided, otherwise from text content
+  let deckName = fileName
+  if (!deckName && studyNotes) {
+    // Extract first meaningful words from studyNotes
+    const words = studyNotes.trim().split(/\s+/).filter(w => w.length > 1).slice(0, 6)
+    deckName = words.join(' ')
+    if (deckName.length > 50) deckName = deckName.slice(0, 47) + '...'
+  }
+  if (!deckName) deckName = 'Mis flashcards'
+
   const upstreamBody = JSON.stringify({
     jobId,
     studyNotes,
     fileName,
-    deckName: fileName,
+    deckName,
     cardCount: clampedCount,
     fileBase64: null,
     fileType: '',

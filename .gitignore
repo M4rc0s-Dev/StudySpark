@@ -28,4 +28,5 @@ CLAUDE.md
 # points at your localhost LiteLLM) — also excluded.
 # ───────────────────────────────────────────────────────────────
 .claude/
+.claude-/
 _personal/

@@ -86,6 +86,9 @@ const LibraryPage: React.FC = () => {
   const [dragFolderPath, setDragFolderPath] = useState<string | null>(null)
   const [dragOverFolder, setDragOverFolder] = useState<string | null | undefined>(undefined)
   const dragImageRef = useRef<HTMLDivElement | null>(null)
+  // Double-click detection: timestamp of last click per folder path
+  const clickTimeRef = useRef<Map<string, number>>(new Map())
+  const DOUBLE_CLICK_MS = 250 // faster double-click threshold
 
   // Load empty folders: from Supabase (authoritative when logged in) and from
   // localStorage (fallback / when signed out). We mark `foldersLoaded` only
@@ -542,8 +545,8 @@ const LibraryPage: React.FC = () => {
 
   // ----- Context menus (right click) -----
   // Build the "Move" submenu as a real folder TREE. Delegates to the shared
-  // `buildMoveTree` in lib/folderTree so this matches the FolderTreePicker
-  // used on the study completion screen exactly.
+// `buildMoveTree` in lib/folderTree so this matches the FolderTreePicker
+// used on the study completion screen exactly.
   const buildMoveTree = (
     onPick: (dest: string) => void,
     opts: { currentLocation: string; isDisabled?: (path: string) => boolean }
@@ -561,6 +564,8 @@ const LibraryPage: React.FC = () => {
         const chosen = it.treePrefix === '' && it.label === DRIVE_ROOT_LABEL ? '' : (it.label ?? '')
         onPick(chosen)
       },
+      // Apply disabled state from isDisabled so items appear but are unclickable.
+      disabled: opts.isDisabled ? opts.isDisabled(chosen) : false,
     }))
 
   // Items shared by the session right-click menu and the "⋮" button menu.
@@ -763,9 +768,18 @@ const LibraryPage: React.FC = () => {
                   onDragOver={(e) => { e.preventDefault(); if (dragFolderPath !== path) setDragOverFolder(path) }}
                   onDragLeave={() => setDragOverFolder((f) => (f === path ? undefined : f))}
                   onDrop={(e) => { e.preventDefault(); handleDropOnFolder(path) }}
-                  onDoubleClick={() => enterFolder(path)}
+                  onClick={(e) => {
+                    // Fast double-click detection: if clicked twice within DOUBLE_CLICK_MS, enter folder
+                    const now = Date.now()
+                    const last = clickTimeRef.current.get(path) || 0
+                    if (now - last < DOUBLE_CLICK_MS) {
+                      e.preventDefault()
+                      enterFolder(path)
+                    }
+                    clickTimeRef.current.set(path, now)
+                  }}
                   onContextMenu={(e) => openFolderMenu(e, path)}
-                  className={`group relative select-none flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed transition-all cursor-pointer hover:-translate-y-1 hover:shadow-lift ${
+                  className={`group relative select-none flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed transition-all cursor-pointer hover:-translate-y-1 hover:shadow-lift user-select-none ${
                     fc ? `${fc.border} ${fc.bg}` : 'border-ember-200 dark:border-ember-500/30 bg-ember-50/40 dark:bg-ember-500/5 hover:bg-ember-50 dark:hover:bg-ember-500/10'
                   } ${
                     dragFolderPath === path ? 'opacity-40' : ''
@@ -813,7 +827,7 @@ const LibraryPage: React.FC = () => {
                   }}
                   onDragEndCapture={() => { setDragSessionId(null); setDragOverFolder(undefined) }}
                   onContextMenu={(e) => openSessionMenu(e, s)}
-                  className={`relative group select-none rounded-2xl shadow-soft border p-5 flex flex-col cursor-grab active:cursor-grabbing transition-all hover:-translate-y-1 hover:shadow-lift ${
+                  className={`relative group select-none rounded-2xl shadow-soft border p-5 flex flex-col cursor-grab active:cursor-grabbing transition-all hover:-translate-y-1 hover:shadow-lift user-select-none ${
                     sc ? `${sc.bg} ${sc.border}` : 'bg-paper-raised dark:bg-sepia-900 border-slate-100 dark:border-sepia-800'
                   } ${
                     dragSessionId === s.id ? 'opacity-40' : ''

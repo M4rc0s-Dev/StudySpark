@@ -49,12 +49,15 @@ export function buildMoveTree(
   const rootDisabled =
     (!opts.allowRoot && opts.currentLocation === '') || (opts.isDisabled?.('') ?? false)
   if (!rootDisabled) {
-    items.push({ label: rootLabel, icon: Home, treePrefix: '', onClick: () => {} })
+    items.push({ label: rootLabel, icon: Home, treePrefix: '', onClick: () => {}, disabled: false })
+  } else {
+    items.push({ label: rootLabel, icon: Home, treePrefix: '', onClick: () => {}, disabled: true })
   }
 
   const valid = allFolderPaths.filter((p) => {
-    const disabled = opts.currentLocation === p || (opts.isDisabled?.(p) ?? false)
-    return !disabled
+    // Only filter out currentLocation (e.g., the item's own folder or root).
+    // isDisabled should only visually disable, not remove from the tree.
+    return opts.currentLocation !== p
   })
 
   const childrenMap = new Map<string, string[]>()
@@ -78,11 +81,13 @@ export function buildMoveTree(
       const isLast = i === kids.length - 1
       const connector = isLast ? '└── ' : '├── '
       const inherited = isLastAt.map((last) => (last ? '    ' : '│   ')).join('')
+      const disabled = opts.isDisabled?.(child) ?? false
       items.push({
         label: folderName(child),
         icon: Folder,
         treePrefix: inherited + connector,
         onClick: () => {},
+        disabled,
       })
       walk(child, prefix + connector, [...isLastAt, isLast])
     })
@@ -92,7 +97,8 @@ export function buildMoveTree(
   sortedRoots.forEach((root, i) => {
     const isLast = i === sortedRoots.length - 1
     const connector = isLast ? '└── ' : '├── '
-    items.push({ label: folderName(root), icon: Folder, treePrefix: connector, onClick: () => {} })
+    const disabled = opts.isDisabled?.(root) ?? false
+    items.push({ label: folderName(root), icon: Folder, treePrefix: connector, onClick: () => {}, disabled })
     walk(root, connector, [isLast])
   })
 

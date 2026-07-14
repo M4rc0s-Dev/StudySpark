@@ -384,6 +384,10 @@ export const translations = {
     'settings.email.change': 'Cambiar correo',
     'settings.email.new': 'Nuevo correo',
     'settings.email.saved': 'Te hemos enviado un enlace de confirmación al nuevo correo',
+    'auth.email.change.success': '¡Correo actualizado!',
+    'auth.email.change.success.desc': 'Tu nuevo correo ha sido confirmado. Ya puedes iniciar sesión con él.',
+    'auth.email.change.success': '¡Correo actualizado!',
+    'auth.email.change.success.desc': 'Tu nuevo correo ha sido confirmado. Ya puedes iniciar sesión con él.',
     'settings.account.title': 'Mi cuenta',
     // FAQ
     'faq.search': 'Buscar en las preguntas...',
@@ -804,6 +808,8 @@ export const translations = {
     'settings.email.change': 'Change email',
     'settings.email.new': 'New email',
     'settings.email.saved': 'We sent a confirmation link to your new email',
+    'auth.email.change.success': 'Email updated!',
+    'auth.email.change.success.desc': 'Your new email has been confirmed. You can now sign in with it.',
     'settings.account.title': 'My account',
     // FAQ
     'faq.search': 'Search the questions...',

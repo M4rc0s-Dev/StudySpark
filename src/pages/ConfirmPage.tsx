@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Loader2, CheckCircle2, XCircle, Lock, ArrowRight } from 'lucide-react'
+import { Loader2, CheckCircle2, XCircle, Lock, ArrowRight, Mail } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { useLanguage } from '../context/LanguageContext'
 import { supabase } from '../lib/supabase'
@@ -30,7 +30,7 @@ const ConfirmPage: React.FC = () => {
   const { t } = useLanguage()
   const { refreshSessions } = useAuth()
   const { createSession } = useFlashcardStore()
-  const [status, setStatus] = useState<'loading' | 'ok' | 'error' | 'recovery'>('loading')
+  const [status, setStatus] = useState<'loading' | 'ok' | 'error' | 'recovery' | 'email_change'>('loading')
 
   // New-password form state (only used in the recovery branch).
   const [newPassword, setNewPassword] = useState('')
@@ -60,6 +60,24 @@ const ConfirmPage: React.FC = () => {
           }
           // Session is now active; show the new-password form.
           setStatus('recovery')
+        })
+        .catch(() => finish(false))
+      return
+    }
+
+    // Email change confirmation: verify the OTP, then the email is updated.
+    if (type === 'email_change' && token_hash && supabase) {
+      supabase.auth
+        .verifyOtp({ token_hash, type: 'email_change' })
+        .then(async ({ error }) => {
+          if (error) {
+            finish(false)
+            return
+          }
+          // Email changed successfully. Refresh profile/sessions.
+          await refreshSessions()
+          setStatus('email_change')
+          window.setTimeout(() => navigate('/', { replace: true }), 1800)
         })
         .catch(() => finish(false))
       return
@@ -106,8 +124,8 @@ const ConfirmPage: React.FC = () => {
     if (supabase) {
       supabase.auth.getSession().then(({ data }) => {
         if (data.session) {
-          if (type !== 'recovery' && consumeGuestCards(navigate, createSession)) return
-          if (type !== 'recovery') navigate(next === 'library' ? '/library' : '/', { replace: true })
+          if (type !== 'recovery' && type !== 'email_change' && consumeGuestCards(navigate, createSession)) return
+          if (type !== 'recovery' && type !== 'email_change') navigate(next === 'library' ? '/library' : '/', { replace: true })
         } else {
           // No session and nothing to act on: go home (the session will be
           // picked up by AuthContext if it arrives shortly).
@@ -204,6 +222,22 @@ const ConfirmPage: React.FC = () => {
               <p className="mt-1 text-sm text-ink-muted dark:text-sepia-300">{t('auth.confirmed.desc')}</p>
             </>
           )}
+
+          {status === 'email_change' && (
+            <>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+                className="w-16 h-16 mx-auto rounded-full bg-emerald-50 dark:bg-emerald-500/15 flex items-center justify-center text-emerald-600 dark:text-emerald-400"
+              >
+                <CheckCircle2 className="w-9 h-9" />
+              </motion.div>
+              <h1 className="mt-4 font-display text-xl font-semibold text-ink dark:text-sepia-100">{t('auth.email.change.success')}</h1>
+              <p className="mt-1 text-sm text-ink-muted dark:text-sepia-300">{t('auth.email.change.success.desc')}</p>
+            </>
+          )}
+
           {status === 'error' && (
             <>
               <div className="w-16 h-16 mx-auto rounded-full bg-rose-100 dark:bg-rose-500/15 flex items-center justify-center text-rose-600 dark:text-rose-400">
@@ -216,6 +250,21 @@ const ConfirmPage: React.FC = () => {
               >
                 {t('auth.backto.login')}
               </button>
+            </>
+          )}
+
+          {status === 'email_change' && (
+            <>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+                className="w-16 h-16 mx-auto rounded-full bg-emerald-50 dark:bg-emerald-500/15 flex items-center justify-center text-emerald-600 dark:text-emerald-400"
+              >
+                <CheckCircle2 className="w-9 h-9" />
+              </motion.div>
+              <h1 className="mt-4 font-display text-xl font-semibold text-ink dark:text-sepia-100">{t('auth.email.change.success')}</h1>
+              <p className="mt-1 text-sm text-ink-muted dark:text-sepia-300">{t('auth.email.change.success.desc')}</p>
             </>
           )}
         </div>
