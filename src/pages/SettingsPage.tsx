@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
-import { Globe, Coffee, Sparkles, Download, Trash2, Brain, Clock, Repeat, ArrowLeft, Check, Layers, ChevronDown, Dices, KeyRound, Lock, Loader2 } from 'lucide-react'
+import { Globe, Coffee, Sparkles, Download, Trash2, Brain, Clock, Repeat, ArrowLeft, Check, Layers, ChevronDown, KeyRound, Lock, Loader2, Mail } from 'lucide-react'
 import { useLanguage } from '../context/LanguageContext'
 import { useAuth } from '../context/AuthContext'
 import { useSettings } from '../context/SettingsContext'
@@ -26,17 +26,20 @@ const defaultModes: { id: StudyMode; icon: typeof Brain; key: string }[] = [
 const SettingsPage: React.FC = () => {
   const navigate = useNavigate()
   const { t, lang, toggle } = useLanguage()
-  const { user, profile, sessions, loading, updateAvatar, updatePassword, reauthenticate, resetPassword } = useAuth()
+  const { user, profile, sessions, loading, updateAvatar, updatePassword, updateEmail, reauthenticate, resetPassword } = useAuth()
   const { prefs, setPrefs, resetLocalProgress } = useSettings()
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [avatarSeed, setAvatarSeed] = useState(() => profile?.avatar || AVATAR_SEEDS[0])
   const [showPw, setShowPw] = useState(false)
+  const [showEmail, setShowEmail] = useState(false)
   const [pwResetSent, setPwResetSent] = useState(false)
   const [pwResetBusy, setPwResetBusy] = useState(false)
   const [pwBusy, setPwBusy] = useState(false)
   const [oldPw, setOldPw] = useState('')
   const [newPw, setNewPw] = useState('')
   const [confirmPw, setConfirmPw] = useState('')
+  const [newEmail, setNewEmail] = useState('')
+  const [emailBusy, setEmailBusy] = useState(false)
 
   // Keep the local preview in sync when the profile loads/changes.
   useEffect(() => {
@@ -89,6 +92,23 @@ const SettingsPage: React.FC = () => {
     resetLocalProgress()
     setConfirmDelete(false)
     toast.success(t('settings.deleted'))
+  }
+
+  const handleChangeEmail = async () => {
+    if (!newEmail || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(newEmail)) {
+      toast.error('Introduce un correo válido')
+      return
+    }
+    setEmailBusy(true)
+    try {
+      await updateEmail(newEmail)
+      toast.success(t('settings.email.saved'))
+      setNewEmail('')
+    } catch (err: any) {
+      toast.error(err?.message || 'No se pudo cambiar el correo')
+    } finally {
+      setEmailBusy(false)
+    }
   }
 
   return (
@@ -206,24 +226,7 @@ const SettingsPage: React.FC = () => {
           </label>
         </motion.section>
 
-        {/* Profile avatar */}
-        <motion.section
-          initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
-          className="bg-paper-raised dark:bg-[#1e2c3c] rounded-2xl shadow-soft border border-paper-sunken dark:border-[#33465c] p-6"
-        >
-          <h2 className="font-semibold text-ink dark:text-sepia-100 flex items-center gap-2 mb-4 font-display">
-            <Dices className="w-5 h-5 text-ember-500" /> {t('settings.avatar')}
-          </h2>
-          <div className="flex items-center gap-4">
-            <AvatarPicker value={avatarSeed} onSelect={handleAvatarChange} size="md" label={t('settings.avatar')} />
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-ink-soft dark:text-sepia-200 truncate">{profile?.name || user?.name}</p>
-              <p className="text-xs text-ink-muted dark:text-sepia-300 truncate">{user?.email}</p>
-            </div>
-          </div>
-        </motion.section>
-
-        {/* Account / support */}
+        {/* Account: avatar + email + password (grouped in one section) */}
         <motion.section
           initial="hidden" whileInView="show" viewport={{ once: true }} variants={fade}
           className="bg-paper-raised dark:bg-[#1e2c3c] rounded-2xl shadow-soft border border-paper-sunken dark:border-[#33465c] p-6"
@@ -231,20 +234,50 @@ const SettingsPage: React.FC = () => {
           <h2 className="font-semibold text-ink dark:text-sepia-100 flex items-center gap-2 mb-4 font-display">
             <Coffee className="w-5 h-5 text-ember-500" /> {t('settings.account')}
           </h2>
-          <div className="mt-4 pt-4 border-t border-paper-sunken dark:border-[#33465c] flex items-center justify-between gap-4">
+
+          {/* Profile identity: avatar picker + name/email */}
+          <div className="flex items-center gap-4">
+            <AvatarPicker value={avatarSeed} onSelect={handleAvatarChange} size="md" label={t('settings.avatar')} />
             <div className="min-w-0">
-              <p className="text-sm font-medium text-ink-soft dark:text-sepia-200 flex items-center gap-2">
-                <KeyRound className="w-4 h-4 text-ember-500" /> {t('settings.password')}
-              </p>
-              <p className="text-xs text-ink-muted dark:text-sepia-300">{t('settings.password.desc')}</p>
+              <p className="text-sm font-medium text-ink-soft dark:text-sepia-200 truncate">{profile?.name || user?.name}</p>
+              <p className="text-xs text-ink-muted dark:text-sepia-300 truncate">{user?.email}</p>
             </div>
-            <button
-              onClick={() => setShowPw(true)}
-              className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-ember-500 text-paper text-sm font-semibold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
-            >
-              <Lock className="w-4 h-4" /> {t('settings.password.change')}
-            </button>
           </div>
+
+          <div className="mt-4 pt-4 border-t border-paper-sunken dark:border-[#33465c] space-y-4">
+            {/* Email change (sends a confirmation link to the new address) */}
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-ink-soft dark:text-sepia-200 flex items-center gap-2">
+                  <KeyRound className="w-4 h-4 text-ember-500" /> {t('settings.email')}
+                </p>
+                <p className="text-xs text-ink-muted dark:text-sepia-300">{t('settings.email.desc')}</p>
+              </div>
+              <button
+                onClick={() => setShowEmail(true)}
+                className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-ember-500 text-paper text-sm font-semibold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
+              >
+                <Mail className="w-4 h-4" /> {t('settings.email.change')}
+              </button>
+            </div>
+
+            {/* Password change */}
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-ink-soft dark:text-sepia-200 flex items-center gap-2">
+                  <KeyRound className="w-4 h-4 text-ember-500" /> {t('settings.password')}
+                </p>
+                <p className="text-xs text-ink-muted dark:text-sepia-300">{t('settings.password.desc')}</p>
+              </div>
+              <button
+                onClick={() => setShowPw(true)}
+                className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-ember-500 text-paper text-sm font-semibold shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition-all"
+              >
+                <Lock className="w-4 h-4" /> {t('settings.password.change')}
+              </button>
+            </div>
+          </div>
+
           <a
             href="https://ko-fi.com/mvalera_dev"
             target="_blank"
@@ -420,6 +453,51 @@ const SettingsPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Change email modal */}
+      {showEmail && (
+        <div className="fixed inset-0 z-[140] flex items-center justify-center p-4 bg-ink/50 dark:bg-sepia-900/60 backdrop-blur-sm" onMouseDown={(e) => { if (e.target === e.currentTarget) setShowEmail(false) }}>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-sm bg-paper-raised dark:bg-sepia-900 rounded-2xl shadow-lift ring-1 ring-slate-200/70 dark:ring-sepia-800 p-6"
+          >
+            <h3 className="font-display text-lg font-bold text-ink dark:text-sepia-50 flex items-center gap-2">
+              <Mail className="w-5 h-5 text-ember-500" /> {t('settings.email.change')}
+            </h3>
+            <p className="text-sm text-ink-muted dark:text-sepia-300 mt-2 leading-relaxed">
+              {t('settings.email.desc')}
+            </p>
+            <div className="relative mt-4">
+              <Mail className="w-5 h-5 text-ink-muted absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="email"
+                autoFocus
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleChangeEmail()}
+                placeholder={t('settings.email.new')}
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 dark:border-sepia-600 dark:bg-sepia-800 dark:text-sepia-50 text-sm outline-none focus:ring-2 focus:ring-ember-500"
+              />
+            </div>
+            <div className="mt-5 flex justify-end gap-3">
+              <button
+                onClick={() => { setShowEmail(false); setNewEmail('') }}
+                className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-sepia-600 dark:text-sepia-200 text-sm font-medium hover:bg-slate-100 dark:hover:bg-sepia-800 transition-colors"
+              >
+                {t('config.cancel')}
+              </button>
+              <button
+                onClick={handleChangeEmail}
+                disabled={emailBusy}
+                className="px-4 py-2.5 rounded-xl bg-ember-500 text-paper text-sm font-bold shadow-soft hover:shadow-lift transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {emailBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
+                {t('settings.email.change')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

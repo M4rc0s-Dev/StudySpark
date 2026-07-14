@@ -178,17 +178,6 @@ const LibraryPage: React.FC = () => {
     return () => window.clearTimeout(t)
   }, [loading, user, navigate])
 
-  // Spinner covers EVERY moment there is no confirmed user (loading, the grace
-  // window, or a transient session drop). This is what stops F5 from flashing
-  // the empty background.
-  if (gateOpen && !user) {
-    return (
-      <div className="min-h-[80vh] flex items-center justify-center">
-        <Loader2 className="w-10 h-10 text-ember-500 animate-spin" />
-      </div>
-    )
-  }
-
   // Merge cloud sessions with local sessions while avoiding duplicates.
   useEffect(() => {
     const cloud: StudySession[] = cloudSessions.map((s) => ({
@@ -591,7 +580,13 @@ const LibraryPage: React.FC = () => {
     {
       label: t('library.move.short'),
       icon: FolderInput,
-      submenu: buildMoveTree((dest) => moveSession(s, dest), { currentLocation: s.folder || '' }),
+      submenu: buildMoveTree((dest) => moveSession(s, dest), {
+        // Exclude the deck's own folder (no-op) AND the folder currently open
+        // in the view — moving a deck into the folder it's already shown in is
+        // meaningless. Every other folder stays selectable.
+        currentLocation: s.folder || '',
+        isDisabled: (dest) => dest === currentPath,
+      }),
     },
     { separator: true },
     { label: t('library.delete'), icon: Trash2, danger: true, onClick: () => setSessionToDelete(s) },
@@ -613,10 +608,11 @@ const LibraryPage: React.FC = () => {
       label: t('library.move.short'),
       icon: FolderInput,
       // Moving a folder means choosing its NEW PARENT. Disallow its current
-      // parent, itself and any folder inside its own subtree.
+      // parent, itself and any folder inside its own subtree, plus the folder
+      // currently open in the view (moving it "into" where it already is).
       submenu: buildMoveTree((dest) => moveFolder(path, dest), {
         currentLocation: parentPath(path),
-        isDisabled: (dest) => inSubtree(dest, path),
+        isDisabled: (dest) => inSubtree(dest, path) || dest === currentPath,
       }),
     },
     { separator: true },
@@ -654,6 +650,16 @@ const LibraryPage: React.FC = () => {
       // sessions) call stopPropagation so their own menu wins.
       onContextMenu={openBackgroundMenu}
     >
+      {/* Spinner covers every moment there is no confirmed user (loading, the
+          grace window, or a transient session drop). Rendered here — NOT as an
+          early return — so all hooks above always run, avoiding the
+          "render hooks mismatch" crash on auth settle. */}
+      {gateOpen && !user ? (
+        <div className="min-h-[80vh] flex items-center justify-center">
+          <Loader2 className="w-10 h-10 text-ember-500 animate-spin" />
+        </div>
+      ) : (
+        <>
       <button
         onClick={() => navigate(-1)}
         className="inline-flex items-center gap-1 text-sm text-ink-muted dark:text-sepia-300 hover:text-ink dark:hover:text-sepia-100 mb-6 transition-colors"
@@ -975,6 +981,8 @@ const LibraryPage: React.FC = () => {
 
       {/* Right-click context menu */}
       <ContextMenu menu={contextMenu} onClose={() => setContextMenu(null)} />
+        </>
+      )}
     </div>
   )
 }

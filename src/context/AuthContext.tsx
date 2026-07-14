@@ -20,6 +20,7 @@ interface AuthContextValue {
   signInWithGoogle: (next?: string) => Promise<void>
   reauthenticate: (password: string) => Promise<void>
   updatePassword: (newPassword: string) => Promise<void>
+  updateEmail: (newEmail: string) => Promise<void>
   resetPassword: (email: string) => Promise<void>
   signOut: () => Promise<void>
   refreshSessions: () => Promise<void>
@@ -260,6 +261,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (error) throw error
   }, [])
 
+  // Changes the account email. Supabase sends a confirmation link to the new
+  // address automatically; the change only takes effect once it is clicked, so
+  // the existing session keeps working until then.
+  const updateEmail = useCallback(async (newEmail: string) => {
+    if (!supabase) throw new Error('Auth no disponible')
+    const { error } = await supabase.auth.updateUser({ email: newEmail })
+    if (error) throw error
+  }, [])
+
   // Sends a password-reset email (via Supabase + Resend). The user clicks the
   // link, lands on /auth/confirm, and chooses a new password in the UI.
   const resetPassword = useCallback(async (email: string) => {
@@ -279,7 +289,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   return (
     <AuthContext.Provider
-      value={{ user, profile, sessions, loading, signUp, signIn, signInWithGoogle, reauthenticate, updatePassword, resetPassword, signOut, refreshSessions, addXp, updateAvatar }}
+      value={{ user, profile, sessions, loading, signUp, signIn, signInWithGoogle, reauthenticate, updatePassword, updateEmail, resetPassword, signOut, refreshSessions, addXp, updateAvatar }}
     >
       {children}
     </AuthContext.Provider>

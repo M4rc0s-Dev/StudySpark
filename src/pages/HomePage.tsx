@@ -13,7 +13,7 @@ import { useSettings } from '../context/SettingsContext'
 import { useAuth } from '../context/AuthContext'
 import { saveSessionToSupabase } from '../lib/sessions'
 import { StudySession } from '../types'
-import type { SessionConfig } from '../context/SettingsContext'
+import type { StartConfig } from '../components/Study/SessionConfigModal'
 import { FileText, Wand2, Brain, Sparkles, Zap, Layers, Trophy, ArrowRight, Star, Quote, UserPlus, Lock } from 'lucide-react'
 
 const fade = {
@@ -98,7 +98,7 @@ const HomePage: React.FC = () => {
     }
   }
 
-  const startStudy = (cfg: SessionConfig) => {
+  const startStudy = (cfg: StartConfig) => {
     if (!pendingCards) return
     // Guests: cannot study yet. Stash the generated cards so AuthPage can pick
     // them up after sign-up/login, then send them to create an account.
@@ -123,10 +123,13 @@ const HomePage: React.FC = () => {
       flashcards: pendingCards.cards,
       createdAt: new Date(),
       studyMode: cfg.mode,
+      folder: cfg.folder || '',
       timeSpent: 0,
       score: 0,
     }
     // Persist the chosen order/direction on the session so it survives reload.
+    // The deck is saved into the folder selected in the config modal (defaults
+    // to SparkDrive root when none was picked).
     saveSessionToSupabase(session)
     toast.success('¡Flashcards generadas!')
     setConfigOpen(false)

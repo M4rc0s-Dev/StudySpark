@@ -3,12 +3,18 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Brain, Clock, Repeat, X, Shuffle, ArrowDownWideNarrow, ListOrdered, ArrowRightLeft, Sparkles, FolderInput } from 'lucide-react'
 import { useLanguage } from '../../context/LanguageContext'
 import { useSettings } from '../../context/SettingsContext'
+import { useAuth } from '../../context/AuthContext'
+import FolderTreePicker from '../Layout/FolderTreePicker'
 import type { SessionConfig, StudyMode, CardOrder, CardDirection } from '../../context/SettingsContext'
+
+export interface StartConfig extends SessionConfig {
+  folder: string
+}
 
 interface SessionConfigModalProps {
   open: boolean
   onClose: () => void
-  onStart: (config: SessionConfig) => void
+  onStart: (config: StartConfig) => void
   deckTitle?: string
 }
 
@@ -40,14 +46,33 @@ const directions: { id: CardDirection; icon: typeof ArrowRightLeft; key: string 
 const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, onStart, deckTitle }) => {
   const { t } = useLanguage()
   const { prefs } = useSettings()
+  const { sessions: cloudSessions, loading } = useAuth()
 
   const [mode, setMode] = useState<StudyMode>(prefs.defaultMode)
   const [order, setOrder] = useState<CardOrder>('default')
   const [direction, setDirection] = useState<CardDirection>('qa')
   const [autoplay, setAutoplay] = useState<boolean>(prefs.autoplay)
+  const [folder, setFolder] = useState<string>('')
+
+  // Folders available as destinations: every folder that already exists in the
+  // library, plus their ancestors so the whole hierarchy is selectable.
+  const folderPaths = React.useMemo(() => {
+    const set = new Set<string>()
+    const addWithAncestors = (p: string) => {
+      if (!p) return
+      let rest = p
+      set.add(rest)
+      while (rest.includes('/')) {
+        rest = rest.slice(0, rest.lastIndexOf('/'))
+        set.add(rest)
+      }
+    }
+    cloudSessions.forEach((s) => addWithAncestors(s.folder || ''))
+    return Array.from(set).filter(Boolean)
+  }, [cloudSessions, loading])
 
   const handleStart = () => {
-    onStart({ mode, order, direction, autoplay })
+    onStart({ mode, order, direction, autoplay, folder })
   }
 
   return (
@@ -184,6 +209,17 @@ const SessionConfigModal: React.FC<SessionConfigModalProps> = ({ open, onClose, 
                   className="w-5 h-5 accent-ember-600 cursor-pointer"
                 />
               </label>
+
+              {/* Save folder: pick where the deck lands in the Library. */}
+              <div>
+                <p className="text-sm font-semibold text-ink-soft dark:text-sepia-200 mb-3">{t('reward.save.folder')}</p>
+                <FolderTreePicker
+                  allFolderPaths={folderPaths}
+                  value={folder}
+                  onPick={setFolder}
+                  rootLabel={t('library.root')}
+                />
+              </div>
             </div>
 
             {/* Footer */}

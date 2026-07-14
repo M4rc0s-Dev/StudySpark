@@ -22,6 +22,9 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, State
 
   render() {
     if (this.state.error) {
+      const msg = this.state.error.message || String(this.state.error)
+      // Show the real error so a crash can be diagnosed instead of staying
+      // mysterious. Collapsed by default to keep the screen calm.
       return (
         <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-paper dark:bg-[#0b1220] px-6 text-center">
           <div className="w-14 h-14 rounded-2xl bg-ember-50 dark:bg-ember-500/15 flex items-center justify-center">
@@ -33,6 +36,14 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, State
           <p className="text-ink-muted dark:text-sepia-300 max-w-sm">
             La página se rompió al cargar. Recarga para intentarlo de nuevo.
           </p>
+          <details className="max-w-md w-full text-left">
+            <summary className="cursor-pointer text-xs text-ink-muted dark:text-sepia-300 hover:text-ink dark:hover:text-sepia-100">
+              Detalles del error
+            </summary>
+            <pre className="mt-2 p-3 rounded-xl bg-ink/5 dark:bg-white/5 text-xs text-rose-600 dark:text-rose-400 overflow-auto whitespace-pre-wrap">
+              {msg}
+            </pre>
+          </details>
           <button
             onClick={this.handleReload}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-ember-500 text-paper text-sm font-bold shadow-soft hover:shadow-lift transition-all"
@@ -47,3 +58,4 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, State
 }
 
 export default ErrorBoundary
+
