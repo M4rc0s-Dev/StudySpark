@@ -49,9 +49,9 @@ export function buildMoveTree(
   const rootDisabled =
     (!opts.allowRoot && opts.currentLocation === '') || (opts.isDisabled?.('') ?? false)
   if (!rootDisabled) {
-    items.push({ label: rootLabel, icon: Home, treePrefix: '', onClick: () => {}, disabled: false })
+    items.push({ label: rootLabel, icon: Home, treePrefix: '', value: '', onClick: () => {}, disabled: false })
   } else {
-    items.push({ label: rootLabel, icon: Home, treePrefix: '', onClick: () => {}, disabled: true })
+    items.push({ label: rootLabel, icon: Home, treePrefix: '', value: '', onClick: () => {}, disabled: true })
   }
 
   // Keep EVERY folder in the tree. We must NOT drop currentLocation: removing
@@ -88,6 +88,7 @@ export function buildMoveTree(
         label: folderName(child),
         icon: Folder,
         treePrefix: inherited + connector,
+        value: child,
         onClick: () => {},
         disabled,
       })
@@ -100,9 +101,9 @@ export function buildMoveTree(
     const isLast = i === sortedRoots.length - 1
     const connector = isLast ? '└── ' : '├── '
     const disabled = opts.isDisabled?.(root) ?? false
-    items.push({ label: folderName(root), icon: Folder, treePrefix: connector, onClick: () => {}, disabled })
+    items.push({ label: folderName(root), icon: Folder, treePrefix: connector, value: root, onClick: () => {}, disabled })
     walk(root, connector, [isLast])
   })
 
-  return items.length > 0 ? items : [{ label: '—', onClick: () => {} }]
+  return items.length > 0 ? items : [{ label: '—', value: '', onClick: () => {} }]
 }

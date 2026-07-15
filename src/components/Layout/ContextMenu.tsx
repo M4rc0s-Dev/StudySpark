@@ -21,6 +21,9 @@ export interface ContextMenuItem {
   // Move folder tree. When present it fully encodes the indentation/connectors,
   // so siblings always align regardless of depth.
   treePrefix?: string
+  // Full folder path this item represents (root entry → ''). Lets the consumer
+  // resolve the real destination without reconstructing it from `label`.
+  value?: string
 }
 
 export interface ContextMenuState {

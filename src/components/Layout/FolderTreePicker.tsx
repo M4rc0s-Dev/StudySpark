@@ -60,7 +60,7 @@ const FolderTreePicker: React.FC<FolderTreePickerProps> = ({
       // Wire each tree entry to actually pick that folder. The root entry has an
       // empty label prefix, so map it to '' (SparkDrive root).
       onClick: () => {
-        const chosen = it.treePrefix === '' && it.label === rootLabel ? '' : (it.label ?? '')
+        const chosen = it.value !== undefined ? it.value : (it.treePrefix === '' && it.label === rootLabel ? '' : (it.label ?? ''))
         onPick(chosen)
         setMenu(null)
       },

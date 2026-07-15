@@ -435,6 +435,26 @@ const StudyPage: React.FC = () => {
         const finalSession: StudySession = { ...currentSession!, completedAt: new Date() }
         setCurrentSession(finalSession)
         saveSessionToSupabase(finalSession)
+      } else {
+        // Focused pending/wrong review: merge the reviewed subset back into the
+        // full canonical deck so the library keeps complete, accurate progress
+        // (Bug F) — never persist the truncated 5-card subset.
+        const fullDeck: StudySession = { ...currentSession! }
+        const reviewedById = new Map(deck.flashcards.map((f) => [f.id, f]))
+        fullDeck.flashcards = fullDeck.flashcards.map((card) => {
+          const reviewed = reviewedById.get(card.id)
+          if (!reviewed) return card
+          return {
+            ...card,
+            studied: reviewed.studied,
+            correct: reviewed.correct,
+            timeSpent: reviewed.timeSpent,
+            lastReviewed: reviewed.lastReviewed,
+            nextReview: reviewed.nextReview,
+          }
+        })
+        setCurrentSession(fullDeck)
+        saveSessionToSupabase(fullDeck)
       }
       addXp(earned)
     }
@@ -639,7 +659,13 @@ const StudyPage: React.FC = () => {
 
   // ---- Completion summary ----
   if (completed) {
-    const wrongCards = flashcards.filter((f) => f.correct === false)
+    // Bug E: show the FULL canonical deck (currentSession), not the studied subset
+    // (flashcards), so totals/accuracy reflect all cards, not just the review slice.
+    const fullDeck = currentSession?.flashcards ?? []
+    const totalFull = fullDeck.length
+    const correctFull = fullDeck.filter((c) => c.correct === true).length
+    const wrongFull = fullDeck.filter((c) => c.correct === false).length
+    const wrongCards = fullDeck.filter((f) => f.correct === false)
     return (
       <div className="max-w-2xl mx-auto px-4 py-16">
         <motion.div
@@ -657,23 +683,23 @@ const StudyPage: React.FC = () => {
           </motion.div>
           <h1 className="mt-6 font-display text-3xl font-bold text-ink dark:text-sepia-50">{t('reward.title')}</h1>
           <p className="mt-2 text-ink-muted dark:text-sepia-300">
-            {t('reward.subtitle')} <span className="font-semibold text-ink dark:text-sepia-100">{flashcards.length}</span> {t('reward.cards')}
+            {t('reward.subtitle')} <span className="font-semibold text-ink dark:text-sepia-100">{totalFull}</span> {t('reward.cards')}
             {' · '}
-            <span className="font-semibold text-emerald-600">{correctCount}</span> {t('reward.known')}
+            <span className="font-semibold text-emerald-600">{correctFull}</span> {t('reward.known')}
           </p>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8">
             <div className="bg-emerald-50 dark:bg-emerald-500/10 rounded-2xl p-4">
-              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{correctCount}</p>
+              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{correctFull}</p>
               <p className="text-xs text-emerald-500 dark:text-emerald-400 mt-1">{t('reward.known')}</p>
             </div>
             <div className="bg-rose-50 dark:bg-rose-500/10 rounded-2xl p-4">
-              <p className="text-2xl font-bold text-rose-600 dark:text-rose-400">{wrongCount}</p>
+              <p className="text-2xl font-bold text-rose-600 dark:text-rose-400">{wrongFull}</p>
               <p className="text-xs text-rose-500 dark:text-rose-400 mt-1">{t('reward.wrong.list')}</p>
             </div>
             <div className="bg-ember-50 dark:bg-ember-500/10 rounded-2xl p-4">
               <p className="text-2xl font-bold text-ember-600 dark:text-ember-400">
-                {flashcards.length ? Math.round((correctCount / flashcards.length) * 100) : 0}%
+                {totalFull ? Math.round((correctFull / totalFull) * 100) : 0}%
               </p>
               <p className="text-xs text-ember-500 dark:text-ember-400 mt-1">{t('reward.accuracy')}</p>
             </div>

@@ -253,13 +253,11 @@ const LibraryPage: React.FC = () => {
     return Array.from(names.values()).sort((a, b) => folderName(a).localeCompare(folderName(b)))
   }, [allFolderPaths, currentPath])
 
-  // Total flashcards inside a folder, counting decks that live in the folder
-  // AND any of its subfolders (point 3). A folder with only nested decks
-  // must not read "0 tarjetas" — it shows the full recursive total.
+  // Total DECKS inside a folder, counting decks that live in the folder
+  // AND any of its subfolders (recursive). A folder with only nested
+  // decks must show the real deck total, not 0 (point 3).
   const sessionCountFor = (path: string) =>
-    sessions
-      .filter((s) => inSubtree(s.folder || '', path))
-      .reduce((sum, s) => sum + ((s.flashcards as FlashcardType[] | undefined)?.length ?? 0), 0)
+    sessions.filter((s) => inSubtree(s.folder || '', path)).length
 
   // Folders matching the search query (point 6): the search box filters
   // BOTH decks and folders by name, so only relevant folders remain.
@@ -459,6 +457,15 @@ const LibraryPage: React.FC = () => {
       setCurrentPath((c) => rerootPath(c, path, newPath))
     }
     toast.success(t('library.moved.to', { folder: destParent || DRIVE_ROOT_LABEL }))
+  }
+
+  // Move EVERY selected folder (point 2) into `dest`. Used when the user
+  // picks a destination from the "Mover" menu while several folders are
+  // selected — previously only the one the menu was opened on moved.
+  const moveSelectedFolders = (dest: string) => {
+    const folders = [...selected].filter((k) => visibleFolders.includes(k as string))
+    folders.forEach((p) => moveFolder(p, dest))
+    clearSelection()
   }
 
   // ----- Session actions -----
@@ -706,7 +713,13 @@ const LibraryPage: React.FC = () => {
       // Moving a folder means choosing its NEW PARENT. Disallow its current
       // parent, itself and any folder inside its own subtree, plus the folder
       // currently open in the view (moving it "into" where it already is).
-      submenu: buildMoveTree((dest) => moveFolder(path, dest), {
+      submenu: buildMoveTree((dest) => {
+        // If several folders are selected, move ALL of them to the
+        // picked destination (point 2); otherwise move just this one.
+        const otherFolders = [...selected].filter((k) => k !== path && visibleFolders.includes(k as string))
+        if (otherFolders.length > 0) moveSelectedFolders(dest)
+        else moveFolder(path, dest)
+      }, {
         currentLocation: parentPath(path),
         isDisabled: (dest) => inSubtree(dest, path) || dest === currentPath,
       }),
@@ -877,7 +890,7 @@ const LibraryPage: React.FC = () => {
                 >
                   <FolderOpen className={`w-10 h-10 mb-2 ${fc ? fc.text : 'text-ember-500'}`} />
                   <span className="text-sm font-semibold text-ink dark:text-sepia-100 text-center truncate max-w-full">{folderName(path)}</span>
-                  <span className="text-xs text-ink-muted dark:text-sepia-300 mt-0.5">{sessionCountFor(path)} {t('library.cards').toLowerCase()}</span>
+                  <span className="text-xs text-ink-muted dark:text-sepia-300 mt-0.5">{sessionCountFor(path)} {t('library.decks').toLowerCase()}</span>
                   <div className="absolute top-2 right-2">
                     <button
                       onClick={(e) => {
@@ -958,36 +971,10 @@ const LibraryPage: React.FC = () => {
 
                   <div className="mt-3 flex items-stretch justify-center gap-1.5">
                     <button
-                      onClick={() => openSession(s)}
+                      onClick={(e) => { e.stopPropagation(); openSession(s) }}
                       className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-ember-500 text-paper text-sm font-bold shadow-soft hover:shadow-lift btn-pop active:scale-95 transition-all"
                     >
                       <BookOpen className="w-4 h-4" /> {t('library.study')}
-                    </button>
-                    <button
-                      onClick={() => pendingCountFor(s) > 0 && openPendingSession(s)}
-                      disabled={pendingCountFor(s) === 0}
-                      title={t('reward.study.pending')}
-                      className={`inline-flex items-center justify-center gap-1 px-2.5 py-2 rounded-lg text-sm font-semibold shadow-soft transition-all ${
-                        pendingCountFor(s) === 0
-                          ? 'bg-slate-200 dark:bg-sepia-800 text-slate-400 dark:text-sepia-500 cursor-not-allowed'
-                          : 'bg-amber-500 text-white hover:bg-amber-600 btn-pop active:scale-95'
-                      }`}
-                    >
-                      <ListX className="w-4 h-4" />
-                      <span className={`rounded-full px-1.5 text-xs ${pendingCountFor(s) === 0 ? 'bg-slate-300 dark:bg-sepia-700' : 'bg-white/25'}`}>{pendingCountFor(s)}</span>
-                    </button>
-                    <button
-                      onClick={() => wrongCountFor(s) > 0 && openWrongSession(s)}
-                      disabled={wrongCountFor(s) === 0}
-                      title={t('reward.retry.wrong')}
-                      className={`inline-flex items-center justify-center gap-1 px-2.5 py-2 rounded-lg text-sm font-semibold shadow-soft transition-all ${
-                        wrongCountFor(s) === 0
-                          ? 'bg-slate-200 dark:bg-sepia-800 text-slate-400 dark:text-sepia-500 cursor-not-allowed'
-                          : 'bg-rose-500 text-white hover:bg-rose-600 btn-pop active:scale-95'
-                      }`}
-                    >
-                      <X className="w-4 h-4" />
-                      <span className={`rounded-full px-1.5 text-xs ${wrongCountFor(s) === 0 ? 'bg-slate-300 dark:bg-sepia-700' : 'bg-white/25'}`}>{wrongCountFor(s)}</span>
                     </button>
                   </div>
                 </motion.div>
@@ -1049,30 +1036,6 @@ const LibraryPage: React.FC = () => {
         className="fixed -top-40 left-0 px-3 py-1.5 rounded-lg bg-ember-500 text-paper text-sm font-medium shadow-lg pointer-events-none"
         style={{ opacity: 0 }}
       />
-
-      {/* Selection toolbar (point 1 & 2): shown when >=1 item is selected.
-          Delete (Supr) and Esc (clear) are also keyboard-driven. */}
-      {selected.size > 0 && (
-        <div className="sticky top-2 z-30 mx-auto max-w-6xl mb-4 flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-ember-500 text-paper shadow-lift">
-          <span className="text-sm font-semibold">
-            {selected.size} {t('library.selected')}
-          </span>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setFolderToDelete('__multi__')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 text-sm font-semibold transition-colors"
-            >
-              <Trash2 className="w-4 h-4" /> {t('library.delete')} <span className="opacity-80">(Supr)</span>
-            </button>
-            <button
-              onClick={clearSelection}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-sm font-medium transition-colors"
-            >
-              <X className="w-4 h-4" /> {t('config.cancel')} <span className="opacity-80">(Esc)</span>
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Custom confirm dialogs (replace the browser's native popup) */}
       {/* Step 1: delete the folder. Contents stay in place, OR the user can pick
