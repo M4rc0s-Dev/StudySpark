@@ -1,322 +1,310 @@
-# Flashcard Web Application
+<p align="center">
+  <img src="public/favicon.svg" alt="StudySpark logo" width="96" height="96" />
+</p>
 
-A modern web application that interfaces with the n8n flashcard workflow to generate, study, and manage interactive flashcards from study notes.
+<h1 align="center">StudySpark</h1>
+
+<p align="center">
+  Turn your study notes into interactive flashcards with AI — study, track progress, and level up.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge&logo=semver" alt="Version" />
+  <img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=opensourceinitiative" alt="License" />
+  <img src="https://img.shields.io/badge/stars-%E2%98%85%20M4rc0s--Dev/StudySpark-yellow?style=for-the-badge&logo=github" alt="Stars" />
+  <img src="https://img.shields.io/badge/forks-contributions%20welcome-lightgrey?style=for-the-badge&logo=git" alt="Forks" />
+  <br />
+  <img src="https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vite-6.0-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/Tailwind-3.3-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind" />
+  <img src="https://img.shields.io/badge/Supabase-Auth-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" />
+  <img src="https://img.shields.io/badge/Cloudflare-Workers-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare Workers" />
+  <img src="https://img.shields.io/badge/n8n-Automation-EA4B71?style=for-the-badge&logo=n8n&logoColor=white" alt="n8n" />
+</p>
+
+---
 
 ## Overview
 
-This application provides a complete study experience with:
+StudySpark is a modern single-page web app that connects to an [n8n](https://n8n.io) flashcard workflow to generate, study, and manage interactive flashcards from your study notes. It is deployed as a **Cloudflare Worker** that both serves the built React app and proxies AI generation + contact emails.
 
-- **AI-powered flashcard generation** using your n8n workflow
+What you get:
+
+- **AI-powered flashcard generation** from notes or uploaded files (PDF, TXT, DOCX)
 - **Multiple study modes** (basic, timed, spaced repetition)
-- **File upload support** (PDF, TXT, DOCX)
-- **Real-time processing progress**
-- **Interactive flashcards** with click-to-reveal functionality
-- **Export capabilities** (CSV, JSON)
-- **Shareable study links**
-- **Gumroad payment integration**
+- **Folder-organized library** with a shared move-tree picker
+- **Gamified progress** — XP, levels, and difficulty-weighted scoring
+- **Auth & profiles** via Supabase (email/password + Google OAuth, password reset)
+- **Custom avatars** (generated shapes/rings/identicons or uploaded photo, with cropper)
+- **Built-in Chatbot** that guides users through topics via a decision-tree conversation
+- **Export** sessions to CSV / JSON
+- **Responsive UI** with framer-motion animations and light/dark theming + i18n
+- **Contact form** that delivers messages over Resend
 
 ## Features
 
 ### 🎯 Core Features
 
-1. **Smart Upload Interface**
-   - Drag & drop file upload
-   - Text input alternative
-   - Real-time progress indicators
+1. **Smart Upload & Generation**
+   - Drag & drop file upload (PDF, TXT, DOCX) or paste notes directly
+   - Real-time progress while n8n generates cards
    - Error handling and validation
 
 2. **Interactive Study Experience**
    - Click-to-reveal flashcards
-   - Multiple study modes
-   - Progress tracking
-   - Time spent tracking
-   - Performance analytics
+   - Multiple study modes and session configuration
+   - Progress tracking, timers, and performance analytics
+   - Gamified XP and leveling
 
-3. **Export & Sharing**
-   - CSV export for spreadsheet import
-   - JSON export for backup/transfer
+3. **Library & Organization**
+   - Folders persisted in Supabase
+   - Shared `FolderTreePicker` to move decks anywhere in the tree
+   - Multi-select and recursive card counts
+
+4. **Export & Sharing**
+   - CSV / JSON export of sessions
    - Shareable study links
-   - QR code generation
 
-4. **Modern UI/UX**
+5. **Modern UI/UX**
    - Responsive design (mobile + desktop)
-   - Smooth animations and transitions
+   - framer-motion animations and transitions
+   - Light/dark theme + language switching (i18n)
    - Accessibility focused
-   - Clean, educational interface
 
 ### 🔧 Technical Features
 
-- **React.js** with TypeScript
-- **Vite** for rapid development
-- **Tailwind CSS** for styling
-- **n8n Workflow Integration**
-- **WebSocket support** for real-time updates
-- **File processing** utilities
-- **Responsive design**
-- **Comprehensive testing**
+- **React 18** + **TypeScript** (strict)
+- **Vite 6** for dev and production builds
+- **Tailwind CSS 3** for styling
+- **Supabase Auth** (email/password, Google OAuth, password reset)
+- **Cloudflare Worker** (serves SPA + proxies `/api/generate` and `/api/contact`)
+- **n8n Workflow Integration** for AI flashcard generation
+- **Resend** for transactional contact emails
+- **Context-based state** (Auth, Flashcard, Theme, Language, Settings)
+- **framer-motion**, **lucide-react**, **react-dropzone**, **react-router-dom**
+
+## Architecture
+
+```mermaid
+flowchart LR
+  Browser["Browser\nReact SPA (Vite build → /dist)"]
+  Worker["Cloudflare Worker\nworker.ts"]
+  N8N["n8n Flashcard Workflow\nN8N_WEBHOOK_URL"]
+  Resend["Resend API\ncontact emails"]
+  Supabase["Supabase\nAuth + profiles + folders + sessions"]
+
+  Browser -- "POST /api/generate" --> Worker
+  Worker -- "webhook" --> N8N
+  N8N -- "flashcards JSON" --> Worker
+  Worker -- "JSON" --> Browser
+
+  Browser -- "POST /api/contact" --> Worker
+  Worker -- "send email" --> Resend
+
+  Browser -- "signIn / CRUD" --> Supabase
+  Lib["src/lib/*\nsupabase.ts, sessions.ts,\nfolders.ts, leveling.ts,\navatars.ts, folderTree.ts"] -- "client" --> Supabase
+  Contexts["src/context/*\nAuth, Flashcard, Theme,\nLanguage, Settings"] -- "state" --> Browser
+```
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ (with npm or yarn)
+- Node.js 18+ (npm)
 - Git
-- n8n instance with flashcard workflow
-- Gumroad account for payments
+- A running **n8n** instance with the flashcard generation workflow
+- A **Supabase** project (auth + database)
+- A **Cloudflare** account (for Worker deployment)
 
 ### Installation
 
 ```bash
-# Clone this repository
-
-git clone <repository-url>
-cd flashcard-app
+# Clone the repository
+git clone https://github.com/M4rc0s-Dev/StudySpark.git
+cd StudySpark
 
 # Install dependencies
-
-npm install # or yarn install
+npm install
 
 # Configure environment variables
+cp .env.example .env   # (or create .env — see Configuration below)
+# Edit .env with your Supabase credentials
 
-Copy .env.example to .env
-Edit .env with your configuration:
-
-VITE_N8N_WEBHOOK_URL=https://your-n8n-instance.com/webhook/flashcard-generate
-VITE_GUMROAD_API_KEY=your_gumroad_api_key
-VITE_GUMROAD_PRODUCT_ID=your_product_id
-VITE_API_BASE_URL=/api (relative URL for client-server communication)
-
-# Start development server
-
+# Start the development server
 npm run dev
-
-# The application will be available at http://localhost:5173
+# The app will be available at http://localhost:5173
 ```
 
-### Development Workflow
+### Local API proxy (optional)
 
-1. **Start n8n Flashcard Workflow**
-   - Ensure your n8n instance is running
-   - Activate the "Flashcard Generator - Working Version" workflow
-   - Configure webhook URL to match VITE_N8N_WEBHOOK_URL
+In development the client calls `VITE_API_BASE_URL` (defaults to `http://localhost:3001`).
+To run the Worker locally, use Wrangler:
 
-2. **Server Setup**
-   - Create a simple Express server or use Vercel/Netlify functions
-   - The server should forward requests to your n8n webhook
-   - Implement authentication and rate limiting
-   - Set up CORS headers appropriately
-
-3. **Client Development**
-   - Make changes to React components
-   - Test file uploads and flashcard generation
-   - Verify study modes functionality
-   - Test export features
+```bash
+npm install -g wrangler
+wrangler dev        # serves the SPA + /api/* from worker.ts against ./dist
+```
 
 ## Project Structure
 
 ```
 .
 ├── src/
-│   ├── components/           # Reusable UI components
-│   │   ├── Layout/          # Page layouts and navigation
-│   │   ├── Features/        # Main feature components
-│   │   ├── Study/           # Study-specific components
-│   │   └── UI/              # Atomic UI elements
+│   ├── components/
+│   │   ├── Chatbot/          # Decision-tree study assistant (Chatbot.tsx)
+│   │   ├── Features/         # Flashcard, UploadArea, StudyModeSelector, LoadingScreen
+│   │   ├── Layout/           # Layout, AvatarCropper, AvatarPicker, FolderTreePicker,
+│   │   │                     #   ProfileMenu, ConfirmDialog, ContextMenu, ErrorBoundary,
+│   │   │                     #   PasswordStrength
+│   │   ├── Study/            # ProgressBar, Timer, SessionConfigModal
+│   │   └── UI/               # Atomic UI elements
 │   ├── context/             # React context providers
-│   ├── pages/               # Page components
-│   ├── services/            # API service layer
-│   ├── store/              # Application state management
-│   ├── types/              # TypeScript type definitions
-│   ├── utils/              # Utility functions
-│   └── hooks/              # Custom React hooks
+│   │   ├── AuthContext.tsx
+│   │   ├── FlashcardContext.tsx
+│   │   ├── ThemeContext.tsx
+│   │   ├── LanguageContext.tsx
+│   │   └── SettingsContext.tsx
+│   ├── data/                # Static data (e.g. sampleDeck.ts)
+│   ├── lib/                 # Utility/business logic
+│   │   ├── supabase.ts      # Supabase client
+│   │   ├── sessions.ts      # Session persistence
+│   │   ├── folders.ts       # Folder sync with Supabase
+│   │   ├── folderTree.ts    # Move-tree building helpers
+│   │   ├── leveling.ts      # XP / level calculations
+│   │   ├── avatars.ts       # Avatar token generation
+│   │   ├── colors.ts        # Color tokens
+│   │   └── export.ts        # CSV / JSON export
+│   ├── pages/               # Route pages (Home, Library, Study, Auth, Settings, Contact, …)
+│   ├── services/            # API service layer (apiService.ts)
+│   ├── types/               # TypeScript type definitions (index.ts)
+│   └── utils/               # Small helpers (cn.ts)
 ├── public/                  # Static assets
+├── docs/                    # Project documentation
+├── worker.ts                # Cloudflare Worker entry point
+├── wrangler.json           # Cloudflare Worker config
 ├── package.json            # Dependencies and scripts
 ├── vite.config.ts          # Build configuration
 ├── tsconfig.json           # TypeScript configuration
-├── README.md               # Project documentation
+├── tailwind.config.js      # Tailwind configuration
+├── README.md               # This file
 └── web-app-structure.md    # Detailed project structure
 ```
 
+> Note: the earlier README referenced `store/` and `hooks/` directories and a
+> `GumroadService.js` — none of those exist in the current codebase. State is
+> managed through React Context (in `src/context/`), and there is no Gumroad
+> integration.
+
 ## Key Components
 
-### 1. UploadArea (`components/Features/UploadArea.tsx`)
+### 1. Chatbot (`components/Chatbot/Chatbot.tsx`)
 
-The main interface for uploading study materials. Supports:
-- File drag & drop
-- Direct text input
+A built-in study assistant that walks users through topics using a
+**decision-tree conversation** (no free-text input — each option returns a
+curated, correct answer plus follow-up questions). Uses `framer-motion`
+for animated transitions and respects the active language via `LanguageContext`.
+
+### 2. UploadArea (`components/Features/UploadArea.tsx`)
+
+The main interface for creating decks. Supports:
+- File drag & drop (PDF, TXT, DOCX) via `react-dropzone`
+- Direct text/notes input
 - File preview and validation
-- Progress indicators
+- Progress indication while n8n generates cards
 
-### 2. Flashcard (`components/Features/Flashcard.tsx`)
+### 3. Flashcard (`components/Features/Flashcard.tsx`)
 
-Interactive flashcard component with:
-- Question/answer toggle functionality
-- Difficulty indicators
-- Concept categorization
-- Smooth animations
-- Responsive design
+Interactive flashcard with:
+- Question/answer toggle
+- Difficulty indicators (mapped to a 5-level scale)
+- Smooth animations and responsive design
 
-### 3. StudyPage (`pages/StudyPage.tsx`)
+### 4. FolderTreePicker (`components/Layout/FolderTreePicker.tsx`)
 
-Main study interface featuring:
-- Interactive card navigation
-- Multiple study modes
-- Progress tracking
-- Performance analytics
-- Time management
+Shared, recursive folder selector used by the "Move" menu and deck organization.
+Excludes the current folder from its own move targets and shows the full tree.
 
-### 4. API Service (`services/apiService.ts`)
+### 5. AvatarCropper / AvatarPicker (`components/Layout/AvatarCropper.tsx`, `AvatarPicker.tsx`)
 
-Integration layer for n8n workflow:
-- Flashcard generation
+Lets users pick a generated avatar (`avatars.ts` styles: shapes, rings,
+identicon) or upload and crop a photo. Result is stored on the Supabase
+`profiles.avatar` column.
+
+### 6. Study session components (`components/Study/*`)
+
+- `Timer.tsx` — countdown / elapsed time for timed study modes
+- `ProgressBar.tsx` — visual progress
+- `SessionConfigModal.tsx` — configure a study session
+
+### 7. API Service (`services/apiService.ts`)
+
+Integration layer that talks to the Worker's `/api/generate` endpoint:
+- Flashcard generation (with difficulty normalization)
 - Session management
 - File upload handling
-- Export functionality
+- Export support
 - Error handling
 
 ## Configuration
 
-### n8n Workflow Integration
-
-Your n8n workflow "Flashcard Generator - Working Version" should have:
-
-1. **Form Trigger Node**: Accept study notes input
-2. **AI Agent Node**: Generate flashcards from notes
-3. **Structured Output Parser**: Parse flashcard data
-4. **Code Node**: Process and format flashcards
-5. **Convert to File Node**: Export to CSV format
-6. **Form/Completion Node**: Return results to user
-
 ### Environment Variables
 
-```env
-# Required for production
-VITE_N8N_WEBHOOK_URL=https://your-n8n-instance.com/webhook/flashcard-generate
-VITE_GUMROAD_API_KEY=your_gumroad_api_key
-VITE_GUMROAD_PRODUCT_ID=your_product_id
-VITE_APP_URL=https://your-domain.com
+The **frontend** only needs the Supabase public (publishable) keys — Supabase
+handles auth server-side:
 
-# Optional
+```env
+# .env  (client-side, browser-safe publishable keys)
+VITE_SUPABASE_URL=https://nhxkubdzpnceyoemtliu.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-or-publishable-key
+
+# Optional — base URL for the API proxy (defaults to http://localhost:3001)
 VITE_API_BASE_URL=/api
-VITE_ENABLE_ANALYTICS=true
-VITE_MAX_FILE_SIZE=10485760
-VITE_SUPPORTED_FILE_TYPES=pdf,txt,docx
 ```
 
-## Development Scripts
+The **Cloudflare Worker** reads its secrets from `wrangler.json` `vars` (or
+Wrangler secrets) — these are never shipped to the browser:
 
-```json
+```jsonc
+// wrangler.json
 {
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
-    "preview": "vite preview",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "format": "prettier --write src/",
-    "type-check": "tsc --noEmit"
+  "vars": {
+    "N8N_WEBHOOK_URL": "https://n8n.marcos-valera.pp.ua/webhook/flashcard-api",
+    "CONTACT_TO": "valera08marcos.trabajo@gmail.com"
+    // RESEND_API_KEY is provided as a Wrangler secret for email delivery
   }
 }
 ```
 
-### Available Commands
+| Variable | Where | Purpose |
+| --- | --- | --- |
+| `VITE_SUPABASE_URL` | client `.env` | Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | client `.env` | Supabase publishable/anon key |
+| `VITE_API_BASE_URL` | client `.env` | API proxy base (optional) |
+| `N8N_WEBHOOK_URL` | Worker var | n8n flashcard generation webhook |
+| `CONTACT_TO` | Worker var | Destination email for contact form |
+| `RESEND_API_KEY` | Worker secret | Resend API key for contact emails |
 
-- **`npm run dev`** - Start development server
-- **`npm run build`** - Build for production
-- **`npm run lint`** - Code linting
-- **`npm run preview`** - Preview production build
-- **`npm run test`** - Run tests
-- **`npm run format`** - Format code
-- **`npm run type-check`** - TypeScript type checking
+### Supabase Auth Setup (Supabase + Resend + Google)
 
-## Testing
+StudySpark uses Supabase Auth (email/password, password reset, and Google
+OAuth). The frontend only needs the public anon key — Supabase does the rest
+server-side.
 
-### Unit Tests
-
-```bash
-# Run all tests
-npm test
-
-# Watch mode (for development)
-npm run test:watch
-```
-
-### Test Coverage
-
-- **Component Tests**: React component rendering and interactions
-- **Integration Tests**: API calls and workflow integration
-- **Accessibility Tests**: WCAG compliance
-- **Performance Tests**: Bundle size and load times
-
-## Deployment
-
-### Local Production
-
-```bash
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-```
-
-### Hosting Options
-
-1. **Netlify**
-   - Drag & drop build folder
-   - Connect Git repository
-   - Set build command: `npm run build`
-   - Set output directory: `dist`
-
-2. **Vercel**
-   - Import Git repository
-   - Automatic builds and deployments
-   - Configurable environment variables
-
-3. **Docker**
-   ```dockerfile
-   # Backend service (Express.js)
-   FROM node:18-alpine
-   WORKDIR /app
-   COPY package*.json ./
-   RUN npm ci --only=production
-   COPY . .
-   EXPOSE 3001
-   CMD ["npm", "start"]
-   ```
-
-4. **Nginx + PM2**
-   - Use PM2 for process management
-   - Configure nginx for reverse proxy
-   - SSL termination at nginx level
-
-## Auth Setup (Supabase + Resend + Google)
-
-StudySpark uses Supabase Auth (email/password, password reset and Google OAuth).
-The frontend needs only the public anon key — Supabase does the rest server-side.
-
-### 1. Supabase project
+#### 1. Supabase project
 
 1. Create a project at <https://supabase.com> (StudySpark's project id is
    `nhxkubdzpnceyoemtliu`, region `eu-central-1`).
 2. Copy **Project Settings → API → Project URL** and the **anon/public key**
-   into `.env`:
-
-   ```bash
-   VITE_SUPABASE_URL=https://nhxkubdzpnceyoemtliu.supabase.co
-   VITE_SUPABASE_ANON_KEY=your-anon-key
-   ```
-
-3. Apply the database schema (the `profiles` table already exists; this adds the
-   `avatar` column used by the avatar picker):
+   into `.env` (see above).
+3. Apply the database schema. The `profiles` table already exists; add the
+   `avatar` column used by the avatar picker:
 
    ```sql
    ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS avatar text NULL;
    ```
-
-4. **Row Level Security** — confirm these policies exist on `profiles`
-   (owner-only access):
+4. **Row Level Security** — confirm these owner-only policies exist on
+   `profiles`:
 
    ```sql
    CREATE POLICY "Profiles are viewable by owner"
@@ -327,10 +315,7 @@ The frontend needs only the public anon key — Supabase does the rest server-si
      ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
    ```
 
-### 2. Resend (transactional email for password reset)
-
-The "¿Olvidaste tu contraseña?" flow sends a reset link through Supabase
-Auth, but Supabase needs an email provider to actually deliver it.
+#### 2. Resend (transactional email for password reset)
 
 1. Create an account at <https://resend.com> and verify your domain
    (StudySpark uses `studyspark.pp.ua`).
@@ -347,10 +332,10 @@ Auth, but Supabase needs an email provider to actually deliver it.
    `/auth/confirm?token_hash=...&type=recovery`. StudySpark reads that page,
    verifies the OTP and shows a "set new password" form.
 
-> Without a provider (step 2–3) Supabase still works locally but the reset
+> Without a provider (steps 2–3) Supabase still works locally but the reset
 > email is never sent, so the "forgot password" button appears to do nothing.
 
-### 3. Google OAuth (sign in with Google)
+#### 3. Google OAuth (sign in with Google)
 
 1. Google Cloud Console → **APIs & Services → Credentials → OAuth 2.0 Client ID**.
    - Application type: **Web application**.
@@ -362,7 +347,7 @@ Auth, but Supabase needs an email provider to actually deliver it.
    needed (reading the name from `user_metadata`), so Google users get an avatar
    and profile automatically.
 
-### How the code wires it
+#### How the code wires it
 
 - `src/lib/supabase.ts` — creates the client from the `VITE_*` env vars.
 - `src/context/AuthContext.tsx` — `signIn`, `signUp`, `signInWithGoogle`,
@@ -370,280 +355,126 @@ Auth, but Supabase needs an email provider to actually deliver it.
 - `src/pages/AuthPage.tsx` — login/register form, Google button, forgot-password.
 - `src/pages/ConfirmPage.tsx` — handles `type=signup` (email confirmation)
   and `type=recovery` (password reset) from the email links.
+- `src/pages/ResetPasswordPage.tsx` — "set new password" form after reset.
 
-## Domain Setup (nic.ua)
+## Deployment (Cloudflare Workers)
 
-### Step 1: Domain Registration
+StudySpark is deployed as a Cloudflare Worker. `worker.ts` does two jobs:
 
-1. **Register domain**: `nic.ua`
-2. **Configure DNS**: 
-   - A record: your server IP
-   - CNAME record for www subdomain
+1. **`POST /api/generate`** → forwards the notes to the n8n webhook
+   (`N8N_WEBHOOK_URL`) and returns the flashcards JSON.
+2. **`POST /api/contact`** → sends the contact-form message via Resend
+   (`RESEND_API_KEY`) to `CONTACT_TO`.
+3. **Everything else** → serves the built React app from the `./dist` assets
+   binding, with SPA fallback (`not_found_handling: single-page-application`).
 
-### Step 2: SSL Certificate
+```bash
+# Build the frontend
+npm run build
 
-1. **Let's Encrypt** (using certbot):
-   ```bash
-   sudo apt update
-   sudo apt install certbot
-   sudo certbot certonly --standalone -d your-domain.com
-   ```
-
-2. **Auto-renewal**: Set up cron job for automatic renewal
-
-### Step 3: Server Configuration
-
-```nginx
-# /etc/nginx/sites-available/your-domain.conf
-server {
-    listen 80;
-    listen [::]:80;
-    server_name your-domain.com www.your-domain.com;
-
-    # Redirect HTTP to HTTPS
-    return 301 https://$server_name$request_uri;
-}
-
-server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-    server_name your-domain.com www.your-domain.com;
-
-    # SSL certificates
-    ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
-
-    # Security headers
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-
-    # Static files
-    location / {
-        root /var/www/html/dist;
-        index index.html;
-        try_files $uri $uri/ /index.html;
-    }
-
-    # API proxy (if backend is on different server)
-    location /api/ {
-        proxy_pass http://127.0.0.1:3001/;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_cache_bypass $http_upgrade;
-        proxy_read_timeout 300s;
-        proxy_connect_timeout 75s;
-    }
-}
+# Deploy the Worker (serves ./dist + /api/*)
+wrangler deploy
 ```
 
-### Step 4: HTTPS Configuration
+`wrangler.json` is already configured with the asset directory (`./dist`),
+SPA fallback, and the `N8N_WEBHOOK_URL` / `CONTACT_TO` vars. Set the
+`RESEND_API_KEY` secret with:
 
-1. **Install SSL certificates**
-2. **Set up automatic renewal**
-3. **Test configuration**: `nginx -t`
-4. **Reload nginx**: `systemctl reload nginx`
+```bash
+wrangler secret put RESEND_API_KEY
+```
 
-## Payment Integration (Gumroad)
+> The old `functions/api/generate.ts` (Cloudflare Pages style) is obsolete —
+> the Worker in `worker.ts` replaces it.
 
-### Basic Setup
+## Development Scripts
 
-1. **Create Gumroad product**
-2. **Get API key** from Gumroad dashboard
-3. **Configure product ID** in environment variables
-4. **Set up webhooks** for order notifications
-
-### Integration Points
-
-1. **Product Display**: Show pricing and features
-2. **Checkout Process**: Redirect to Gumroad
-3. **Order Confirmation**: Handle webhook callbacks
-4. **Content Access**: Unlock flashcards based on payment
-5. **Subscription Management**: Handle recurring payments
-
-### Sample Gumroad Integration
-
-```typescript
-// src/services/gumroadService.ts
-export class GumroadService {
-  private apiKey: string
-  private productId: string
-
-  constructor(apiKey: string, productId: string) {
-    this.apiKey = apiKey
-    this.productId = productId
-  }
-
-  async createPaymentLink(userEmail: string, userName: string): Promise<string> {
-    const response = await fetch('https://api.gumroad.com/v2/selling_products/create_payment_link', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${this.apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        product_id: this.productId,
-        customer_email: userEmail,
-        customer_name: userName,
-        success_url: `${window.location.origin}/study/${sessionId}`
-      })
-    })
-
-    const data = await response.json()
-    return data.payment_link
+```json
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "preview": "vite preview"
   }
 }
 ```
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the Vite dev server (http://localhost:5173) |
+| `npm run build` | Type-check and build for production into `dist/` |
+| `npm run lint` | Lint the codebase with ESLint |
+| `npm run preview` | Preview the production build locally |
 
 ## Troubleshooting
 
-### Common Issues
+### Flashcard generation not working
+- Verify the n8n workflow is **active** and `N8N_WEBHOOK_URL` (Worker var) is correct.
+- Check the browser console and the Worker logs (`wrangler tail`).
+- Confirm the request reaches `POST /api/generate`.
 
-#### 1. Flashcard Generation Not Working
+### Auth / password reset not working
+- Ensure `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set in `.env`.
+- The reset email requires a configured email provider (Resend) in Supabase —
+  without it the button appears to do nothing.
+- Verify the Supabase redirect URLs include `/auth/confirm`.
 
-**Symptoms**: No flashcards generated or empty results
-
-**Solutions**:
-```bash
-# Check n8n workflow
-1. Verify workflow is active
-2. Check webhook URL configuration
-3. Verify API credentials
-4. Test workflow manually
-
-# Check client-side
-1. Check browser console for errors
-2. Verify file upload format
-3. Check network requests
-```
-
-#### 2. Study Session Issues
-
-**Symptoms**: Cannot access study page, session expired
-
-**Solutions**:
-```bash
-# Check local storage
-1. Verify session ID in local storage
-2. Check session expiration
-3. Verify session data integrity
-
-# Check API
-1. Verify API endpoint availability
-2. Check CORS configuration
-3. Verify session persistence
-```
-
-#### 3. Export Functionality
-
-**Symptoms**: Download fails or incorrect format
-
-**Solutions**:
-```bash
-# Check file format
-1. Verify CSV/JSON structure
-2. Check file size limits
-3. Verify browser compatibility
-
-# Check server-side
-1. Verify export endpoint
-2. Check file generation logic
-3. Verify binary data handling
-```
-
-### Logging
-
-Enable debugging by setting:
-```env
-VITE_DEBUG=true
-```
-
-### Error Reporting
-
-For production environments, integrate:
-- Sentry.io for error tracking
-- Google Analytics for user behavior
-- Custom error reporting for critical issues
+### Study / library issues
+- Check that `profiles`, `folders`, and `sessions` are correctly persisted in
+  Supabase and that RLS policies allow owner access.
 
 ## Performance Optimization
 
-### Bundle Size
-
-```bash
-# Analyze bundle size
-npm run build
-npx webpack-bundle-analyzer dist/stats.json
-```
-
-### Production Builds
-
-```bash
-# Optimize for production
-npm run build
-
-# Minify CSS
-npx cssnano src/index.css dist/index.css
-
-# Compress images
-npm install --save-dev imagemin imagemin-webpack-plugin
-```
+- Vite splits the bundle via `manualChunks` (vendor, router, utils, ui).
+- Run `npm run build` and inspect `dist/` for bundle size.
+- Source maps are enabled (`sourcemap: true`) for production debugging.
 
 ## Security Considerations
 
-### Client-side Security
-
-1. **Input Validation**: Validate all user inputs
-2. **File Security**: Scan uploaded files for malicious content
-3. **XSS Protection**: Sanitize user-generated content
-4. **SameSite Cookies**: Configure cookies for security
-
-### Server-side Security
-
-1. **Authentication**: Implement user authentication
-2. **Rate Limiting**: Prevent abuse and DDoS attacks
-3. **HTTPS Only**: Enforce SSL for all connections
-4. **API Security**: Secure API endpoints
-5. **Session Management**: Secure session handling
+- **Public keys only in the frontend**: only the Supabase anon/publishable key
+  is exposed; all auth happens server-side in Supabase.
+- **Worker secrets**: `RESEND_API_KEY` is a Wrangler secret, never bundled.
+- **RLS**: Supabase Row Level Security policies enforce owner-only access.
+- **Input validation** on both the contact and generate endpoints in `worker.ts`.
+- **HTTPS only** in production (Cloudflare terminates TLS).
 
 ## Contributing
 
-### Development Guidelines
+1. Create a feature branch off `main`.
+2. Make your changes with clear, descriptive commits.
+3. Run `npm run lint` and `npm run build` before pushing.
+4. Open a pull request; request review before merge.
 
-1. **Code Style**: Follow Prettier formatting
-2. **Type Safety**: Use strict TypeScript checking
-3. **Testing**: Write comprehensive tests
-4. **Documentation**: Keep documentation updated
-5. **Performance**: Optimize for speed and efficiency
+## Version Tracking
 
-### Pull Request Process
+| Version | Commit | Notes |
+| --- | --- | --- |
+| **1.0.0** | [`fc4f07c`](https://github.com/M4rc0s-Dev/StudySpark/commit/fc4f07c) | Current release — bug fixes (move tree, review XP, multi-select, recursive card count) |
+| — | [`f160d2e`](https://github.com/M4rc0s-Dev/StudySpark/commit/f160d2e) | Bug fixes (move tree, pending/wrong review XP, % clarity) |
+| — | [`7c650ed`](https://github.com/M4rc0s-Dev/StudySpark/commit/7c650ed) | Fix build errors (translation keys, move menu) |
+| — | [`e8063fc`](https://github.com/M4rc0s-Dev/StudySpark/commit/e8063fc) | Bug fixes + n8n Gemma fixes + email templates |
+| — | [`7017b74`](https://github.com/M4rc0s-Dev/StudySpark/commit/7017b74) | Fix crash in Library + Move menu tree |
 
-1. Create feature branch
-2. Commit changes with descriptive messages
-3. Include tests for new functionality
-4. Update documentation if needed
-5. Request code review
-6. Merge after approval
+Full history: <https://github.com/M4rc0s-Dev/StudySpark/commits/main>
 
 ## License
 
-This project is licensed under the MIT License. See LICENSE file for details.
+This project is licensed under the **MIT License**.
 
 ## Acknowledgments
 
-- n8n for providing the workflow automation platform
-- React team for creating an amazing framework
-- Tailwind CSS team for utility-first styling
+- [n8n](https://n8n.io) for the workflow automation platform
+- [Supabase](https://supabase.com) for auth and database
+- [Cloudflare](https://workers.cloudflare.com) for Workers deployment
+- [Resend](https://resend.com) for transactional email
+- The React, Vite, Tailwind CSS, and framer-motion teams
 - All open-source contributors who made this possible
 
 ---
 
-*Last updated: July 10, 2026*
+*Last updated: July 15, 2026*
 *Version: 1.0.0*
 
-Feel free to reach out with questions, suggestions, or feedback! We're excited to help you create an amazing flashcard study experience.
+Questions, suggestions, or feedback? Open an issue or reach out — we're excited
+to help you build a better flashcard study experience.
